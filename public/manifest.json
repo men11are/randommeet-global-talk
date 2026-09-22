@@ -1,0 +1,15 @@
+{
+  "name": "RandomMeet",
+  "short_name": "RandomMeet",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#ec4899",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=ec4899&textColor=ffffff",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
