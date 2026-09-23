@@ -89,7 +89,6 @@
         @keyframes zoomThrough { 0% { transform: scale(0.1); opacity: 0; } 20% { transform: scale(1); opacity: 1; } 70% { transform: scale(3); opacity: 1; } 100% { transform: scale(150); opacity: 0; } }
         @keyframes hideSplash { to { display: none; z-index: -1; } }
 
-        /* ANIMATED PREMIUM TICKER FOR DARK AND LIGHT MODES */
         .ticker-wrap { width: 100%; background: var(--ticker-bg); border-bottom: 1px solid var(--ticker-border); overflow: hidden; white-space: nowrap; padding: 7px 0; z-index: 40; box-shadow: inset 0 -1px 0 var(--ticker-border); }
         .ticker-text { display: inline-block; animation: tickerScroll 24s linear infinite; font-size: 11px; font-weight: 700; color: var(--ticker-text); letter-spacing: 0.5px; padding-left: 100vw; }
         .ticker-wrap-2 { width: 100%; background: var(--ticker-bg); overflow: hidden; white-space: nowrap; padding: 6px 0; z-index: 39; border-bottom: 1px solid var(--ticker-border); }
@@ -101,7 +100,6 @@
         .slide-in { animation: slideInLeft 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .slide-out { animation: slideOutLeft 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
-        /* MOBILE OVERLAP PREVENTION: Fixed z-index & dynamic safe clearance */
         #localVideoContainer { 
             position: absolute; bottom: 220px; right: 12px; 
             width: 100px; height: 140px; border-radius: 14px; 
@@ -175,18 +173,18 @@
         </div>
     </div>
 
-    <!-- HEADER WITH LOGO -->
-    <header class="solid-panel rounded-none border-t-0 border-l-0 border-r-0 border-b p-3 flex justify-between items-center z-50 shrink-0">
-        <div id="logoBtn" class="flex items-center gap-2 cursor-pointer pl-1 z-10">
-            <img src="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=ec4899&textColor=ffffff" alt="Logo" class="h-8 w-8 object-cover rounded-full shadow-[0_0_10px_rgba(236,72,153,0.5)] border border-pink-500/50">
-            <h1 class="text-2xl font-extrabold glowing-title">RandomMeet</h1>
+    <!-- 🔥 FIX: HEADER OVERLAP RESOLVED FOR MOBILE 🔥 -->
+    <header class="solid-panel rounded-none border-t-0 border-l-0 border-r-0 border-b p-2 sm:p-3 flex justify-between items-center z-50 shrink-0 w-full">
+        <div id="logoBtn" class="flex items-center gap-1.5 sm:gap-2 cursor-pointer pl-1 z-10 min-w-0">
+            <img src="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=ec4899&textColor=ffffff" alt="Logo" class="h-6 w-6 sm:h-8 sm:w-8 object-cover rounded-full shadow-[0_0_10px_rgba(236,72,153,0.5)] border border-pink-500/50 shrink-0">
+            <h1 class="text-lg sm:text-2xl font-extrabold glowing-title truncate">RandomMeet</h1>
         </div>
-        <div class="flex items-center gap-1.5">
-            <button id="themeToggle" class="tool-btn px-2 py-1.5 rounded-lg text-[10px] font-bold">☀️ Light</button>
-            <div class="text-[10px] font-bold text-green-500 px-2 py-1.5 rounded-lg border border-green-500/30 flex items-center gap-1 bg-green-500/10">
+        <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            <button id="themeToggle" class="tool-btn px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg text-[9px] sm:text-[10px] font-bold">☀️ Light</button>
+            <div class="text-[9px] sm:text-[10px] font-bold text-green-500 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg border border-green-500/30 flex items-center gap-1 bg-green-500/10">
                 <span class="animate-pulse">🟢</span> <span id="liveUsersCount">0</span>
             </div>
-            <button onclick="openRegularDonation()" class="solid-btn-primary px-3 py-1.5 text-[11px]">Donate</button>
+            <button onclick="openRegularDonation()" class="solid-btn-primary px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-[11px]">Donate</button>
         </div>
     </header>
 
@@ -249,13 +247,11 @@
             </div>
         </div>
 
-        <!-- FLOATING DRAGGABLE LOCAL VIDEO -->
         <div id="localVideoContainer" class="hidden-ui">
             <video id="localVideo" class="w-full h-full object-cover true-mirror" autoplay playsinline muted></video>
             <div class="absolute bottom-1 right-1 bg-black/80 px-2 py-0.5 rounded text-[8px] font-bold text-white">You</div>
         </div>
 
-        <!-- BOTTOM CONTROL INTERFACE -->
         <div class="absolute bottom-0 w-full z-30 flex flex-col pointer-events-none pb-2">
             <div id="mediaControls" class="flex justify-center gap-3.5 mb-2 hidden-ui pointer-events-auto">
                 <button id="muteBtn" class="tool-btn p-3 rounded-full text-sm">🎤</button>
@@ -278,7 +274,6 @@
                     <button id="endChatBtn" class="bg-gray-200 dark:bg-gray-800 text-red-500 w-1/2 py-2.5 rounded-xl font-extrabold text-sm uppercase transition hover:bg-gray-300 dark:hover:bg-gray-700">End Chat</button>
                 </div>
 
-                <!-- CHAT BOX: max-h-[22vh] prevents layout crush on small mobile screens -->
                 <div id="chatBox" class="w-full max-w-md mx-auto overflow-y-auto flex flex-col gap-1.5 mb-2 max-h-[22vh] scroll-smooth p-1"></div>
                 
                 <div class="flex gap-2 w-full max-w-md mx-auto relative solid-input p-1.5">
@@ -331,7 +326,6 @@
         let iceQueue = [];
         let pendingOffer = null; 
 
-        // Keepalive ping
         setInterval(() => { if (socket.connected) socket.emit('ping'); }, 20000); 
 
         socket.on('live-users', count => document.getElementById('liveUsersCount').innerText = count);
@@ -357,17 +351,12 @@
             document.getElementById('donationModal').classList.remove('hidden-ui');
         }
 
-        // NOISE CANCELLATION + OPTIMAL MIC/AUDIO SETTINGS
         async function getMediaStream(facingModeConstraint) {
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             const finalFacingMode = facingModeConstraint || (isFront ? "user" : "environment");
             
             const constraints = { 
-                audio: { 
-                    echoCancellation: true, 
-                    noiseSuppression: true, 
-                    autoGainControl: true 
-                }, 
+                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, 
                 video: isMobile 
                     ? { facingMode: finalFacingMode, width: { ideal: 640 }, height: { ideal: 480 } } 
                     : { width: { ideal: 640 }, height: { ideal: 480 } } 
@@ -483,10 +472,14 @@
 
             if (data.initiator) {
                 try {
-                    const offer = await peerConn.createOffer();
+                    // 🔥 FIX FOR LAPTOPS: Ensure both Audio & Video are strictly negotiated 🔥
+                    const offer = await peerConn.createOffer({
+                        offerToReceiveAudio: true, 
+                        offerToReceiveVideo: true
+                    });
                     await peerConn.setLocalDescription(offer);
                     socket.emit('offer', { sdp: offer, partnerId });
-                } catch(e){}
+                } catch(e) { console.error("Offer Error:", e); }
             } else if (pendingOffer) { 
                 processOffer(pendingOffer, matchSessionId); 
                 pendingOffer = null;
@@ -494,7 +487,7 @@
         });
 
         // =========================================================================
-        // METERED TURN + SMART FALLBACK (P2P DIRECT FIRST, TURN RELAY ONLY WHEN BLOCKED)
+        // 🔥 SAFE LAPTOP + MOBILE WEBRTC LOGIC (TRACK MERGING) 🔥
         // =========================================================================
         function createPeerConnection(sessionId) {
             peerConn = new RTCPeerConnection({
@@ -502,12 +495,11 @@
                     { urls: "stun:stun.l.google.com:19302" },
                     { urls: "stun:stun1.l.google.com:19302" },
                     { urls: "stun:stun2.l.google.com:19302" },
-                    // Metered Public/Private TURN fallback list
-                    { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-                    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
-                    { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
+                    // YAHAN APNE METERED KE PRIVATE CREDENTIALS DAALNA:
+                    { urls: "turn:TERA_METERED_URL.metered.ca:80", username: "TERA_USERNAME", credential: "TERA_PASSWORD" },
+                    { urls: "turn:TERA_METERED_URL.metered.ca:443", username: "TERA_USERNAME", credential: "TERA_PASSWORD" },
+                    { urls: "turn:TERA_METERED_URL.metered.ca:443?transport=tcp", username: "TERA_USERNAME", credential: "TERA_PASSWORD" }
                 ],
-                // "all" = Free P2P Direct first; uses TURN only if NAT/Library Wi-Fi blocks P2P!
                 iceTransportPolicy: "all", 
                 bundlePolicy: "max-bundle",
                 rtcpMuxPolicy: "require"
@@ -518,27 +510,29 @@
                 localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream)); 
             }
             
-            // NO RANDOM DISCONNECTS: We do not abruptly kill connection on momentary blips
             peerConn.oniceconnectionstatechange = () => {
                 if (peerConn && peerConn.iceConnectionState === 'failed') {
-                    // Try ICE restart gracefully before killing
                     peerConn.restartIce();
                 }
             };
 
-            // GUARANTEED REMOTE VIDEO RENDERING
+            // 🔥 FIX FOR LAPTOPS: Audio & Video tracks will MERGE cleanly, not overwrite 🔥
             peerConn.ontrack = (event) => {
                 if (sessionId !== matchSessionId || currentState !== 'CONNECTED') return; 
                 
                 if (event.streams && event.streams[0]) {
-                    ui.remoteVid.srcObject = event.streams[0];
+                    // Do not overwrite if stream is already attached
+                    if (ui.remoteVid.srcObject !== event.streams[0]) {
+                        ui.remoteVid.srcObject = event.streams[0];
+                    }
                 } else {
-                    let inboundStream = new MediaStream();
-                    inboundStream.addTrack(event.track);
-                    ui.remoteVid.srcObject = inboundStream;
+                    if (!ui.remoteVid.srcObject) {
+                        ui.remoteVid.srcObject = new MediaStream();
+                    }
+                    ui.remoteVid.srcObject.addTrack(event.track);
                 }
                 
-                ui.remoteVid.volume = 1.0; // Normal full volume
+                ui.remoteVid.volume = 1.0; 
                 ui.remoteVid.onloadedmetadata = () => {
                     ui.remoteVid.play().catch(() => {
                         setTimeout(() => ui.remoteVid.play().catch(e => console.log(e)), 300);
@@ -570,9 +564,7 @@
                 const answer = await peerConn.createAnswer();
                 await peerConn.setLocalDescription(answer);
                 socket.emit('answer', { sdp: answer, partnerId: partnerId }); 
-            } catch(e) {
-                console.error("Offer Error:", e);
-            }
+            } catch(e) { console.error("Process Offer Error:", e); }
         }
 
         socket.on('answer', async (data) => { 
@@ -664,7 +656,7 @@
         }
 
         // =========================================================================
-        // TEXT & MEDIA MESSAGE CONSTRAINTS (30 Words limit + 15MB Media)
+        // LIMITS: 30 WORDS & 15MB MEDIA
         // =========================================================================
         ui.btnSend.addEventListener('click', sendMsg); 
         ui.inputChat.addEventListener('keypress', (e) => { 
@@ -675,7 +667,6 @@
             const raw = ui.inputChat.value.trim(); 
             if (!raw || !partnerId || currentState !== 'CONNECTED') return;
 
-            // Enforce max 30 words per message
             const words = raw.split(/\s+/).filter(w => w.length > 0);
             if (words.length > 30) {
                 addSystemMsg("Limit: Maximum 30 words per message allowed.");
@@ -694,7 +685,6 @@
             const file = e.target.files[0]; 
             if (!file || !partnerId || currentState !== 'CONNECTED') return;
             
-            // Limit media strictly to 15MB
             const MAX_SIZE = 15 * 1024 * 1024;
             if (file.size > MAX_SIZE) { 
                 addSystemMsg("File too large! Max 15MB allowed for Audio/Video/Images."); 
@@ -716,13 +706,7 @@
                 for (let i = 0; i < totalChunks; i++) { 
                     const chunkData = base64Str.substring(i * chunkSize, (i + 1) * chunkSize); 
                     const payload = JSON.stringify({ 
-                        type: 'chunk', 
-                        fileId, 
-                        chunk: chunkData, 
-                        index: i, 
-                        total: totalChunks, 
-                        isVideo: isVid,
-                        isAudio: isAud
+                        type: 'chunk', fileId, chunk: chunkData, index: i, total: totalChunks, isVideo: isVid, isAudio: isAud
                     }); 
                     socket.emit('chat-message', { message: payload, partnerId }); 
                 }
@@ -784,9 +768,6 @@
             setTimeout(() => ui.chatBox.scrollTop = ui.chatBox.scrollHeight, 50); 
         }
 
-        // =========================================================================
-        // CONTROL BUTTONS: MUTE, CAM OFF, TRUE CAMERA FLIP
-        // =========================================================================
         document.getElementById('muteBtn').addEventListener('click', (e) => { 
             if (!localStream) return; 
             isAudioMuted = !isAudioMuted; 
@@ -803,7 +784,6 @@
             e.target.classList.toggle('text-red-500', isVideoMuted); 
         });
 
-        // HARDWARE-SAFE CAMERA FLIP (Front / Back)
         document.getElementById('flipBtn').addEventListener('click', async () => { 
             if (!localStream) return; 
             
@@ -834,7 +814,6 @@
             }
         });
 
-        // DRAGGABLE LOCAL VIDEO PREVIEW
         let isDragging = false, startX, startY, initialRight, initialBottom;
         
         ui.localVidBox.addEventListener('touchstart', dragStart, {passive: false}); 
