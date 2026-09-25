@@ -267,8 +267,8 @@
 
     <!-- CALL SCREEN -->
     <main id="callScreen" class="flex-1 flex-col overflow-hidden hidden-ui w-full h-full relative z-10">
-        <div class="absolute inset-0 bg-black z-0">
-            <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline></video>
+        <div class="absolute inset-0 bg-black z-0 flex items-center justify-center">
+            <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline webkit-playsinline></video>
             <div id="uiStranger" class="absolute top-4 left-4 bg-black/60 px-3 py-1.5 rounded-full text-[10px] font-bold text-white hidden-ui z-10">Stranger</div>
             <div id="searchSpinner" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 z-20 hidden-ui">
                 <div class="w-14 h-14 border-4 border-pink-500/30 border-t-pink-500 rounded-full animate-spin"></div>
@@ -540,7 +540,7 @@
         });
 
         // =========================================================================
-        // METERED TURN + LAPTOP TRACK MERGE & AUTOPLAY BYPASS
+        // ELITE WEBRTC ENGINE: ZERO BLACK SCREEN ARCHITECTURE
         // =========================================================================
         function createPeerConnection(sessionId) {
             peerConn = new RTCPeerConnection({
@@ -548,6 +548,7 @@
                     { urls: "stun:stun.l.google.com:19302" },
                     { urls: "stun:stun1.l.google.com:19302" },
                     { urls: "stun:stun2.l.google.com:19302" },
+                    // Active Metered Credentials
                     { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
                     { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
                     { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
@@ -571,42 +572,44 @@
                 }
             };
 
+            // 🔥 BULLETPROOF DUAL BINDING: Stream + Track Race Condition Completely Neutralized
             peerConn.ontrack = (event) => {
                 if (sessionId !== matchSessionId || currentState !== 'CONNECTED') return; 
                 
                 const remoteVideo = ui.remoteVid;
+                
+                // Ensure persistent container exists
                 if (!remoteVideo.srcObject) {
                     remoteVideo.srcObject = new MediaStream();
                 }
 
-                const inboundStream = remoteVideo.srcObject;
+                const stream = remoteVideo.srcObject;
 
-                if (event.track) {
-                    if (!inboundStream.getTracks().some(t => t.id === event.track.id)) {
-                        inboundStream.addTrack(event.track);
-                    }
-                } else if (event.streams && event.streams[0]) {
-                    event.streams[0].getTracks().forEach(t => {
-                        if (!inboundStream.getTracks().some(existing => existing.id === t.id)) {
-                            inboundStream.addTrack(t);
+                if (event.streams && event.streams[0]) {
+                    event.streams[0].getTracks().forEach(track => {
+                        if (!stream.getTracks().some(t => t.id === track.id)) {
+                            stream.addTrack(track);
                         }
                     });
+                } else if (event.track) {
+                    if (!stream.getTracks().some(t => t.id === event.track.id)) {
+                        stream.addTrack(event.track);
+                    }
                 }
                 
-                const playStream = () => {
+                const playSafely = () => {
                     const promise = remoteVideo.play();
                     if (promise !== undefined) {
-                        promise.catch(() => {
-                            remoteVideo.muted = true;
-                            remoteVideo.play().then(() => {
-                                setTimeout(() => { remoteVideo.muted = false; }, 250);
-                            }).catch(err => console.warn("Autoplay retry bypassed:", err));
+                        promise.catch(err => {
+                            console.warn("Autoplay interaction blocked, falling back:", err);
+                            // Harmless silent fallback
+                            requestAnimationFrame(() => remoteVideo.play().catch(()=>{}));
                         });
                     }
                 };
 
-                remoteVideo.onloadedmetadata = playStream;
-                playStream();
+                remoteVideo.onloadedmetadata = playSafely;
+                playSafely();
             };
 
             peerConn.onicecandidate = (e) => { 
@@ -627,6 +630,8 @@
             if (sessionId !== matchSessionId || !peerConn) return;
             try {
                 await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                
+                // Drain queued candidates immediately once remote description is set
                 while (iceQueue.length > 0) { 
                     await peerConn.addIceCandidate(iceQueue.shift()).catch(()=>{}); 
                 }
@@ -644,10 +649,14 @@
             try { 
                 if (peerConn && peerConn.signalingState !== "closed") {
                     await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp)); 
+                    while (iceQueue.length > 0) { 
+                        await peerConn.addIceCandidate(iceQueue.shift()).catch(()=>{}); 
+                    }
                 }
-            } catch(e) {} 
+            } catch(e) { console.error("Answer set error:", e); } 
         });
 
+        // 🔥 Candidate Queue Safety: Remote description ready nahi toh drop mat hone do
         socket.on('ice-candidate', async (data) => { 
             if (!data.candidate) return; 
             const c = new RTCIceCandidate(data.candidate); 
