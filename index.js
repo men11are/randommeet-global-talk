@@ -10,16 +10,24 @@ const io = new Server(server, {
         origin: "*",
         methods: ["GET", "POST"]
     },
-    maxHttpBufferSize: 1e8 // Support up to 100MB for media chunk transfer
+    maxHttpBufferSize: 1e8 // Support up to 100MB chunk payloads
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+// Explicit Cache-Control headers to stop Safari/Chrome aggressive caching
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    next();
+});
+
+app.use(express.static(path.join(__dirname, 'public'), {
+    etag: false,
+    maxAge: 0
+}));
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// User queue and active matching
 let waitingQueue = [];
 let activePairs = new Map();
 
@@ -35,14 +43,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join', (preferences) => {
-        // Remove existing queue presence
         waitingQueue = waitingQueue.filter(u => u.socketId !== socket.id);
 
-        // Find match based on region/gender if available, else match fastest
         let matchIndex = -1;
         for (let i = 0; i < waitingQueue.length; i++) {
-            const peer = waitingQueue[i];
-            if (peer.socketId !== socket.id) {
+            if (waitingQueue[i].socketId !== socket.id) {
                 matchIndex = i;
                 break;
             }
@@ -56,7 +61,6 @@ io.on('connection', (socket) => {
                 activePairs.set(socket.id, partner.socketId);
                 activePairs.set(partner.socketId, socket.id);
 
-                // Initiator logic: one creates offer, other receives
                 socket.emit('matched', { partnerId: partner.socketId, initiator: true });
                 partnerSocket.emit('matched', { partnerId: socket.id, initiator: false });
             } else {
@@ -113,5 +117,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`RandomMeet Server running live on port ${PORT}`);
+    console.log(`RandomMeet Core Engine live on port ${PORT}`);
 });
