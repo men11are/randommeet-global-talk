@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>RandomMeet - Premium Global Video Chat</title>
     <link rel="manifest" href="/manifest.json">
@@ -321,7 +324,11 @@
             e.target.innerText = document.body.classList.contains('dark-mode') ? '☀️ Light' : '🌙 Dark';
         });
 
-        const socket = io(); 
+        const socket = io({
+            reconnectionAttempts: 5,
+            timeout: 10000
+        }); 
+
         const ui = {
             home: document.getElementById('homeScreen'), 
             call: document.getElementById('callScreen'), 
@@ -392,10 +399,14 @@
             const finalFacingMode = facingModeConstraint || (isFront ? "user" : "environment");
             
             const constraints = { 
-                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, 
+                audio: { 
+                    echoCancellation: true, 
+                    noiseSuppression: true, 
+                    autoGainControl: true 
+                }, 
                 video: isMobile 
                     ? { facingMode: finalFacingMode, width: { ideal: 640 }, height: { ideal: 480 } } 
-                    : { width: { ideal: 640 }, height: { ideal: 480 } } 
+                    : { width: { ideal: 1280, min: 640 }, height: { ideal: 720, min: 480 } } 
             };
             
             try { 
@@ -467,7 +478,7 @@
                     localStream = await getMediaStream();
                 }
                 ui.localVid.srcObject = localStream;
-                ui.localVid.play().catch(e => console.warn(e));
+                ui.localVid.play().catch(e => console.warn("Local play error:", e));
                 ui.localVidBox.classList.remove('hidden-ui');
             } catch (err) { 
                 alert("Camera and Microphone access required!"); 
@@ -532,7 +543,7 @@
                     });
                     await peerConn.setLocalDescription(offer);
                     socket.emit('offer', { sdp: offer, partnerId });
-                } catch(e) { console.error("Offer Error:", e); }
+                } catch(e) { console.error("Offer Creation Error:", e); }
             } else if (pendingOffer) { 
                 processOffer(pendingOffer, matchSessionId); 
                 pendingOffer = null;
@@ -540,7 +551,7 @@
         });
 
         // =========================================================================
-        // ELITE WEBRTC ENGINE: ZERO BLACK SCREEN ARCHITECTURE
+        // ELITE WEBRTC ENGINE: MACBOOK M2 & DESKTOP HARDWARE PIPELINE FIX
         // =========================================================================
         function createPeerConnection(sessionId) {
             peerConn = new RTCPeerConnection({
@@ -548,7 +559,7 @@
                     { urls: "stun:stun.l.google.com:19302" },
                     { urls: "stun:stun1.l.google.com:19302" },
                     { urls: "stun:stun2.l.google.com:19302" },
-                    // Active Metered Credentials
+                    // Injecting Metered Credentials
                     { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
                     { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
                     { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
@@ -562,6 +573,12 @@
             });
             iceQueue = []; 
 
+            // Explicit transceivers tell Safari/MacBook that we actively expect inbound video
+            try {
+                peerConn.addTransceiver('video', { direction: 'sendrecv' });
+                peerConn.addTransceiver('audio', { direction: 'sendrecv' });
+            } catch(e) {}
+
             if (localStream) { 
                 localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream)); 
             }
@@ -572,44 +589,52 @@
                 }
             };
 
-            // 🔥 BULLETPROOF DUAL BINDING: Stream + Track Race Condition Completely Neutralized
+            // 🔥 BULLETPROOF MACBOOK ONTRACK ENGINE
             peerConn.ontrack = (event) => {
                 if (sessionId !== matchSessionId || currentState !== 'CONNECTED') return; 
                 
                 const remoteVideo = ui.remoteVid;
-                
-                // Ensure persistent container exists
-                if (!remoteVideo.srcObject) {
-                    remoteVideo.srcObject = new MediaStream();
-                }
 
-                const stream = remoteVideo.srcObject;
-
+                // Bind stream instantly
                 if (event.streams && event.streams[0]) {
-                    event.streams[0].getTracks().forEach(track => {
-                        if (!stream.getTracks().some(t => t.id === track.id)) {
-                            stream.addTrack(track);
-                        }
-                    });
-                } else if (event.track) {
-                    if (!stream.getTracks().some(t => t.id === event.track.id)) {
-                        stream.addTrack(event.track);
+                    if (remoteVideo.srcObject !== event.streams[0]) {
+                        remoteVideo.srcObject = event.streams[0];
+                    }
+                } else {
+                    if (!remoteVideo.srcObject) {
+                        remoteVideo.srcObject = new MediaStream();
+                    }
+                    if (!remoteVideo.srcObject.getTracks().some(t => t.id === event.track.id)) {
+                        remoteVideo.srcObject.addTrack(event.track);
                     }
                 }
-                
-                const playSafely = () => {
-                    const promise = remoteVideo.play();
-                    if (promise !== undefined) {
-                        promise.catch(err => {
-                            console.warn("Autoplay interaction blocked, falling back:", err);
-                            // Harmless silent fallback
-                            requestAnimationFrame(() => remoteVideo.play().catch(()=>{}));
+
+                // Force layout calculation on macOS
+                remoteVideo.style.display = 'block';
+
+                const executePlayback = () => {
+                    const playPromise = remoteVideo.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.warn("MacBook Autoplay quarantined unmuted video. Triggering Hardware Bypass...", error);
+                            // Bypass: Mute, play instantaneously to unlock frame decoder, then restore sound
+                            remoteVideo.muted = true;
+                            remoteVideo.play().then(() => {
+                                setTimeout(() => { 
+                                    remoteVideo.muted = false; 
+                                }, 300);
+                            }).catch(err => {
+                                console.error("Hardware bypass awaiting click:", err);
+                            });
                         });
                     }
                 };
 
-                remoteVideo.onloadedmetadata = playSafely;
-                playSafely();
+                remoteVideo.onloadedmetadata = () => {
+                    executePlayback();
+                };
+
+                executePlayback();
             };
 
             peerConn.onicecandidate = (e) => { 
@@ -631,7 +656,7 @@
             try {
                 await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
                 
-                // Drain queued candidates immediately once remote description is set
+                // Process pending ICE candidates safely
                 while (iceQueue.length > 0) { 
                     await peerConn.addIceCandidate(iceQueue.shift()).catch(()=>{}); 
                 }
@@ -653,10 +678,9 @@
                         await peerConn.addIceCandidate(iceQueue.shift()).catch(()=>{}); 
                     }
                 }
-            } catch(e) { console.error("Answer set error:", e); } 
+            } catch(e) { console.error("Process Answer Error:", e); } 
         });
 
-        // 🔥 Candidate Queue Safety: Remote description ready nahi toh drop mat hone do
         socket.on('ice-candidate', async (data) => { 
             if (!data.candidate) return; 
             const c = new RTCIceCandidate(data.candidate); 
