@@ -44,11 +44,25 @@
             --ticker-border: rgba(51, 65, 85, 0.8);
         }
 
-        body.dark-mode #chatBox div.stranger-bubble { 
-            background-color: rgba(30, 41, 59, 0.95) !important; 
-            color: #f8fafc !important; 
-            border: 1px solid rgba(51, 65, 85, 0.9); 
+        /* Transparent Chat Box Fixes */
+        #chatBoxContainer {
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.7) 60%, transparent); /* Dark mode transparent */
         }
+        body:not(.dark-mode) #chatBoxContainer {
+             background: linear-gradient(to top, rgba(255, 255, 255, 0.7) 60%, transparent); /* Light mode transparent */
+        }
+
+        body.dark-mode #chatBox div.stranger-bubble { 
+            background-color: rgba(30, 41, 59, 0.85) !important; 
+            color: #f8fafc !important; 
+            border: 1px solid rgba(51, 65, 85, 0.6); 
+        }
+        
+        body:not(.dark-mode) #chatBox div.stranger-bubble {
+            background-color: rgba(248, 250, 252, 0.85) !important;
+             border: 1px solid rgba(226, 232, 240, 0.6); 
+        }
+
 
         html, body { 
             margin: 0; padding: 0; font-family: 'Outfit', sans-serif; 
@@ -108,9 +122,22 @@
             cursor: grab; background: #000; transition: border-color 0.2s; 
         }
         #localVideoContainer:active { cursor: grabbing; border-color: #22c55e; }
-        .chat-media { border-radius: 10px; max-width: 100%; max-height: 160px; margin-top: 4px; border: 1px solid var(--border-color); object-fit: cover; }
+        .chat-media { border-radius: 10px; max-width: 100%; max-height: 160px; margin-top: 4px; border: 1px solid var(--border-color); object-fit: cover; cursor: pointer; }
         
         #nukeOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99999; display: flex; align-items: center; justify-content: center; }
+
+        /* Full Screen Image Viewer Modal */
+        #imageViewerModal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #imageViewerModal img {
+            max-width: 95vw; max-height: 85vh; object-fit: contain; border-radius: 8px;
+        }
+        .viewer-controls {
+            margin-top: 15px; display: flex; gap: 15px;
+        }
+
     </style>
 </head>
 
@@ -125,6 +152,15 @@
     </div>
     
     <div id="splashScreen" class="run-splash"><div class="cinematic-text run-zoom">RANDOMMEET</div></div>
+
+    <!-- Image Viewer Modal -->
+    <div id="imageViewerModal" class="hidden-ui">
+        <img id="fullScreenImg" src="" alt="Full Screen">
+        <div class="viewer-controls">
+            <button id="closeViewerBtn" class="solid-btn-primary px-4 py-2">Close</button>
+            <a id="downloadImgBtn" href="" download="Shared_Image.png" class="bg-green-500 text-white font-bold rounded-xl px-4 py-2">Download</a>
+        </div>
+    </div>
 
     <!-- DONATION MODAL -->
     <div id="donationModal" class="hidden-ui modal-bg" style="position: fixed; inset: 0; z-index: 99997; display: flex; align-items: center; justify-content: center; padding: 16px;">
@@ -173,7 +209,7 @@
         </div>
     </div>
 
-    <!-- 🔥 FIX: HEADER OVERLAP RESOLVED FOR MOBILE 🔥 -->
+    <!-- HEADER WITH LOGO -->
     <header class="solid-panel rounded-none border-t-0 border-l-0 border-r-0 border-b p-2 sm:p-3 flex justify-between items-center z-50 shrink-0 w-full">
         <div id="logoBtn" class="flex items-center gap-1.5 sm:gap-2 cursor-pointer pl-1 z-10 min-w-0">
             <img src="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=ec4899&textColor=ffffff" alt="Logo" class="h-6 w-6 sm:h-8 sm:w-8 object-cover rounded-full shadow-[0_0_10px_rgba(236,72,153,0.5)] border border-pink-500/50 shrink-0">
@@ -259,7 +295,8 @@
                 <button id="flipBtn" class="tool-btn p-3 rounded-full text-sm">🔄</button>
             </div>
 
-            <div class="p-3 pointer-events-auto w-full flex flex-col justify-end" style="background: linear-gradient(to top, var(--bg-panel) 65%, transparent);">
+            <!-- Transparent Chat Box Container -->
+            <div id="chatBoxContainer" class="p-3 pointer-events-auto w-full flex flex-col justify-end">
                 <div id="waitMessage" class="w-full max-w-md mx-auto text-center mb-2 text-[11px] text-pink-500 font-medium hidden animate-pulse bg-pink-500/10 py-1.5 rounded-full border border-pink-500/20">Connecting to partner...</div>
                 
                 <div id="strangerCountryBox" class="w-full max-w-md mx-auto text-center mb-2 hidden">
@@ -312,7 +349,11 @@
             livePrompt: document.getElementById('livePrompt'), 
             endChatBtn: document.getElementById('endChatBtn'), 
             fileUpload: document.getElementById('fileUpload'),
-            attachBtn: document.getElementById('attachBtn')
+            attachBtn: document.getElementById('attachBtn'),
+            imgModal: document.getElementById('imageViewerModal'),
+            fullImg: document.getElementById('fullScreenImg'),
+            closeImgBtn: document.getElementById('closeViewerBtn'),
+            dlImgBtn: document.getElementById('downloadImgBtn')
         };
         
         let localStream = null;
@@ -447,6 +488,25 @@
             }); 
         }
 
+        // SOMEONE IS WAITING PROMPT LOGIC
+        setInterval(() => {
+            if (parseInt(document.getElementById('liveUsersCount').innerText) >= 2 && !ui.home.classList.contains('hidden-ui')) {
+                ui.livePrompt.classList.remove('hidden-ui', 'slide-out'); 
+                ui.livePrompt.classList.add('slide-in');
+                setTimeout(() => {
+                    if(!ui.livePrompt.classList.contains('hidden-ui')) {
+                        ui.livePrompt.classList.remove('slide-in'); 
+                        ui.livePrompt.classList.add('slide-out');
+                        setTimeout(() => { 
+                            ui.livePrompt.classList.add('hidden-ui'); 
+                            ui.livePrompt.classList.remove('slide-out'); 
+                        }, 400);
+                    }
+                }, 3000); 
+            }
+        }, 10000);
+
+
         socket.on('matched', async (data) => {
             if (currentState !== 'SEARCHING') { socket.emit('skip'); return; } 
             
@@ -472,7 +532,6 @@
 
             if (data.initiator) {
                 try {
-                    // 🔥 FIX FOR LAPTOPS: Ensure both Audio & Video are strictly negotiated 🔥
                     const offer = await peerConn.createOffer({
                         offerToReceiveAudio: true, 
                         offerToReceiveVideo: true
@@ -487,7 +546,7 @@
         });
 
         // =========================================================================
-        // 🔥 SAFE LAPTOP + MOBILE WEBRTC LOGIC (TRACK MERGING) 🔥
+        // SAFE LAPTOP + MOBILE WEBRTC LOGIC (TRACK MERGING) FIX
         // =========================================================================
         function createPeerConnection(sessionId) {
             peerConn = new RTCPeerConnection({
@@ -495,10 +554,12 @@
                     { urls: "stun:stun.l.google.com:19302" },
                     { urls: "stun:stun1.l.google.com:19302" },
                     { urls: "stun:stun2.l.google.com:19302" },
-                    // YAHAN APNE METERED KE PRIVATE CREDENTIALS DAALNA:
-                    { urls: "turn:TERA_METERED_URL.metered.ca:80", username: "TERA_USERNAME", credential: "TERA_PASSWORD" },
-                    { urls: "turn:TERA_METERED_URL.metered.ca:443", username: "TERA_USERNAME", credential: "TERA_PASSWORD" },
-                    { urls: "turn:TERA_METERED_URL.metered.ca:443?transport=tcp", username: "TERA_USERNAME", credential: "TERA_PASSWORD" }
+                    // INJECTED METERED CREDENTIALS FROM YOUR WORKSPACE
+                    { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+                    { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+                    { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+                    { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+                    { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" }
                 ],
                 iceTransportPolicy: "all", 
                 bundlePolicy: "max-bundle",
@@ -516,20 +577,21 @@
                 }
             };
 
-            // 🔥 FIX FOR LAPTOPS: Audio & Video tracks will MERGE cleanly, not overwrite 🔥
+            // CORRECTED TRACK HANDLING FOR ALL DEVICES
             peerConn.ontrack = (event) => {
                 if (sessionId !== matchSessionId || currentState !== 'CONNECTED') return; 
                 
+                // If stream exists, use it. This prevents the overwrite black screen issue.
                 if (event.streams && event.streams[0]) {
-                    // Do not overwrite if stream is already attached
-                    if (ui.remoteVid.srcObject !== event.streams[0]) {
-                        ui.remoteVid.srcObject = event.streams[0];
-                    }
+                     if (ui.remoteVid.srcObject !== event.streams[0]) {
+                         ui.remoteVid.srcObject = event.streams[0];
+                     }
                 } else {
-                    if (!ui.remoteVid.srcObject) {
-                        ui.remoteVid.srcObject = new MediaStream();
-                    }
-                    ui.remoteVid.srcObject.addTrack(event.track);
+                     // Fallback for browsers that add tracks individually
+                     if (!ui.remoteVid.srcObject) {
+                         ui.remoteVid.srcObject = new MediaStream();
+                     }
+                     ui.remoteVid.srcObject.addTrack(event.track);
                 }
                 
                 ui.remoteVid.volume = 1.0; 
@@ -741,6 +803,26 @@
         function escapeHTML(str) { 
             return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t)); 
         }
+
+        // IMAGE VIEWER LOGIC
+        function openImageViewer(src) {
+            ui.fullImg.src = src;
+            ui.dlImgBtn.href = src;
+            ui.imgModal.classList.remove('hidden-ui');
+        }
+
+        ui.closeImgBtn.addEventListener('click', () => {
+            ui.imgModal.classList.add('hidden-ui');
+            ui.fullImg.src = '';
+            ui.dlImgBtn.href = '';
+        });
+
+        // Event delegation for opening images
+        ui.chatBox.addEventListener('click', (e) => {
+            if (e.target.tagName === 'IMG' && e.target.classList.contains('chat-media')) {
+                openImageViewer(e.target.src);
+            }
+        });
 
         function addMsg(sender, text, isMe, isVideo, isAudio) {
             const d = document.createElement('div'); 
