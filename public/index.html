@@ -212,7 +212,7 @@
             <h1 class="text-lg sm:text-2xl font-extrabold glowing-title truncate">RandomMeet</h1>
         </div>
         <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
-            <button id="themeToggle" class="tool-btn px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg text-[9px] sm:text-[10px] font-bold">☀️ Light</button>
+            <button id="themeToggle" class="tool-btn px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg text-[9px] sm:text-[10px] font-bold">☀️️ Light</button>
             <div class="text-[9px] sm:text-[10px] font-bold text-green-500 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg border border-green-500/30 flex items-center gap-1 bg-green-500/10">
                 <span class="animate-pulse">🟢</span> <span id="liveUsersCount">0</span>
             </div>
@@ -324,11 +324,7 @@
             e.target.innerText = document.body.classList.contains('dark-mode') ? '☀️ Light' : '🌙 Dark';
         });
 
-        const socket = io({
-            reconnectionAttempts: 5,
-            timeout: 10000
-        }); 
-
+        const socket = io(); 
         const ui = {
             home: document.getElementById('homeScreen'), 
             call: document.getElementById('callScreen'), 
@@ -405,8 +401,8 @@
                     autoGainControl: true 
                 }, 
                 video: isMobile 
-                    ? { facingMode: finalFacingMode, width: { ideal: 640 }, height: { ideal: 480 } } 
-                    : { width: { ideal: 1280, min: 640 }, height: { ideal: 720, min: 480 } } 
+                    ? { facingMode: finalFacingMode, width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, max: 30 } } 
+                    : { width: { ideal: 640, max: 640 }, height: { ideal: 480, max: 480 }, frameRate: { ideal: 30, max: 30 } } 
             };
             
             try { 
@@ -512,6 +508,38 @@
             }
         }, 10000);
 
+        // 🔥 DEADLOCK SHIELD: 3-Second Timeout Guarantee
+        async function ensureLocalMediaAttached(pc) {
+            if (!localStream) {
+                const streamPromise = getMediaStream();
+                const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 3000));
+                localStream = await Promise.race([streamPromise, timeoutPromise]);
+                
+                if (localStream) {
+                    ui.localVid.srcObject = localStream;
+                    ui.localVid.play().catch(()=>{});
+                }
+            }
+
+            if (localStream) {
+                localStream.getTracks().forEach(track => {
+                    const existingSender = pc.getSenders().find(s => s.track && s.track.kind === track.kind);
+                    if (!existingSender) {
+                        pc.addTrack(track, localStream);
+                    } else if (existingSender.track !== track) {
+                        existingSender.replaceTrack(track);
+                    }
+                });
+            }
+
+            // Lock transceiver direction to bidirectional sendrecv
+            pc.getTransceivers().forEach(tr => {
+                if (tr.direction !== 'sendrecv') {
+                    tr.direction = 'sendrecv';
+                }
+            });
+        }
+
         socket.on('matched', async (data) => {
             if (currentState !== 'SEARCHING') { socket.emit('skip'); return; } 
             
@@ -534,6 +562,7 @@
             addSystemMsg("Stranger connected. Say Hi!");
 
             createPeerConnection(matchSessionId);
+            await ensureLocalMediaAttached(peerConn);
 
             if (data.initiator) {
                 try {
@@ -543,15 +572,15 @@
                     });
                     await peerConn.setLocalDescription(offer);
                     socket.emit('offer', { sdp: offer, partnerId });
-                } catch(e) { console.error("Offer Creation Error:", e); }
+                } catch(e) { console.error("Offer Error:", e); }
             } else if (pendingOffer) { 
-                processOffer(pendingOffer, matchSessionId); 
+                await processOffer(pendingOffer, matchSessionId); 
                 pendingOffer = null;
             }
         });
 
         // =========================================================================
-        // ELITE WEBRTC ENGINE: MACBOOK M2 & DESKTOP HARDWARE PIPELINE FIX
+        // ELITE WEBRTC CORE: TWO-WAY BULLETPROOF MEDIA FLOW
         // =========================================================================
         function createPeerConnection(sessionId) {
             peerConn = new RTCPeerConnection({
@@ -559,7 +588,7 @@
                     { urls: "stun:stun.l.google.com:19302" },
                     { urls: "stun:stun1.l.google.com:19302" },
                     { urls: "stun:stun2.l.google.com:19302" },
-                    // Injecting Metered Credentials
+                    // Injected Metered Relay Endpoints
                     { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
                     { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
                     { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
@@ -573,29 +602,18 @@
             });
             iceQueue = []; 
 
-            // Explicit transceivers tell Safari/MacBook that we actively expect inbound video
-            try {
-                peerConn.addTransceiver('video', { direction: 'sendrecv' });
-                peerConn.addTransceiver('audio', { direction: 'sendrecv' });
-            } catch(e) {}
-
-            if (localStream) { 
-                localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream)); 
-            }
-            
             peerConn.oniceconnectionstatechange = () => {
                 if (peerConn && (peerConn.iceConnectionState === 'failed' || peerConn.iceConnectionState === 'disconnected')) {
                     peerConn.restartIce();
                 }
             };
 
-            // 🔥 BULLETPROOF MACBOOK ONTRACK ENGINE
+            // Dual binding for instant rendering
             peerConn.ontrack = (event) => {
                 if (sessionId !== matchSessionId || currentState !== 'CONNECTED') return; 
                 
                 const remoteVideo = ui.remoteVid;
 
-                // Bind stream instantly
                 if (event.streams && event.streams[0]) {
                     if (remoteVideo.srcObject !== event.streams[0]) {
                         remoteVideo.srcObject = event.streams[0];
@@ -609,32 +627,21 @@
                     }
                 }
 
-                // Force layout calculation on macOS
-                remoteVideo.style.display = 'block';
-
-                const executePlayback = () => {
-                    const playPromise = remoteVideo.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.warn("MacBook Autoplay quarantined unmuted video. Triggering Hardware Bypass...", error);
-                            // Bypass: Mute, play instantaneously to unlock frame decoder, then restore sound
+                const forcePlay = () => {
+                    const promise = remoteVideo.play();
+                    if (promise !== undefined) {
+                        promise.catch(() => {
                             remoteVideo.muted = true;
                             remoteVideo.play().then(() => {
-                                setTimeout(() => { 
-                                    remoteVideo.muted = false; 
-                                }, 300);
-                            }).catch(err => {
-                                console.error("Hardware bypass awaiting click:", err);
-                            });
+                                setTimeout(() => { remoteVideo.muted = false; }, 250);
+                            }).catch(e => console.warn(e));
                         });
                     }
                 };
 
-                remoteVideo.onloadedmetadata = () => {
-                    executePlayback();
-                };
-
-                executePlayback();
+                remoteVideo.onloadedmetadata = forcePlay;
+                remoteVideo.oncanplay = forcePlay;
+                forcePlay();
             };
 
             peerConn.onicecandidate = (e) => { 
@@ -648,15 +655,17 @@
                 pendingOffer = data; 
                 return; 
             }
-            processOffer(data, matchSessionId); 
+            await processOffer(data, matchSessionId); 
         });
 
         async function processOffer(data, sessionId) {
             if (sessionId !== matchSessionId || !peerConn) return;
             try {
+                // Ensure local tracks are bound before answering
+                await ensureLocalMediaAttached(peerConn);
+
                 await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
                 
-                // Process pending ICE candidates safely
                 while (iceQueue.length > 0) { 
                     await peerConn.addIceCandidate(iceQueue.shift()).catch(()=>{}); 
                 }
@@ -715,6 +724,7 @@
             }
             if (ui.remoteVid) {
                 ui.remoteVid.onloadedmetadata = null;
+                ui.remoteVid.oncanplay = null;
                 if (ui.remoteVid.srcObject) { 
                     ui.remoteVid.srcObject.getTracks().forEach(t => t.stop()); 
                     ui.remoteVid.srcObject = null; 
