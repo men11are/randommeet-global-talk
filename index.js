@@ -10,10 +10,9 @@ const io = new Server(server, {
         origin: "*",
         methods: ["GET", "POST"]
     },
-    maxHttpBufferSize: 1e8 // Support up to 100MB chunk payloads
+    maxHttpBufferSize: 1e8
 });
 
-// Explicit Cache-Control headers to stop Safari/Chrome aggressive caching
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     next();
@@ -117,5 +116,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`RandomMeet Core Engine live on port ${PORT}`);
+    console.log(`RandomMeet Core Engine running on port ${PORT}`);
 });
