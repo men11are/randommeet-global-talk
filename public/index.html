@@ -7,9 +7,6 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>RandomMeet - Premium Global Video Chat</title>
-    
-    <link rel="icon" type="image/svg+xml" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=ec4899&textColor=ffffff">
-    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=ec4899&textColor=ffffff">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#ffffff">
     
@@ -50,7 +47,9 @@
             --ticker-border: rgba(51, 65, 85, 0.8);
         }
 
-        #chatBoxContainer { background: transparent !important; }
+        #chatBoxContainer {
+            background: transparent !important;
+        }
 
         body.dark-mode #chatBox div.stranger-bubble { 
             background-color: rgba(30, 41, 59, 0.85) !important; 
@@ -127,14 +126,13 @@
 
         #imageViewerModal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        }
-        #imageViewerModal img { max-width: 95vw; max-height: 85vh; object-fit: contain; border-radius: 8px; }
-        .viewer-controls { margin-top: 15px; display: flex; gap: 15px; }
-
-        #unmuteNoticeOverlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.7); z-index: 25;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #imageViewerModal img {
+            max-width: 95vw; max-height: 85vh; object-fit: contain; border-radius: 8px;
+        }
+        .viewer-controls {
+            margin-top: 15px; display: flex; gap: 15px;
         }
     </style>
 </head>
@@ -214,7 +212,7 @@
             <h1 class="text-lg sm:text-2xl font-extrabold glowing-title truncate">RandomMeet</h1>
         </div>
         <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
-            <button id="themeToggle" class="tool-btn px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg text-[9px] sm:text-[10px] font-bold">☀️ Light</button>
+            <button id="themeToggle" class="tool-btn px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg text-[9px] sm:text-[10px] font-bold">☀️️ Light</button>
             <div class="text-[9px] sm:text-[10px] font-bold text-green-500 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg border border-green-500/30 flex items-center gap-1 bg-green-500/10">
                 <span class="animate-pulse">🟢</span> <span id="liveUsersCount">0</span>
             </div>
@@ -228,13 +226,6 @@
     </div>
     <div id="shareTicker" class="ticker-wrap-2 relative">
         <div class="ticker-text-2">🚀 Please invite your friends & share! I am a solo developer with no marketing budget, so please share on WhatsApp, Telegram and Social Media. Thank you! ❤️</div>
-    </div>
-    <div id="vpnTicker" class="ticker-wrap relative bg-[#0b0f19] border-t border-b border-pink-500/30">
-        <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="block">
-            <div class="ticker-text text-[#38bdf8] hover:underline">
-                🛡️ Stay 100% Anonymous & Secure while chatting! <span class="text-pink-500 font-extrabold">Get 70% OFF NordVPN + 3 Extra Months Free!</span> Click here to protect your IP 🔒
-            </div>
-        </a>
     </div>
 
     <!-- HOME SCREEN -->
@@ -281,16 +272,7 @@
     <main id="callScreen" class="flex-1 flex-col overflow-hidden hidden-ui w-full h-full relative z-10">
         <div class="absolute inset-0 bg-black z-0 flex items-center justify-center">
             <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline webkit-playsinline></video>
-            
-            <!-- Video Interaction Fallback Overlay (if browser blocks audio/video autoplay) -->
-            <div id="unmuteNoticeOverlay" class="hidden-ui">
-                <button id="unmuteActionBtn" class="solid-btn-primary px-6 py-3 text-sm shadow-2xl flex items-center gap-2 animate-bounce">
-                    <span>🔊 Click to Play Stranger Stream</span>
-                </button>
-            </div>
-
             <div id="uiStranger" class="absolute top-4 left-4 bg-black/60 px-3 py-1.5 rounded-full text-[10px] font-bold text-white hidden-ui z-10">Stranger</div>
-            
             <div id="searchSpinner" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 z-20 hidden-ui">
                 <div class="w-14 h-14 border-4 border-pink-500/30 border-t-pink-500 rounded-full animate-spin"></div>
                 <p id="spinnerText" class="text-pink-500 mt-5 font-bold animate-pulse text-sm tracking-widest uppercase">Searching...</p>
@@ -366,45 +348,19 @@
             imgModal: document.getElementById('imageViewerModal'),
             fullImg: document.getElementById('fullScreenImg'),
             closeImgBtn: document.getElementById('closeViewerBtn'),
-            dlImgBtn: document.getElementById('downloadImgBtn'),
-            unmuteNotice: document.getElementById('unmuteNoticeOverlay'),
-            unmuteActionBtn: document.getElementById('unmuteActionBtn'),
-            vpnTicker: document.getElementById('vpnTicker'),
-            homeTicker: document.getElementById('homeTicker'),
-            shareTicker: document.getElementById('shareTicker')
+            dlImgBtn: document.getElementById('downloadImgBtn')
         };
         
         let localStream = null;
-        let remoteStream = null;
         let peerConn = null;
         let partnerId = null;
         let isFront = true, isAudioMuted = false, isVideoMuted = false;
         
         let currentState = 'IDLE'; 
-        let currentSessionId = 0; 
+        let matchSessionId = 0; 
         let matchCount = 0; 
         let iceQueue = [];
         let pendingOffer = null; 
-        let cachedIceServers = null;
-
-        // Fetch dynamic ICE configuration from server
-        async function fetchIceConfig() {
-            if (cachedIceServers) return cachedIceServers;
-            try {
-                const res = await fetch('/api/ice-config');
-                const data = await res.json();
-                if (data && data.iceServers) {
-                    cachedIceServers = data.iceServers;
-                    return cachedIceServers;
-                }
-            } catch(e) {
-                console.warn("Failed to fetch ICE config from backend, using standard STUN:", e);
-            }
-            return [
-                { urls: "stun:stun.l.google.com:19302" },
-                { urls: "stun:stun1.l.google.com:19302" }
-            ];
-        }
 
         setInterval(() => { if (socket.connected) socket.emit('ping'); }, 20000); 
 
@@ -446,7 +402,7 @@
                 }, 
                 video: isMobile 
                     ? { facingMode: finalFacingMode, width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, max: 30 } } 
-                    : { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, max: 30 } } 
+                    : { width: { ideal: 640, max: 640 }, height: { ideal: 480, max: 480 }, frameRate: { ideal: 30, max: 30 } } 
             };
             
             try { 
@@ -485,23 +441,21 @@
             checkDonationOnHome(); 
         });
 
-        // Pre-warm local camera BEFORE telling server to search
         async function initiateSearch() {
             currentState = 'SEARCHING';
-            currentSessionId++; 
+            matchSessionId++; 
             partnerId = null;
 
             ui.btnStart.disabled = true; 
             ui.btnNext.disabled = false;
 
             ui.livePrompt.classList.add('hidden-ui'); 
-            document.getElementById('strangerCountryBox').classList.add('hidden'); 
+            document.getElementById('strangerCountryBox').classList.add('hidden-ui'); 
             document.getElementById('waitMessage').classList.remove('hidden');
 
             ui.home.classList.add('hidden-ui'); 
-            if (ui.homeTicker) ui.homeTicker.classList.add('hidden-ui'); 
-            if (ui.shareTicker) ui.shareTicker.classList.add('hidden-ui');
-            if (ui.vpnTicker) ui.vpnTicker.classList.add('hidden-ui');
+            document.getElementById('homeTicker').classList.add('hidden-ui'); 
+            document.getElementById('shareTicker').classList.add('hidden-ui');
             
             ui.call.classList.remove('hidden-ui'); 
             ui.call.classList.add('flex');
@@ -516,20 +470,17 @@
             ui.spinner.classList.add('flex');
 
             try {
-                if (!localStream || !localStream.active) {
+                if (!localStream) {
                     localStream = await getMediaStream();
                 }
                 ui.localVid.srcObject = localStream;
-                await ui.localVid.play().catch(e => console.warn("Local play note:", e));
+                ui.localVid.play().catch(e => console.warn("Local play error:", e));
                 ui.localVidBox.classList.remove('hidden-ui');
             } catch (err) { 
-                alert("Camera and Microphone access required to connect!"); 
+                alert("Camera and Microphone access required!"); 
                 fullNukeAndReset(); 
                 return; 
             } 
-
-            // Trigger ICE config caching in parallel
-            fetchIceConfig();
 
             ui.spinnerText.innerText = "Searching for someone...";
             socket.emit('join', { 
@@ -557,8 +508,19 @@
             }
         }, 10000);
 
-        // Attach local tracks and force sendrecv transceivers
-        function attachTracksAndConfigureTransceivers(pc) {
+        // 🔥 DEADLOCK SHIELD: 3-Second Timeout Guarantee
+        async function ensureLocalMediaAttached(pc) {
+            if (!localStream) {
+                const streamPromise = getMediaStream();
+                const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 3000));
+                localStream = await Promise.race([streamPromise, timeoutPromise]);
+                
+                if (localStream) {
+                    ui.localVid.srcObject = localStream;
+                    ui.localVid.play().catch(()=>{});
+                }
+            }
+
             if (localStream) {
                 localStream.getTracks().forEach(track => {
                     const existingSender = pc.getSenders().find(s => s.track && s.track.kind === track.kind);
@@ -570,6 +532,7 @@
                 });
             }
 
+            // Lock transceiver direction to bidirectional sendrecv
             pc.getTransceivers().forEach(tr => {
                 if (tr.direction !== 'sendrecv') {
                     tr.direction = 'sendrecv';
@@ -590,7 +553,7 @@
             ui.controls.classList.remove('hidden-ui'); 
             ui.lblStr.classList.remove('hidden-ui'); 
             ui.inputChat.disabled = false; 
-            ui.btnSend.disabled = false; 
+            ui.btnSend.disabled = false;
             ui.btnSend.classList.add('solid-btn-primary', 'text-white'); 
             ui.btnSend.classList.remove('bg-gray-300');
             
@@ -598,8 +561,8 @@
             document.getElementById('strangerCountryBox').classList.remove('hidden');
             addSystemMsg("Stranger connected. Say Hi!");
 
-            await createPeerConnection(currentSessionId);
-            attachTracksAndConfigureTransceivers(peerConn);
+            createPeerConnection(matchSessionId);
+            await ensureLocalMediaAttached(peerConn);
 
             if (data.initiator) {
                 try {
@@ -611,19 +574,27 @@
                     socket.emit('offer', { sdp: offer, partnerId });
                 } catch(e) { console.error("Offer Error:", e); }
             } else if (pendingOffer) { 
-                await processOffer(pendingOffer, currentSessionId); 
+                await processOffer(pendingOffer, matchSessionId); 
                 pendingOffer = null;
             }
         });
 
         // =========================================================================
-        // PRODUCTION WEBRTC CORE: PERSISTENT STREAM & ATTACHMENT GUARANTEE
+        // ELITE WEBRTC CORE: TWO-WAY BULLETPROOF MEDIA FLOW
         // =========================================================================
-        async function createPeerConnection(sessionId) {
-            const iceServers = await fetchIceConfig();
-
+        function createPeerConnection(sessionId) {
             peerConn = new RTCPeerConnection({
-                iceServers: iceServers,
+                iceServers: [
+                    { urls: "stun:stun.l.google.com:19302" },
+                    { urls: "stun:stun1.l.google.com:19302" },
+                    { urls: "stun:stun2.l.google.com:19302" },
+                    // Injected Metered Relay Endpoints
+                    { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+                    { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+                    { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+                    { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+                    { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" }
+                ],
                 iceTransportPolicy: "all", 
                 bundlePolicy: "max-bundle",
                 rtcpMuxPolicy: "require",
@@ -631,77 +602,67 @@
             });
             iceQueue = []; 
 
-            // Single dedicated persistent MediaStream
-            remoteStream = new MediaStream();
-            ui.remoteVid.srcObject = remoteStream;
-
             peerConn.oniceconnectionstatechange = () => {
                 if (peerConn && (peerConn.iceConnectionState === 'failed' || peerConn.iceConnectionState === 'disconnected')) {
                     peerConn.restartIce();
                 }
             };
 
-            // Dedicated ontrack implementation
+            // Dual binding for instant rendering
             peerConn.ontrack = (event) => {
-                if (sessionId !== currentSessionId || currentState !== 'CONNECTED') return;
+                if (sessionId !== matchSessionId || currentState !== 'CONNECTED') return; 
+                
+                const remoteVideo = ui.remoteVid;
 
-                // Bind track to persistent stream
-                if (event.track) {
-                    if (!remoteStream.getTracks().some(t => t.id === event.track.id)) {
-                        remoteStream.addTrack(event.track);
+                if (event.streams && event.streams[0]) {
+                    if (remoteVideo.srcObject !== event.streams[0]) {
+                        remoteVideo.srcObject = event.streams[0];
                     }
-                } else if (event.streams && event.streams[0]) {
-                    event.streams[0].getTracks().forEach(t => {
-                        if (!remoteStream.getTracks().some(existing => existing.id === t.id)) {
-                            remoteStream.addTrack(t);
-                        }
-                    });
+                } else {
+                    if (!remoteVideo.srcObject) {
+                        remoteVideo.srcObject = new MediaStream();
+                    }
+                    if (!remoteVideo.srcObject.getTracks().some(t => t.id === event.track.id)) {
+                        remoteVideo.srcObject.addTrack(event.track);
+                    }
                 }
 
-                // Autoplay and Frame Unlock Lifecycle
-                const attemptPlay = () => {
-                    const playPromise = ui.remoteVid.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            ui.unmuteNotice.classList.add('hidden-ui');
-                        }).catch(error => {
-                            console.warn("Browser prevented autoplay:", error.name);
-                            // Fallback for strict browser autoplay restriction
-                            ui.unmuteNotice.classList.remove('hidden-ui');
+                const forcePlay = () => {
+                    const promise = remoteVideo.play();
+                    if (promise !== undefined) {
+                        promise.catch(() => {
+                            remoteVideo.muted = true;
+                            remoteVideo.play().then(() => {
+                                setTimeout(() => { remoteVideo.muted = false; }, 250);
+                            }).catch(e => console.warn(e));
                         });
                     }
                 };
 
-                ui.remoteVid.onloadedmetadata = attemptPlay;
-                ui.remoteVid.oncanplay = attemptPlay;
-                attemptPlay();
+                remoteVideo.onloadedmetadata = forcePlay;
+                remoteVideo.oncanplay = forcePlay;
+                forcePlay();
             };
 
             peerConn.onicecandidate = (e) => { 
-                if (sessionId !== currentSessionId) return;
+                if (sessionId !== matchSessionId) return;
                 if (e.candidate && partnerId) socket.emit('ice-candidate', { candidate: e.candidate, partnerId }); 
             };
         }
-
-        // User interaction button to clear strict autoplay blocks if necessary
-        ui.unmuteActionBtn.addEventListener('click', () => {
-            ui.remoteVid.play().then(() => {
-                ui.unmuteNotice.classList.add('hidden-ui');
-            }).catch(e => console.error("Manual unpause error:", e));
-        });
 
         socket.on('offer', async (data) => { 
             if (currentState !== 'CONNECTED' || !peerConn) {
                 pendingOffer = data; 
                 return; 
             }
-            await processOffer(data, currentSessionId); 
+            await processOffer(data, matchSessionId); 
         });
 
         async function processOffer(data, sessionId) {
-            if (sessionId !== currentSessionId || !peerConn) return;
+            if (sessionId !== matchSessionId || !peerConn) return;
             try {
-                attachTracksAndConfigureTransceivers(peerConn);
+                // Ensure local tracks are bound before answering
+                await ensureLocalMediaAttached(peerConn);
 
                 await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
                 
@@ -764,14 +725,11 @@
             if (ui.remoteVid) {
                 ui.remoteVid.onloadedmetadata = null;
                 ui.remoteVid.oncanplay = null;
-                ui.remoteVid.pause();
-                ui.remoteVid.srcObject = null; 
+                if (ui.remoteVid.srcObject) { 
+                    ui.remoteVid.srcObject.getTracks().forEach(t => t.stop()); 
+                    ui.remoteVid.srcObject = null; 
+                }
             }
-            if (remoteStream) {
-                remoteStream.getTracks().forEach(t => t.stop());
-                remoteStream = null;
-            }
-            ui.unmuteNotice.classList.add('hidden-ui');
             partnerId = null;
             pendingOffer = null;
             iceQueue = [];
@@ -779,7 +737,7 @@
 
         function fullNukeAndReset() {
             currentState = 'IDLE';
-            currentSessionId++;
+            matchSessionId++;
             socket.emit('skip');
             killWebRTC();
             
@@ -812,9 +770,8 @@
             ui.call.classList.remove('flex'); 
             
             ui.home.classList.remove('hidden-ui'); 
-            if (ui.homeTicker) ui.homeTicker.classList.remove('hidden-ui'); 
-            if (ui.shareTicker) ui.shareTicker.classList.remove('hidden-ui');
-            if (ui.vpnTicker) ui.vpnTicker.classList.remove('hidden-ui');
+            document.getElementById('homeTicker').classList.remove('hidden-ui'); 
+            document.getElementById('shareTicker').classList.remove('hidden-ui');
         }
 
         // =========================================================================
