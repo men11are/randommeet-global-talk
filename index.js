@@ -5,18 +5,14 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-
 const io = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
     },
-    maxHttpBufferSize: 1e8, // Supports up to 100MB chunk file transfers
-    pingTimeout: 60000,
-    pingInterval: 25000
+    maxHttpBufferSize: 1e8
 });
 
-// Cache control: Prevent aggressive caching of frontend HTML/JS
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     next();
@@ -27,52 +23,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: 0
 }));
 
-// Dynamic ICE servers endpoint (avoids exposing secrets in client code)
-app.get('/api/ice-config', (req, res) => {
-    const iceServers = [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-        { urls: "stun:stun2.l.google.com:19302" }
-    ];
-
-    if (process.env.TURN_URL && process.env.TURN_USERNAME && process.env.TURN_CREDENTIAL) {
-        iceServers.push(
-            {
-                urls: `turn:${process.env.TURN_URL}:80`,
-                username: process.env.TURN_USERNAME,
-                credential: process.env.TURN_CREDENTIAL
-            },
-            {
-                urls: `turn:${process.env.TURN_URL}:80?transport=tcp`,
-                username: process.env.TURN_USERNAME,
-                credential: process.env.TURN_CREDENTIAL
-            },
-            {
-                urls: `turn:${process.env.TURN_URL}:443`,
-                username: process.env.TURN_USERNAME,
-                credential: process.env.TURN_CREDENTIAL
-            },
-            {
-                urls: `turn:${process.env.TURN_URL}:443?transport=tcp`,
-                username: process.env.TURN_USERNAME,
-                credential: process.env.TURN_CREDENTIAL
-            },
-            {
-                urls: `turns:${process.env.TURN_URL}:443?transport=tcp`,
-                username: process.env.TURN_USERNAME,
-                credential: process.env.TURN_CREDENTIAL
-            }
-        );
-    }
-
-    res.json({ iceServers });
-});
-
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Matchmaking State
 let waitingQueue = [];
 let activePairs = new Map();
 
@@ -88,7 +42,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join', (preferences) => {
-        // Remove existing queue presence to avoid duplicate entries
         waitingQueue = waitingQueue.filter(u => u.socketId !== socket.id);
 
         let matchIndex = -1;
@@ -163,5 +116,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`RandomMeet Core Engine is actively listening on port ${PORT}`);
+    console.log(`RandomMeet Core Engine running on port ${PORT}`);
 });
