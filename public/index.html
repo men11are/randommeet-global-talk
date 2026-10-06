@@ -7,6 +7,9 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>RandomMeet - Premium Global Video Chat</title>
+    
+    <link rel="icon" type="image/svg+xml" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=ec4899&textColor=ffffff">
+    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=ec4899&textColor=ffffff">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#ffffff">
     
@@ -47,9 +50,7 @@
             --ticker-border: rgba(51, 65, 85, 0.8);
         }
 
-        #chatBoxContainer {
-            background: transparent !important;
-        }
+        #chatBoxContainer { background: transparent !important; }
 
         body.dark-mode #chatBox div.stranger-bubble { 
             background-color: rgba(30, 41, 59, 0.85) !important; 
@@ -126,14 +127,10 @@
 
         #imageViewerModal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
         }
-        #imageViewerModal img {
-            max-width: 95vw; max-height: 85vh; object-fit: contain; border-radius: 8px;
-        }
-        .viewer-controls {
-            margin-top: 15px; display: flex; gap: 15px;
-        }
+        #imageViewerModal img { max-width: 95vw; max-height: 85vh; object-fit: contain; border-radius: 8px; }
+        .viewer-controls { margin-top: 15px; display: flex; gap: 15px; }
     </style>
 </head>
 
@@ -212,7 +209,7 @@
             <h1 class="text-lg sm:text-2xl font-extrabold glowing-title truncate">RandomMeet</h1>
         </div>
         <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
-            <button id="themeToggle" class="tool-btn px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg text-[9px] sm:text-[10px] font-bold">☀️️ Light</button>
+            <button id="themeToggle" class="tool-btn px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg text-[9px] sm:text-[10px] font-bold">☀️ Light</button>
             <div class="text-[9px] sm:text-[10px] font-bold text-green-500 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg border border-green-500/30 flex items-center gap-1 bg-green-500/10">
                 <span class="animate-pulse">🟢</span> <span id="liveUsersCount">0</span>
             </div>
@@ -226,6 +223,13 @@
     </div>
     <div id="shareTicker" class="ticker-wrap-2 relative">
         <div class="ticker-text-2">🚀 Please invite your friends & share! I am a solo developer with no marketing budget, so please share on WhatsApp, Telegram and Social Media. Thank you! ❤️</div>
+    </div>
+    <div id="vpnTicker" class="ticker-wrap relative bg-[#0b0f19] border-t border-b border-pink-500/30">
+        <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="block">
+            <div class="ticker-text text-[#38bdf8] hover:underline">
+                🛡️ Stay 100% Anonymous & Secure while chatting! <span class="text-pink-500 font-extrabold">Get 70% OFF NordVPN + 3 Extra Months Free!</span> Click here to protect your IP 🔒
+            </div>
+        </a>
     </div>
 
     <!-- HOME SCREEN -->
@@ -272,7 +276,9 @@
     <main id="callScreen" class="flex-1 flex-col overflow-hidden hidden-ui w-full h-full relative z-10">
         <div class="absolute inset-0 bg-black z-0 flex items-center justify-center">
             <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline webkit-playsinline></video>
+            
             <div id="uiStranger" class="absolute top-4 left-4 bg-black/60 px-3 py-1.5 rounded-full text-[10px] font-bold text-white hidden-ui z-10">Stranger</div>
+            
             <div id="searchSpinner" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 z-20 hidden-ui">
                 <div class="w-14 h-14 border-4 border-pink-500/30 border-t-pink-500 rounded-full animate-spin"></div>
                 <p id="spinnerText" class="text-pink-500 mt-5 font-bold animate-pulse text-sm tracking-widest uppercase">Searching...</p>
@@ -321,7 +327,7 @@
     <script>
         document.getElementById('themeToggle').addEventListener('click', (e) => {
             document.body.classList.toggle('dark-mode');
-            e.target.innerText = document.body.classList.contains('dark-mode') ? '☀️ Light' : '🌙 Dark';
+            e.target.innerText = document.body.classList.contains('dark-mode') ? '☀️️ Light' : '🌙 Dark';
         });
 
         const socket = io(); 
@@ -348,7 +354,10 @@
             imgModal: document.getElementById('imageViewerModal'),
             fullImg: document.getElementById('fullScreenImg'),
             closeImgBtn: document.getElementById('closeViewerBtn'),
-            dlImgBtn: document.getElementById('downloadImgBtn')
+            dlImgBtn: document.getElementById('downloadImgBtn'),
+            vpnTicker: document.getElementById('vpnTicker'),
+            homeTicker: document.getElementById('homeTicker'),
+            shareTicker: document.getElementById('shareTicker')
         };
         
         let localStream = null;
@@ -357,10 +366,35 @@
         let isFront = true, isAudioMuted = false, isVideoMuted = false;
         
         let currentState = 'IDLE'; 
-        let matchSessionId = 0; 
+        let currentSessionId = 0; 
         let matchCount = 0; 
         let iceQueue = [];
         let pendingOffer = null; 
+
+        // Hardcoded reliable ExpressTURN fallback
+        const fallbackIceServers = [
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+            {
+                urls: "turn:free.expressturn.com:3478",
+                username: "000000002106630972",
+                credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU="
+            },
+            {
+                urls: "turn:free.expressturn.com:3478?transport=tcp",
+                username: "000000002106630972",
+                credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU="
+            }
+        ];
+
+        async function fetchIceConfig() {
+            try {
+                const res = await fetch('/api/ice-config');
+                const data = await res.json();
+                if (data && data.iceServers) return data.iceServers;
+            } catch(e) {}
+            return fallbackIceServers;
+        }
 
         setInterval(() => { if (socket.connected) socket.emit('ping'); }, 20000); 
 
@@ -402,7 +436,7 @@
                 }, 
                 video: isMobile 
                     ? { facingMode: finalFacingMode, width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, max: 30 } } 
-                    : { width: { ideal: 640, max: 640 }, height: { ideal: 480, max: 480 }, frameRate: { ideal: 30, max: 30 } } 
+                    : { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, max: 30 } } 
             };
             
             try { 
@@ -425,7 +459,7 @@
             if (currentState === 'SEARCHING') return; 
             
             ui.btnNext.disabled = true; 
-            ui.nukeOverlay.classList.remove('hidden-ui');
+            ui.nukeOverlay.classList.remove('hidden-ui'); 
             
             killWebRTC();
             socket.emit('skip'); 
@@ -443,19 +477,20 @@
 
         async function initiateSearch() {
             currentState = 'SEARCHING';
-            matchSessionId++; 
+            currentSessionId++; 
             partnerId = null;
 
             ui.btnStart.disabled = true; 
             ui.btnNext.disabled = false;
 
             ui.livePrompt.classList.add('hidden-ui'); 
-            document.getElementById('strangerCountryBox').classList.add('hidden-ui'); 
+            document.getElementById('strangerCountryBox').classList.add('hidden'); 
             document.getElementById('waitMessage').classList.remove('hidden');
 
             ui.home.classList.add('hidden-ui'); 
-            document.getElementById('homeTicker').classList.add('hidden-ui'); 
-            document.getElementById('shareTicker').classList.add('hidden-ui');
+            if (ui.homeTicker) ui.homeTicker.classList.add('hidden-ui'); 
+            if (ui.shareTicker) ui.shareTicker.classList.add('hidden-ui');
+            if (ui.vpnTicker) ui.vpnTicker.classList.add('hidden-ui');
             
             ui.call.classList.remove('hidden-ui'); 
             ui.call.classList.add('flex');
@@ -470,14 +505,14 @@
             ui.spinner.classList.add('flex');
 
             try {
-                if (!localStream) {
+                if (!localStream || !localStream.active) {
                     localStream = await getMediaStream();
                 }
                 ui.localVid.srcObject = localStream;
-                ui.localVid.play().catch(e => console.warn("Local play error:", e));
+                await ui.localVid.play().catch(e => console.warn(e));
                 ui.localVidBox.classList.remove('hidden-ui');
             } catch (err) { 
-                alert("Camera and Microphone access required!"); 
+                alert("Camera and Microphone access required to connect!"); 
                 fullNukeAndReset(); 
                 return; 
             } 
@@ -508,19 +543,7 @@
             }
         }, 10000);
 
-        // 🔥 DEADLOCK SHIELD: 3-Second Timeout Guarantee
-        async function ensureLocalMediaAttached(pc) {
-            if (!localStream) {
-                const streamPromise = getMediaStream();
-                const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 3000));
-                localStream = await Promise.race([streamPromise, timeoutPromise]);
-                
-                if (localStream) {
-                    ui.localVid.srcObject = localStream;
-                    ui.localVid.play().catch(()=>{});
-                }
-            }
-
+        function attachTracksAndConfigureTransceivers(pc) {
             if (localStream) {
                 localStream.getTracks().forEach(track => {
                     const existingSender = pc.getSenders().find(s => s.track && s.track.kind === track.kind);
@@ -532,7 +555,6 @@
                 });
             }
 
-            // Lock transceiver direction to bidirectional sendrecv
             pc.getTransceivers().forEach(tr => {
                 if (tr.direction !== 'sendrecv') {
                     tr.direction = 'sendrecv';
@@ -553,7 +575,7 @@
             ui.controls.classList.remove('hidden-ui'); 
             ui.lblStr.classList.remove('hidden-ui'); 
             ui.inputChat.disabled = false; 
-            ui.btnSend.disabled = false;
+            ui.btnSend.disabled = false; 
             ui.btnSend.classList.add('solid-btn-primary', 'text-white'); 
             ui.btnSend.classList.remove('bg-gray-300');
             
@@ -561,8 +583,8 @@
             document.getElementById('strangerCountryBox').classList.remove('hidden');
             addSystemMsg("Stranger connected. Say Hi!");
 
-            createPeerConnection(matchSessionId);
-            await ensureLocalMediaAttached(peerConn);
+            await createPeerConnection(currentSessionId);
+            attachTracksAndConfigureTransceivers(peerConn);
 
             if (data.initiator) {
                 try {
@@ -574,27 +596,19 @@
                     socket.emit('offer', { sdp: offer, partnerId });
                 } catch(e) { console.error("Offer Error:", e); }
             } else if (pendingOffer) { 
-                await processOffer(pendingOffer, matchSessionId); 
+                await processOffer(pendingOffer, currentSessionId); 
                 pendingOffer = null;
             }
         });
 
         // =========================================================================
-        // ELITE WEBRTC CORE: TWO-WAY BULLETPROOF MEDIA FLOW
+        // FINAL WEBRTC ENGINE: SEAMLESS REMOTE VIDEO ATTACHMENT
         // =========================================================================
-        function createPeerConnection(sessionId) {
+        async function createPeerConnection(sessionId) {
+            const iceServers = await fetchIceConfig();
+
             peerConn = new RTCPeerConnection({
-                iceServers: [
-                    { urls: "stun:stun.l.google.com:19302" },
-                    { urls: "stun:stun1.l.google.com:19302" },
-                    { urls: "stun:stun2.l.google.com:19302" },
-                    // Injected Metered Relay Endpoints
-                    { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-                    { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-                    { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-                    { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-                    { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" }
-                ],
+                iceServers: iceServers,
                 iceTransportPolicy: "all", 
                 bundlePolicy: "max-bundle",
                 rtcpMuxPolicy: "require",
@@ -608,12 +622,13 @@
                 }
             };
 
-            // Dual binding for instant rendering
+            // DIRECT NATIVE MEDIA BINDING (NO EMPTY STREAM PRE-ASSIGNMENT)
             peerConn.ontrack = (event) => {
-                if (sessionId !== matchSessionId || currentState !== 'CONNECTED') return; 
-                
+                if (sessionId !== currentSessionId || currentState !== 'CONNECTED') return;
+
                 const remoteVideo = ui.remoteVid;
 
+                // 1. Direct native stream binding from WebRTC engine
                 if (event.streams && event.streams[0]) {
                     if (remoteVideo.srcObject !== event.streams[0]) {
                         remoteVideo.srcObject = event.streams[0];
@@ -627,25 +642,38 @@
                     }
                 }
 
-                const forcePlay = () => {
-                    const promise = remoteVideo.play();
-                    if (promise !== undefined) {
-                        promise.catch(() => {
+                // 2. Autoplay handler with graceful interaction fallback
+                const triggerPlay = () => {
+                    const playPromise = remoteVideo.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(err => {
+                            console.warn("Autoplay audio blocked, unlocking video frame silently:", err);
                             remoteVideo.muted = true;
                             remoteVideo.play().then(() => {
-                                setTimeout(() => { remoteVideo.muted = false; }, 250);
+                                const unmuteOnGesture = () => {
+                                    remoteVideo.muted = false;
+                                    document.removeEventListener('click', unmuteOnGesture);
+                                    document.removeEventListener('touchstart', unmuteOnGesture);
+                                };
+                                document.addEventListener('click', unmuteOnGesture, { once: true });
+                                document.addEventListener('touchstart', unmuteOnGesture, { once: true });
                             }).catch(e => console.warn(e));
                         });
                     }
                 };
 
-                remoteVideo.onloadedmetadata = forcePlay;
-                remoteVideo.oncanplay = forcePlay;
-                forcePlay();
+                // 3. Listen to track unmute (triggers when first real video frame packets arrive)
+                if (event.track.kind === 'video') {
+                    event.track.onunmute = triggerPlay;
+                }
+
+                remoteVideo.onloadedmetadata = triggerPlay;
+                remoteVideo.oncanplay = triggerPlay;
+                triggerPlay();
             };
 
             peerConn.onicecandidate = (e) => { 
-                if (sessionId !== matchSessionId) return;
+                if (sessionId !== currentSessionId) return;
                 if (e.candidate && partnerId) socket.emit('ice-candidate', { candidate: e.candidate, partnerId }); 
             };
         }
@@ -655,14 +683,13 @@
                 pendingOffer = data; 
                 return; 
             }
-            await processOffer(data, matchSessionId); 
+            await processOffer(data, currentSessionId); 
         });
 
         async function processOffer(data, sessionId) {
-            if (sessionId !== matchSessionId || !peerConn) return;
+            if (sessionId !== currentSessionId || !peerConn) return;
             try {
-                // Ensure local tracks are bound before answering
-                await ensureLocalMediaAttached(peerConn);
+                attachTracksAndConfigureTransceivers(peerConn);
 
                 await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
                 
@@ -704,7 +731,7 @@
             if (currentState !== 'CONNECTED') return;
             addSystemMsg('Stranger left. Press Next.');
             document.getElementById('strangerCountryBox').classList.add('hidden'); 
-            ui.lblStr.classList.add('hidden-ui');
+            ui.lblStr.classList.add('hidden-ui'); 
             killWebRTC(); 
             
             setTimeout(() => {
@@ -725,10 +752,8 @@
             if (ui.remoteVid) {
                 ui.remoteVid.onloadedmetadata = null;
                 ui.remoteVid.oncanplay = null;
-                if (ui.remoteVid.srcObject) { 
-                    ui.remoteVid.srcObject.getTracks().forEach(t => t.stop()); 
-                    ui.remoteVid.srcObject = null; 
-                }
+                ui.remoteVid.pause();
+                ui.remoteVid.srcObject = null; 
             }
             partnerId = null;
             pendingOffer = null;
@@ -737,9 +762,9 @@
 
         function fullNukeAndReset() {
             currentState = 'IDLE';
-            matchSessionId++;
+            currentSessionId++;
             socket.emit('skip');
-            killWebRTC();
+            killWebRTC(); 
             
             if (localStream) { 
                 localStream.getTracks().forEach(t => t.stop()); 
@@ -770,8 +795,9 @@
             ui.call.classList.remove('flex'); 
             
             ui.home.classList.remove('hidden-ui'); 
-            document.getElementById('homeTicker').classList.remove('hidden-ui'); 
-            document.getElementById('shareTicker').classList.remove('hidden-ui');
+            if (ui.homeTicker) ui.homeTicker.classList.remove('hidden-ui'); 
+            if (ui.shareTicker) ui.shareTicker.classList.remove('hidden-ui');
+            if (ui.vpnTicker) ui.vpnTicker.classList.remove('hidden-ui');
         }
 
         // =========================================================================
