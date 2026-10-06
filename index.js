@@ -5,14 +5,18 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
     },
-    maxHttpBufferSize: 1e8
+    maxHttpBufferSize: 1e8,
+    pingTimeout: 60000,
+    pingInterval: 25000
 });
 
+// Cache control: browser ko purana code cache karne se rokne ke liye
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     next();
@@ -22,6 +26,27 @@ app.use(express.static(path.join(__dirname, 'public'), {
     etag: false,
     maxAge: 0
 }));
+
+// ExpressTURN + Google STUN configuration endpoint
+app.get('/api/ice-config', (req, res) => {
+    const iceServers = [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" },
+        { urls: "stun:stun2.l.google.com:19302" },
+        {
+            urls: "turn:free.expressturn.com:3478",
+            username: "000000002106630972",
+            credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU="
+        },
+        {
+            urls: "turn:free.expressturn.com:3478?transport=tcp",
+            username: "000000002106630972",
+            credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU="
+        }
+    ];
+
+    res.json({ iceServers });
+});
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -116,5 +141,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`RandomMeet Core Engine running on port ${PORT}`);
+    console.log(`RandomMeet Core Engine live on port ${PORT}`);
 });
