@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -16,7 +17,7 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Cache control: browser ko purana code cache karne se rokne ke liye
+// Cache control: Ensure browsers always fetch latest client code
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     next();
@@ -27,23 +28,27 @@ app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: 0
 }));
 
-// ExpressTURN + Google STUN configuration endpoint
+// Secure ICE configuration endpoint
 app.get('/api/ice-config', (req, res) => {
     const iceServers = [
         { urls: "stun:stun.l.google.com:19302" },
         { urls: "stun:stun1.l.google.com:19302" },
-        { urls: "stun:stun2.l.google.com:19302" },
-        {
-            urls: "turn:free.expressturn.com:3478",
-            username: "000000002106630972",
-            credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU="
-        },
-        {
-            urls: "turn:free.expressturn.com:3478?transport=tcp",
-            username: "000000002106630972",
-            credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU="
-        }
+        { urls: "stun:stun2.l.google.com:19302" }
     ];
+
+    const turnHost = process.env.TURN_URL;
+    const turnUser = process.env.TURN_USERNAME;
+    const turnPass = process.env.TURN_CREDENTIAL;
+
+    if (turnHost && turnUser && turnPass) {
+        iceServers.push(
+            { urls: `turn:${turnHost}:3478`, username: turnUser, credential: turnPass },
+            { urls: `turn:${turnHost}:3478?transport=tcp`, username: turnUser, credential: turnPass },
+            { urls: `turn:${turnHost}:80`, username: turnUser, credential: turnPass },
+            { urls: `turn:${turnHost}:443`, username: turnUser, credential: turnPass },
+            { urls: `turns:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass }
+        );
+    }
 
     res.json({ iceServers });
 });
@@ -62,9 +67,7 @@ function broadcastLiveUsers() {
 io.on('connection', (socket) => {
     broadcastLiveUsers();
 
-    socket.on('ping', () => {
-        socket.emit('pong');
-    });
+    socket.on('ping', () => socket.emit('pong'));
 
     socket.on('join', (preferences) => {
         waitingQueue = waitingQueue.filter(u => u.socketId !== socket.id);
@@ -96,30 +99,22 @@ io.on('connection', (socket) => {
     });
 
     socket.on('offer', (data) => {
-        if (data && data.partnerId) {
-            io.to(data.partnerId).emit('offer', data);
-        }
+        if (data && data.partnerId) io.to(data.partnerId).emit('offer', data);
     });
 
     socket.on('answer', (data) => {
-        if (data && data.partnerId) {
-            io.to(data.partnerId).emit('answer', data);
-        }
+        if (data && data.partnerId) io.to(data.partnerId).emit('answer', data);
     });
 
     socket.on('ice-candidate', (data) => {
-        if (data && data.partnerId) {
-            io.to(data.partnerId).emit('ice-candidate', data);
-        }
+        if (data && data.partnerId) io.to(data.partnerId).emit('ice-candidate', data);
     });
 
     socket.on('chat-message', (data) => {
-        if (data && data.partnerId) {
-            io.to(data.partnerId).emit('chat-message', data.message);
-        }
+        if (data && data.partnerId) io.to(data.partnerId).emit('chat-message', data.message);
     });
 
-    function cleanUpDisconnect(sockId) {
+    function cleanUpSession(sockId) {
         waitingQueue = waitingQueue.filter(u => u.socketId !== sockId);
         const partnerId = activePairs.get(sockId);
         if (partnerId) {
@@ -129,17 +124,14 @@ io.on('connection', (socket) => {
         }
     }
 
-    socket.on('skip', () => {
-        cleanUpDisconnect(socket.id);
-    });
-
+    socket.on('skip', () => cleanUpSession(socket.id));
     socket.on('disconnect', () => {
-        cleanUpDisconnect(socket.id);
+        cleanUpSession(socket.id);
         broadcastLiveUsers();
     });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`RandomMeet Core Engine live on port ${PORT}`);
+    console.log(`RandomMeet Engine listening on port ${PORT}`);
 });
