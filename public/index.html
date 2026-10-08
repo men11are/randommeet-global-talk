@@ -6,37 +6,38 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- SEO & Favicon Metadata for Google Search & Browsers -->
     <title>RandomMeet — Premium Global Video Chat</title>
-    
-    <link rel="icon" type="image/svg+xml" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=06b6d4&textColor=ffffff">
-    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=06b6d4&textColor=ffffff">
+    <meta name="description" content="Connect instantly with random people around the world in high-definition video. Free, anonymous, secure peer-to-peer live chat.">
+    <link rel="icon" type="image/svg+xml" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
+    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#060913">
-    
+    <meta name="theme-color" content="#07090e">
+
+    <!-- Open Graph for Search Engines -->
+    <meta property="og:title" content="RandomMeet — Premium Global Video Chat">
+    <meta property="og:description" content="Free, instant, anonymous 720p HD peer-to-peer video chat with people globally.">
+    <meta property="og:image" content="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
+    <meta property="og:type" content="website">
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GJP65F2CD8"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-GJP65F2CD8');</script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/socket.io/socket.io.js"></script>
     
     <style>
         :root {
-            --bg-base: #060913;
-            --brand-primary: #06b6d4;
-            --brand-glow: rgba(6, 182, 212, 0.35);
+            --bg-base: #07090e;
+            --brand-primary: #e11d48;
+            --brand-gold: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-        }
-
-        body.light-mode {
-            --bg-base: #f8fafc;
-            --brand-primary: #0284c7;
-            --brand-glow: rgba(2, 132, 199, 0.25);
-            --text-main: #0f172a;
-            --text-muted: #64748b;
         }
 
         html, body {
@@ -53,7 +54,7 @@
 
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.5); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb { background: rgba(225, 29, 72, 0.5); border-radius: 999px; }
 
         /* Original Preserved Background */
         .bg-premium-image {
@@ -64,7 +65,7 @@
         }
         .bg-theme-overlay {
             position: fixed; inset: 0;
-            background: radial-gradient(circle at 50% 20%, rgba(6, 182, 212, 0.12), rgba(6, 9, 19, 0.92) 80%);
+            background: radial-gradient(circle at 50% 20%, rgba(225, 29, 72, 0.12), rgba(7, 9, 14, 0.94) 80%);
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             z-index: -3; pointer-events: none;
         }
@@ -76,22 +77,38 @@
             user-select: none; z-index: -2; letter-spacing: 6px;
         }
 
-        /* Glassmorphism Styles */
-        .glass-panel {
-            background: rgba(11, 17, 32, 0.78);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+        /* Luxury Gold + Red Blend Border System */
+        .gold-red-border {
+            border: 1px solid transparent;
+            background: linear-gradient(rgba(13, 17, 28, 0.85), rgba(13, 17, 28, 0.92)) padding-box,
+                        linear-gradient(135deg, rgba(245, 158, 11, 0.8) 0%, rgba(225, 29, 72, 0.9) 50%, rgba(245, 158, 11, 0.4) 100%) border-box;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(225, 29, 72, 0.15);
+        }
+
+        .gold-red-border-subtle {
+            border: 1px solid transparent;
+            background: linear-gradient(rgba(10, 14, 24, 0.75), rgba(10, 14, 24, 0.85)) padding-box,
+                        linear-gradient(135deg, rgba(245, 158, 11, 0.5) 0%, rgba(225, 29, 72, 0.5) 100%) border-box;
+        }
+
+        /* Premium Click Visual Feedback */
+        .interactive-btn {
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .interactive-btn:active {
+            transform: scale(0.96);
+            filter: brightness(1.15);
         }
 
         .primary-glow-btn {
-            background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
-            box-shadow: 0 4px 20px var(--brand-glow);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+            box-shadow: 0 4px 20px rgba(225, 29, 72, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(245, 158, 11, 0.4);
         }
         .primary-glow-btn:hover {
-            box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
+            box-shadow: 0 0 25px rgba(225, 29, 72, 0.7), 0 0 10px rgba(245, 158, 11, 0.5);
             transform: translateY(-1px);
         }
         .primary-glow-btn:active {
@@ -99,23 +116,23 @@
         }
 
         .action-ctrl-btn {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(245, 158, 11, 0.3);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             transition: all 0.2s ease;
         }
         .action-ctrl-btn:hover {
-            background: rgba(6, 182, 212, 0.2);
-            border-color: rgba(6, 182, 212, 0.5);
-            transform: translateY(-1px);
+            border-color: rgba(225, 29, 72, 0.8);
+            background: rgba(225, 29, 72, 0.2);
+            transform: translateY(-2px);
         }
         .action-ctrl-btn:active {
             transform: scale(0.92);
         }
 
         .brand-text-gradient {
-            background: linear-gradient(135deg, #ffffff 40%, #06b6d4 100%);
+            background: linear-gradient(135deg, #ffffff 30%, #f59e0b 70%, #e11d48 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -127,7 +144,7 @@
         }
         .splash-text {
             font-size: 2.5rem; font-weight: 800; letter-spacing: 0.35em;
-            color: #06b6d4; text-shadow: 0 0 35px rgba(6, 182, 212, 0.8);
+            color: #e11d48; text-shadow: 0 0 35px rgba(225, 29, 72, 0.8), 0 0 15px rgba(245, 158, 11, 0.6);
             animation: zoomSplash 3.0s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
         @keyframes zoomSplash {
@@ -144,22 +161,29 @@
         #localVideoContainer {
             position: absolute; bottom: 210px; right: 16px;
             width: 105px; height: 145px; border-radius: 16px;
-            overflow: hidden; z-index: 50; border: 2px solid rgba(6, 182, 212, 0.6);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6); cursor: grab; background: #000;
+            overflow: hidden; z-index: 50;
+            border: 2px solid transparent;
+            background: linear-gradient(#000, #000) padding-box,
+                        linear-gradient(135deg, #f59e0b, #e11d48) border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7); cursor: grab;
             touch-action: none; transition: border-color 0.2s;
         }
-        #localVideoContainer:active { cursor: grabbing; border-color: #10b981; }
+        #localVideoContainer:active { cursor: grabbing; }
 
         .chat-media-preview {
             border-radius: 10px; max-width: 100%; max-height: 160px;
-            object-fit: cover; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+            object-fit: cover; cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
         }
 
-        .ticker-marquee {
+        .ticker-wrap {
             overflow: hidden; white-space: nowrap; width: 100%;
         }
         .ticker-content {
             display: inline-block; animation: scrollTicker 28s linear infinite;
+            padding-left: 100vw;
+        }
+        .ticker-content-2 {
+            display: inline-block; animation: scrollTicker 36s linear infinite;
             padding-left: 100vw;
         }
         @keyframes scrollTicker {
@@ -185,22 +209,22 @@
     <div id="imageViewerModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[10000] hidden-ui flex flex-col items-center justify-center p-4">
         <img id="fullScreenImg" src="" alt="Full Screen Preview" class="max-w-[95vw] max-h-[85vh] object-contain rounded-xl shadow-2xl">
         <div class="mt-4 flex gap-4">
-            <button id="closeViewerBtn" class="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider transition">Close</button>
-            <a id="downloadImgBtn" href="" download="shared_image.png" class="px-5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs uppercase tracking-wider transition">Download</a>
+            <button id="closeViewerBtn" class="interactive-btn px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider">Close</button>
+            <a id="downloadImgBtn" href="" download="shared_image.png" class="interactive-btn px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider">Download</a>
         </div>
     </div>
 
-    <!-- Mobile-Responsive Donation Modal (All Original Options & Crypto Restored) -->
-    <div id="donationModal" class="hidden-ui fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-3">
-        <div class="glass-panel w-full max-w-sm max-h-[85vh] rounded-3xl p-5 relative flex flex-col border border-white/10 shadow-2xl">
+    <!-- Mobile-Responsive Donation Modal (All Original Options Preserved) -->
+    <div id="donationModal" class="hidden-ui fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-3">
+        <div class="gold-red-border w-full max-w-sm max-h-[85vh] rounded-3xl p-5 relative flex flex-col shadow-2xl">
             <button onclick="document.getElementById('donationModal').classList.add('hidden-ui')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg z-50">✕</button>
             
             <div class="w-full overflow-y-auto pr-1 text-left space-y-3">
-                <h3 class="text-xl font-bold text-center text-cyan-400 mt-1">Support Developer 👑</h3>
+                <h3 class="text-xl font-black text-center text-rose-500 mt-1">Support Developer 👑</h3>
                 <p class="text-[11px] text-slate-300 text-center leading-relaxed">
                     Servers & TURN relays cost money.<br>
                     <span class="text-emerald-400 font-bold">🇮🇳 India:</span> ₹20, ₹50+ (UPI).<br>
-                    <span class="text-cyan-400 font-bold">🌍 Global:</span> Buy Coffee or send $5+ Crypto. 🙏
+                    <span class="text-amber-400 font-bold">🌍 Global:</span> Buy Coffee or send $5+ Crypto. 🙏
                 </p>
 
                 <!-- 1. UPI India -->
@@ -208,32 +232,32 @@
                     <p class="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider mb-1">1. UPI (India)</p>
                     <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-emerald-500/30">
                         <span class="text-xs font-mono text-slate-200 truncate">BHARATPE.8001362463@fbpe</span>
-                        <button onclick="navigator.clipboard.writeText('BHARATPE.8001362463@fbpe'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="ml-2 px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg text-[10px] font-bold">COPY</button>
+                        <button onclick="navigator.clipboard.writeText('BHARATPE.8001362463@fbpe'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="interactive-btn ml-2 px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg text-[10px] font-bold">COPY</button>
                     </div>
                 </div>
 
                 <!-- 2. Buy me a Coffee -->
-                <div class="border border-cyan-500/40 rounded-2xl p-2.5 bg-cyan-950/20">
-                    <p class="text-[10px] text-cyan-400 font-extrabold uppercase tracking-wider mb-1">2. Global Cards / PayPal</p>
-                    <a href="https://www.buymeacoffee.com/randommeet" target="_blank" class="block w-full primary-glow-btn text-center py-2 rounded-xl text-xs font-bold text-white transition">☕ Buy me a Coffee</a>
+                <div class="border border-amber-500/40 rounded-2xl p-2.5 bg-amber-950/20">
+                    <p class="text-[10px] text-amber-400 font-extrabold uppercase tracking-wider mb-1">2. Global Cards / PayPal</p>
+                    <a href="https://www.buymeacoffee.com/randommeet" target="_blank" class="interactive-btn block w-full primary-glow-btn text-center py-2 rounded-xl text-xs font-bold text-white transition">☕ Buy me a Coffee</a>
                 </div>
 
                 <!-- 3. Crypto Options -->
-                <div class="border border-indigo-500/40 rounded-2xl p-2.5 bg-indigo-950/20 space-y-2">
-                    <p class="text-[10px] text-indigo-400 font-extrabold uppercase tracking-wider mb-1">3. Crypto (Instant)</p>
-                    <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-indigo-500/30">
+                <div class="border border-rose-500/40 rounded-2xl p-2.5 bg-rose-950/20 space-y-2">
+                    <p class="text-[10px] text-rose-400 font-extrabold uppercase tracking-wider mb-1">3. Crypto (Instant)</p>
+                    <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-rose-500/30">
                         <div class="text-left w-[78%]">
                             <span class="text-[9px] font-bold text-slate-300 block">BEP-20 / ETH</span>
                             <span class="text-[10px] font-mono text-slate-400 truncate block">0xE128CbFf52A3535aFca2cb5EFA466bEacc1De1fc</span>
                         </div>
-                        <button onclick="navigator.clipboard.writeText('0xE128CbFf52A3535aFca2cb5EFA466bEacc1De1fc'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="px-2 py-1 bg-indigo-500/20 text-indigo-300 rounded-lg text-[9px] font-bold">COPY</button>
+                        <button onclick="navigator.clipboard.writeText('0xE128CbFf52A3535aFca2cb5EFA466bEacc1De1fc'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="interactive-btn px-2 py-1 bg-rose-500/20 text-rose-300 rounded-lg text-[9px] font-bold">COPY</button>
                     </div>
-                    <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-indigo-500/30">
+                    <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-rose-500/30">
                         <div class="text-left w-[78%]">
                             <span class="text-[9px] font-bold text-slate-300 block">Solana (SOL)</span>
                             <span class="text-[10px] font-mono text-slate-400 truncate block">Gsf47T2RJDzS78efZTtdbYQLaj6bBK4t7sPhwMguJCPF</span>
                         </div>
-                        <button onclick="navigator.clipboard.writeText('Gsf47T2RJDzS78efZTtdbYQLaj6bBK4t7sPhwMguJCPF'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="px-2 py-1 bg-indigo-500/20 text-indigo-300 rounded-lg text-[9px] font-bold">COPY</button>
+                        <button onclick="navigator.clipboard.writeText('Gsf47T2RJDzS78efZTtdbYQLaj6bBK4t7sPhwMguJCPF'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="interactive-btn px-2 py-1 bg-rose-500/20 text-rose-300 rounded-lg text-[9px] font-bold">COPY</button>
                     </div>
                 </div>
             </div>
@@ -241,47 +265,63 @@
     </div>
 
     <!-- Header Navigation -->
-    <header class="w-full shrink-0 z-40 px-4 py-2.5 flex items-center justify-between border-b border-white/[0.08] bg-slate-950/60 backdrop-blur-lg">
+    <header class="w-full shrink-0 z-40 px-4 py-2.5 flex items-center justify-between border-b border-white/[0.08] bg-slate-950/70 backdrop-blur-lg">
         <div id="logoBtn" class="flex items-center gap-2 cursor-pointer">
-            <img src="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=06b6d4&textColor=ffffff" alt="Logo" class="w-7 h-7 rounded-full shadow-lg border border-cyan-500/40">
+            <img src="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff" alt="Logo" class="w-7 h-7 rounded-full shadow-lg border border-amber-500/40">
             <h1 class="text-lg font-extrabold tracking-wider brand-text-gradient uppercase">RandomMeet</h1>
         </div>
         <div class="flex items-center gap-2">
+            <!-- Quality Badge -->
+            <select id="qualitySelector" class="interactive-btn px-2 py-1 rounded-full bg-slate-900 border border-amber-500/30 text-[10px] font-bold text-amber-300 outline-none cursor-pointer">
+                <option value="720p" selected>720p HD</option>
+                <option value="1080p">1080p FHD</option>
+                <option value="480p">480p Saver</option>
+            </select>
             <div class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-1.5 text-[10px] font-bold text-emerald-400">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="liveUsersCount">0</span> Live
+                <span id="liveUsersCount">0</span>
             </div>
-            <button id="themeToggle" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-bold text-slate-300 transition">☀ Light</button>
-            <button onclick="document.getElementById('donationModal').classList.remove('hidden-ui')" class="px-3 py-1 rounded-full primary-glow-btn text-[10px] font-bold text-white transition">Donate</button>
+            <button onclick="document.getElementById('donationModal').classList.remove('hidden-ui')" class="interactive-btn px-3 py-1 rounded-full primary-glow-btn text-[10px] font-bold text-white">Donate</button>
         </div>
     </header>
 
-    <!-- Support Banner (NordVPN Cleanly Removed) -->
-    <div id="homeTicker" class="ticker-marquee bg-cyan-950/30 border-b border-cyan-500/20 py-1.5 text-[11px] font-semibold text-cyan-300">
+    <!-- Original Preserved Both Tickers (NordVPN 100% Removed) -->
+    <div id="homeTicker" class="ticker-wrap bg-slate-950/60 border-b border-rose-500/20 py-1 text-[11px] font-semibold text-rose-400">
         <div class="ticker-content">
-            🚨 This app is completely free & anonymous! Support the solo developer to manage high bandwidth costs. Click 'Donate' above to help! 🙏
+            🚨 This app is completely free! Support the solo developer to manage high server costs. <span class="underline">Click 'Donate' above to help!</span> 🙏
+        </div>
+    </div>
+    <div id="shareTicker" class="ticker-wrap bg-slate-950/40 border-b border-white/5 py-1 text-[10.5px] font-semibold text-slate-400">
+        <div class="ticker-content-2">
+            🚀 Please invite your friends & share! I am a solo developer with no marketing budget, so please share on WhatsApp, Telegram and Social Media. Thank you! ❤️
         </div>
     </div>
 
     <!-- Home View -->
     <main id="homeScreen" class="flex-1 flex flex-col items-center justify-center px-4 relative z-10 w-full">
-        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 text-center border border-white/10 shadow-2xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-bold uppercase tracking-widest mb-4">
-                P2P Ultra Fast Match
+        <!-- Original Preserved Slide-In Waiting Prompt -->
+        <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40">
+            <span class="cursor-pointer" onclick="document.getElementById('startBtn').click()">🔥 Someone is waiting! Tap to match...</span>
+            <button onclick="this.parentElement.classList.add('hidden-ui')" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
+        </div>
+
+        <div class="gold-red-border w-full max-w-sm rounded-3xl p-6 text-center backdrop-blur-xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-bold uppercase tracking-widest mb-4">
+                P2P Ultra Fast 720p HD
             </div>
             <h2 class="text-2xl font-black text-white tracking-wide mb-6">Find Match</h2>
             
             <div class="grid grid-cols-2 gap-3 mb-4 text-left">
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">I am</label>
-                    <select id="myGender" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 focus:border-cyan-500 outline-none">
+                    <select id="myGender" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 focus:border-rose-500 outline-none">
                         <option value="boy">Boy 👦</option>
                         <option value="girl">Girl 👧</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Looking for</label>
-                    <select id="lookingFor" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 focus:border-cyan-500 outline-none">
+                    <select id="lookingFor" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 focus:border-rose-500 outline-none">
                         <option value="any">Anyone 🌍</option>
                         <option value="girl">Girl 👧</option>
                         <option value="boy">Boy 👦</option>
@@ -291,9 +331,9 @@
 
             <div class="mb-6 text-left">
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex justify-between">
-                    Region <span class="text-cyan-400 text-[9px] bg-cyan-500/10 px-1.5 rounded">FASTEST</span>
+                    Region <span class="text-amber-400 text-[9px] bg-amber-500/10 px-1.5 rounded">FASTEST</span>
                 </label>
-                <select id="countryFilter" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 focus:border-cyan-500 outline-none">
+                <select id="countryFilter" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 focus:border-rose-500 outline-none">
                     <option value="global">🌍 Global (Fastest Match)</option>
                     <option value="in">🇮🇳 India</option>
                     <option value="us">🇺🇸 USA</option>
@@ -302,7 +342,7 @@
                 </select>
             </div>
 
-            <button id="startBtn" class="w-full primary-glow-btn py-3.5 rounded-2xl text-white font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2">
+            <button id="startBtn" class="interactive-btn w-full primary-glow-btn py-3.5 rounded-2xl text-white font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2">
                 <span>Start Video Chat</span>
             </button>
         </div>
@@ -313,7 +353,7 @@
         </div>
     </main>
 
-    <!-- Call View (STABLE FIXED LAYOUT — Video NEVER Moves when Chatting!) -->
+    <!-- Call View (STABLE FIXED LAYOUT — Video is immune to Chat shifts) -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
         
         <!-- FIXED STRANGER VIDEO CANVAS -->
@@ -321,20 +361,20 @@
             <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline webkit-playsinline></video>
         </div>
 
-        <!-- Audio Unmute Fallback Pill -->
-        <button id="unmuteFallbackBtn" class="absolute top-16 left-1/2 -translate-x-1/2 z-40 hidden-ui px-4 py-2 rounded-full bg-cyan-600/90 text-white text-xs font-bold shadow-2xl backdrop-blur-md animate-bounce flex items-center gap-2">
+        <!-- Audio Unmute Fallback Button -->
+        <button id="unmuteFallbackBtn" class="interactive-btn absolute top-16 left-1/2 -translate-x-1/2 z-40 hidden-ui px-4 py-2 rounded-full primary-glow-btn text-white text-xs font-bold shadow-2xl backdrop-blur-md animate-bounce flex items-center gap-2">
             <span>🔊 Tap to Unmute Stranger</span>
         </button>
 
-        <!-- Stranger Tag -->
+        <!-- Stranger Badge -->
         <div id="uiStrangerTag" class="absolute top-4 left-4 z-20 hidden-ui px-3 py-1 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-[10px] font-bold text-slate-200">
             Stranger
         </div>
 
         <!-- Matchmaking Spinner Overlay -->
         <div id="searchSpinner" class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-black/95">
-            <div class="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
-            <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-cyan-400 animate-pulse">Connecting to Partner...</p>
+            <div class="w-12 h-12 border-4 border-rose-500/20 border-t-rose-500 rounded-full animate-spin"></div>
+            <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-rose-500 animate-pulse">Connecting to Partner...</p>
         </div>
 
         <!-- Draggable PIP Local Camera Box -->
@@ -343,55 +383,64 @@
             <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white">YOU</div>
         </div>
 
-        <!-- FLOATING BOTTOM CONTROLS & GLASS CHAT DECK -->
+        <!-- FLOATING BOTTOM CONTROLS & TELEGRAM/WHATSAPP STYLE GLASS CHAT -->
         <div class="fixed bottom-0 inset-x-0 z-30 flex flex-col pointer-events-none p-3 pb-safe">
             
-            <!-- Quick Hardware Controls -->
+            <!-- Quick Hardware Controls & Chat Toggle -->
             <div id="mediaControls" class="flex justify-center items-center gap-3 mb-2 pointer-events-auto hidden-ui">
                 <button id="muteBtn" class="action-ctrl-btn p-3 rounded-2xl text-sm" title="Toggle Mic">🎤</button>
                 <button id="camBtn" class="action-ctrl-btn p-3 rounded-2xl text-sm" title="Toggle Cam">📷</button>
                 <button id="flipBtn" class="action-ctrl-btn p-3 rounded-2xl text-sm" title="Flip Camera">🔄</button>
+                <button id="toggleChatBtn" class="action-ctrl-btn p-3 rounded-2xl text-sm" title="Toggle Chat Panel">💬</button>
             </div>
 
             <!-- Glass Chat Deck -->
-            <div class="w-full max-w-md mx-auto pointer-events-auto flex flex-col">
+            <div id="chatDeckContainer" class="w-full max-w-md mx-auto pointer-events-auto flex flex-col transition-all duration-300">
                 <div id="strangerCountryBox" class="text-center mb-1.5 hidden-ui">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black/60 border border-cyan-500/30 text-[10px] font-semibold text-cyan-300 backdrop-blur-md">
-                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-                        Connected via Low-Latency Direct Relay
+                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black/60 border border-amber-500/30 text-[10px] font-semibold text-amber-300 backdrop-blur-md">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                        Connected via High-Speed Route
                     </span>
                 </div>
 
                 <!-- Match Switch Controls -->
                 <div class="flex gap-2 mb-2">
-                    <button id="nextBtn" class="w-1/2 primary-glow-btn py-2.5 rounded-xl text-white font-extrabold text-xs uppercase tracking-wider">
+                    <button id="nextBtn" class="interactive-btn w-1/2 primary-glow-btn py-2.5 rounded-xl text-white font-extrabold text-xs uppercase tracking-wider">
                         Next Match ⏭
                     </button>
-                    <button id="endChatBtn" class="w-1/2 bg-slate-900/80 hover:bg-slate-800 border border-white/10 py-2.5 rounded-xl text-rose-400 font-extrabold text-xs uppercase tracking-wider backdrop-blur-md transition">
+                    <button id="endChatBtn" class="interactive-btn w-1/2 bg-slate-900/80 hover:bg-slate-800 border border-white/10 py-2.5 rounded-xl text-rose-400 font-extrabold text-xs uppercase tracking-wider backdrop-blur-md">
                         End Chat ✕
                     </button>
                 </div>
 
-                <!-- High-Readability 40% Transparent Glass Chat -->
-                <div id="chatBox" class="w-full max-h-[19vh] overflow-y-auto flex flex-col gap-1.5 p-2 mb-2 bg-slate-950/45 backdrop-blur-xl rounded-2xl border border-white/10 scroll-smooth shadow-lg"></div>
+                <!-- Transparent Glass Chat Window with Dedicated 'X' Button -->
+                <div id="chatWindowWrapper" class="flex flex-col">
+                    <div class="flex justify-between items-center px-2 py-1 bg-black/40 backdrop-blur-md rounded-t-xl border-t border-x border-white/10 text-[10px] text-slate-300">
+                        <span class="font-bold flex items-center gap-1.5"><span>💬</span> Live Chat</span>
+                        <button id="closeChatBtn" class="text-slate-400 hover:text-white font-bold px-2 py-0.5 rounded hover:bg-white/10" title="Close Chat Panel">✕</button>
+                    </div>
+                    
+                    <div id="chatBox" class="w-full max-h-[19vh] overflow-y-auto flex flex-col gap-1.5 p-2 bg-slate-950/45 backdrop-blur-2xl rounded-b-2xl border-b border-x border-white/10 scroll-smooth shadow-2xl mb-2"></div>
+                </div>
 
-                <!-- Input Deck -->
+                <!-- Chat Input Deck -->
                 <div class="flex items-center gap-2 bg-slate-950/65 border border-white/15 rounded-2xl p-1.5 backdrop-blur-2xl">
                     <input type="file" id="fileUpload" accept="image/*,video/*,audio/*" class="hidden-ui">
-                    <button id="attachBtn" class="p-2 text-slate-400 hover:text-cyan-400 transition" title="Attach (Max 15MB)">📎</button>
+                    <button id="attachBtn" class="interactive-btn p-2 text-slate-400 hover:text-rose-400" title="Attach (Max 15MB)">📎</button>
                     <input type="text" id="chatInput" maxlength="250" class="flex-1 bg-transparent px-2 text-xs text-white placeholder-slate-400 outline-none" placeholder="Message stranger (max 30 words)..." disabled>
-                    <button id="sendBtn" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs uppercase tracking-wider transition" disabled>Send</button>
+                    <button id="sendBtn" class="interactive-btn px-4 py-2 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs uppercase tracking-wider" disabled>Send</button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Theme Toggle Controller
-        document.getElementById('themeToggle').addEventListener('click', (e) => {
-            document.body.classList.toggle('light-mode');
-            e.target.innerText = document.body.classList.contains('light-mode') ? '🌙 Dark' : '☀ Light';
-        });
+        // Production Service Worker Registration for Safe Asset Updates
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                reg.update();
+            }).catch(() => {});
+        }
 
         const socket = io();
         const ui = {
@@ -402,6 +451,10 @@
             localVidBox: document.getElementById('localVideoContainer'),
             remoteVid: document.getElementById('remoteVideo'),
             chatBox: document.getElementById('chatBox'),
+            chatDeck: document.getElementById('chatDeckContainer'),
+            chatWindow: document.getElementById('chatWindowWrapper'),
+            closeChatBtn: document.getElementById('closeChatBtn'),
+            toggleChatBtn: document.getElementById('toggleChatBtn'),
             spinner: document.getElementById('searchSpinner'),
             spinnerText: document.getElementById('spinnerText'),
             btnStart: document.getElementById('startBtn'),
@@ -418,10 +471,14 @@
             dlImgBtn: document.getElementById('downloadImgBtn'),
             unmuteFallback: document.getElementById('unmuteFallbackBtn'),
             countryBox: document.getElementById('strangerCountryBox'),
-            homeTicker: document.getElementById('homeTicker')
+            homeTicker: document.getElementById('homeTicker'),
+            shareTicker: document.getElementById('shareTicker'),
+            livePrompt: document.getElementById('livePrompt'),
+            qualitySelector: document.getElementById('qualitySelector')
         };
 
         let localStream = null;
+        let remoteStream = null;
         let peerConn = null;
         let partnerId = null;
         let isFront = true, isAudioMuted = false, isVideoMuted = false;
@@ -429,12 +486,13 @@
         let currentSessionId = 0;
         let iceQueue = [];
         let pendingOffer = null;
-        let cachedIceServers = null;
+        let matchCount = 0;
 
-        // Hardcoded zero-failure ICE configuration fallback
-        const DEFAULT_ICE_SERVERS = [
+        // Permanent zero-failure fallback ICE configuration
+        const RELIABLE_ICE_SERVERS = [
             { urls: "stun:stun.l.google.com:19302" },
             { urls: "stun:stun1.l.google.com:19302" },
+            { urls: "stun:stun2.l.google.com:19302" },
             { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
@@ -445,6 +503,14 @@
         socket.on('live-users', (count) => {
             const el = document.getElementById('liveUsersCount');
             if (el) el.innerText = count;
+            
+            // "Someone is waiting" slide-in banner trigger
+            if (count >= 2 && currentState === 'IDLE' && ui.livePrompt) {
+                ui.livePrompt.classList.remove('hidden-ui');
+                setTimeout(() => {
+                    if (ui.livePrompt) ui.livePrompt.classList.add('hidden-ui');
+                }, 4000);
+            }
         });
 
         socket.on('disconnect', () => {
@@ -456,27 +522,42 @@
             if (currentState !== 'IDLE') ui.endChatBtn.click();
         });
 
-        async function fetchIceConfig() {
-            if (cachedIceServers) return cachedIceServers;
-            try {
-                const res = await fetch('/api/ice-config');
-                const data = await res.json();
-                if (data && data.iceServers && data.iceServers.length > 0) {
-                    cachedIceServers = data.iceServers;
-                    return cachedIceServers;
-                }
-            } catch (err) {}
-            return DEFAULT_ICE_SERVERS;
-        }
+        // Chat Panel Visibility Toggles
+        ui.closeChatBtn.addEventListener('click', () => {
+            ui.chatWindow.classList.add('hidden-ui');
+        });
+        ui.toggleChatBtn.addEventListener('click', () => {
+            ui.chatWindow.classList.toggle('hidden-ui');
+        });
+        ui.inputChat.addEventListener('focus', () => {
+            ui.chatWindow.classList.remove('hidden-ui');
+        });
 
-        async function getMediaStream(facing) {
+        // Adaptive Camera Acquisition (Default 720p HD)
+        async function getMediaStream(targetQuality, facingConstraint) {
             const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            const chosenFacing = facing || (isFront ? "user" : "environment");
+            const chosenFacing = facingConstraint || (isFront ? "user" : "environment");
+            const quality = targetQuality || ui.qualitySelector.value || "720p";
+
+            let widthConst = { ideal: 1280, max: 1280 };
+            let heightConst = { ideal: 720, max: 720 };
+
+            if (quality === "1080p" && !isMobile) {
+                widthConst = { ideal: 1920 };
+                heightConst = { ideal: 1080 };
+            } else if (quality === "480p" || isMobile) {
+                widthConst = { ideal: 640 };
+                heightConst = { ideal: 480 };
+            }
+
             const constraints = {
                 audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-                video: isMobile 
-                    ? { facingMode: chosenFacing, width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, max: 30 } }
-                    : { width: { ideal: 1280, max: 1280 }, height: { ideal: 720, max: 720 }, frameRate: { ideal: 30, max: 30 } }
+                video: {
+                    facingMode: chosenFacing,
+                    width: widthConst,
+                    height: heightConst,
+                    frameRate: { ideal: 30, max: 30 }
+                }
             };
 
             try {
@@ -489,6 +570,29 @@
                 }
             }
         }
+
+        // On-the-fly Resolution Switcher (Zero Drops via sender.replaceTrack)
+        ui.qualitySelector.addEventListener('change', async () => {
+            if (!localStream) return;
+            const newStream = await getMediaStream(ui.qualitySelector.value);
+            const newVideoTrack = newStream.getVideoTracks()[0];
+            const oldVideoTrack = localStream.getVideoTracks()[0];
+
+            if (newVideoTrack && oldVideoTrack) {
+                oldVideoTrack.stop();
+                localStream.removeTrack(oldVideoTrack);
+                localStream.addTrack(newVideoTrack);
+                ui.localVid.srcObject = localStream;
+
+                if (peerConn) {
+                    const videoSender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
+                    if (videoSender) {
+                        await videoSender.replaceTrack(newVideoTrack);
+                        addSystemMsg(`Camera switched to ${ui.qualitySelector.value}`);
+                    }
+                }
+            }
+        });
 
         ui.btnStart.addEventListener('click', () => {
             if (currentState === 'IDLE') initiateSearch();
@@ -515,6 +619,8 @@
             ui.countryBox.classList.add('hidden-ui');
             ui.home.classList.add('hidden-ui');
             if (ui.homeTicker) ui.homeTicker.classList.add('hidden-ui');
+            if (ui.shareTicker) ui.shareTicker.classList.add('hidden-ui');
+            if (ui.livePrompt) ui.livePrompt.classList.add('hidden-ui');
 
             ui.call.classList.remove('hidden-ui');
             ui.lblStr.classList.add('hidden-ui');
@@ -522,8 +628,9 @@
             ui.inputChat.disabled = true;
             ui.btnSend.disabled = true;
             ui.chatBox.innerHTML = '';
+            ui.chatWindow.classList.remove('hidden-ui');
 
-            ui.spinnerText.innerText = "Starting Camera...";
+            ui.spinnerText.innerText = "Starting Camera (720p HD)...";
             ui.spinner.classList.remove('hidden-ui');
 
             try {
@@ -539,8 +646,6 @@
                 return;
             }
 
-            fetchIceConfig();
-
             ui.spinnerText.innerText = "Finding Match...";
             socket.emit('join', {
                 myGender: document.getElementById('myGender').value,
@@ -554,6 +659,7 @@
 
             currentState = 'CONNECTED';
             partnerId = data.partnerId;
+            matchCount++;
             ui.btnNext.disabled = false;
 
             ui.spinner.classList.add('hidden-ui');
@@ -567,13 +673,18 @@
 
             addSystemMsg("Stranger connected. Say Hi!");
 
-            await createPeerConnection(currentSessionId);
+            createPeerConnection(currentSessionId);
 
             if (localStream) {
                 localStream.getTracks().forEach(track => {
                     peerConn.addTrack(track, localStream);
                 });
             }
+
+            // Ensure clean sendrecv direction
+            peerConn.getTransceivers().forEach(tr => {
+                if (tr.direction !== 'sendrecv') tr.direction = 'sendrecv';
+            });
 
             if (data.initiator) {
                 try {
@@ -590,18 +701,18 @@
         });
 
         // =================================================================
-        // DEFINITIVE WEBRTC ENGINE: BULLETPROOF TRACK & ICE BINDING
+        // DEFINITIVE WEBRTC MEDIA ENGINE: SOLVES BLANK SCREEN FOREVER
         // =================================================================
-        async function createPeerConnection(sessionId) {
-            const iceServers = await fetchIceConfig();
-
+        function createPeerConnection(sessionId) {
             peerConn = new RTCPeerConnection({
-                iceServers: iceServers,
+                iceServers: RELIABLE_ICE_SERVERS,
                 iceTransportPolicy: "all",
                 bundlePolicy: "max-bundle",
                 rtcpMuxPolicy: "require",
                 iceCandidatePoolSize: 2
             });
+
+            remoteStream = new MediaStream();
 
             peerConn.oniceconnectionstatechange = () => {
                 if (peerConn && (peerConn.iceConnectionState === 'failed' || peerConn.iceConnectionState === 'disconnected')) {
@@ -609,33 +720,34 @@
                 }
             };
 
-            // EXACT FIX: DIRECT NATIVE MEDIASTREAM ASSIGNMENT + UNMUTE HOOK
+            // DIRECT STREAM ATTACHMENT + HARDWARE DECODER RE-BINDING
             peerConn.ontrack = (event) => {
                 if (sessionId !== currentSessionId) return;
 
                 const remoteVid = ui.remoteVid;
-                const stream = (event.streams && event.streams[0]) ? event.streams[0] : null;
+                const incomingStream = (event.streams && event.streams[0]) ? event.streams[0] : null;
 
-                if (stream) {
-                    if (remoteVid.srcObject !== stream) {
-                        remoteVid.srcObject = stream;
-                    }
-                } else {
-                    if (!remoteVid.srcObject) {
-                        remoteVid.srcObject = new MediaStream();
-                    }
-                    if (!remoteVid.srcObject.getTracks().some(t => t.id === event.track.id)) {
-                        remoteVid.srcObject.addTrack(event.track);
-                    }
+                // 1. Maintain composite remote stream
+                if (!remoteStream.getTracks().some(t => t.id === event.track.id)) {
+                    remoteStream.addTrack(event.track);
                 }
 
-                const forcePlay = () => {
+                // 2. CRITICAL DECODER FIX: Force re-attaching when video track arrives
+                // This breaks the audio-only lock on Chrome / MacBook Safari!
+                if (event.track.kind === 'video') {
+                    remoteVid.srcObject = incomingStream || remoteStream;
+                } else if (!remoteVid.srcObject) {
+                    remoteVid.srcObject = incomingStream || remoteStream;
+                }
+
+                // 3. Playback Invoker with Autoplay Policy Guard
+                const invokePlayback = () => {
                     const playPromise = remoteVid.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
                             ui.unmuteFallback.classList.add('hidden-ui');
                         }).catch(() => {
-                            // Safari/MacBook Autoplay Policy Bypass: Mute audio temporarily to render video
+                            // Autoplay audio blocked by Safari/MacBook -> Mute to render video frames!
                             remoteVid.muted = true;
                             remoteVid.play().then(() => {
                                 ui.unmuteFallback.classList.remove('hidden-ui');
@@ -644,10 +756,10 @@
                     }
                 };
 
-                event.track.onunmute = forcePlay;
-                remoteVid.onloadedmetadata = forcePlay;
-                remoteVid.oncanplay = forcePlay;
-                forcePlay();
+                event.track.onunmute = invokePlayback;
+                remoteVid.onloadedmetadata = invokePlayback;
+                remoteVid.oncanplay = invokePlayback;
+                invokePlayback();
             };
 
             peerConn.onicecandidate = (e) => {
@@ -738,6 +850,10 @@
                 ui.remoteVid.pause();
                 ui.remoteVid.srcObject = null;
             }
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(t => t.stop());
+                remoteStream = null;
+            }
             ui.unmuteFallback.classList.add('hidden-ui');
             partnerId = null;
             pendingOffer = null;
@@ -779,11 +895,10 @@
             ui.call.classList.add('hidden-ui');
             ui.home.classList.remove('hidden-ui');
             if (ui.homeTicker) ui.homeTicker.classList.remove('hidden-ui');
+            if (ui.shareTicker) ui.shareTicker.classList.remove('hidden-ui');
         }
 
-        // =================================================================
-        // MESSAGING (30 WORDS LIMIT) & MEDIA SHARING (15MB CHUNKS)
-        // =================================================================
+        // 30 Words Limit Messaging & 15MB Media Sharing
         ui.btnSend.addEventListener('click', sendMsg);
         ui.inputChat.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); sendMsg(); }
@@ -868,7 +983,7 @@
 
         function addMsg(sender, text, isMe, isVideo, isAudio) {
             const d = document.createElement('div');
-            d.className = `max-w-[85%] p-2.5 rounded-2xl ${isMe ? 'bg-cyan-600/90 text-white rounded-br-none self-end shadow-md' : 'bg-slate-900/90 border border-white/10 text-slate-100 rounded-bl-none self-start backdrop-blur-md shadow-md'} text-xs leading-relaxed`;
+            d.className = `max-w-[85%] p-2.5 rounded-2xl ${isMe ? 'bg-rose-600/90 text-white rounded-br-none self-end shadow-md' : 'bg-slate-900/90 border border-white/10 text-slate-100 rounded-bl-none self-start backdrop-blur-md shadow-md'} text-xs leading-relaxed`;
 
             if (isVideo) {
                 d.innerHTML = `<span class="text-[9px] font-bold block mb-1 opacity-70">${escapeHTML(sender)}</span><video controls autoplay muted playsinline class="chat-media-preview"><source src="${text}"></video>`;
@@ -925,7 +1040,7 @@
             if (oldVideoTrack) oldVideoTrack.stop();
 
             try {
-                const freshStream = await getMediaStream(isFront ? "user" : "environment");
+                const freshStream = await getMediaStream(ui.qualitySelector.value, isFront ? "user" : "environment");
                 const newTrack = freshStream.getVideoTracks()[0];
                 newTrack.enabled = !isVideoMuted;
 
