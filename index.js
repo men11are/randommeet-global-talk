@@ -17,9 +17,11 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Cache control: Prevents browsers from caching stale frontend assets
+// Cache-Busting Headers: Prevent browsers from caching stale assets
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
     next();
 });
 
@@ -28,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: 0
 }));
 
-// Dynamic ICE config endpoint with permanent multi-TURN fallbacks
+// Dynamic ICE config endpoint with permanent fallback relays
 app.get('/api/ice-config', (req, res) => {
     const turnHost = process.env.TURN_URL || "global.relay.metered.ca";
     const turnUser = process.env.TURN_USERNAME || "eb5ef206ad4b56f7c91347f4";
@@ -38,13 +40,13 @@ app.get('/api/ice-config', (req, res) => {
         { urls: "stun:stun.l.google.com:19302" },
         { urls: "stun:stun1.l.google.com:19302" },
         { urls: "stun:stun2.l.google.com:19302" },
-        // Metered TURN (Primary Relay)
+        // Metered Primary Relay
         { urls: `turn:${turnHost}:80`, username: turnUser, credential: turnPass },
         { urls: `turn:${turnHost}:80?transport=tcp`, username: turnUser, credential: turnPass },
         { urls: `turn:${turnHost}:443`, username: turnUser, credential: turnPass },
         { urls: `turn:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
         { urls: `turns:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
-        // ExpressTURN (High-Reliability Secondary Relay)
+        // ExpressTURN Secondary Relay
         { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
         { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
     ];
@@ -132,5 +134,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`RandomMeet Core Engine live on port ${PORT}`);
+    console.log(`RandomMeet Core Engine active on port ${PORT}`);
 });
