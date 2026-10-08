@@ -17,7 +17,7 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Cache-Busting Headers: Prevent browsers from caching stale assets
+// Cache-busting headers so browsers always pull the freshest code
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: 0
 }));
 
-// Dynamic ICE config endpoint with permanent fallback relays
+// Dynamic ICE config endpoint with permanent TCP fallback relays
 app.get('/api/ice-config', (req, res) => {
     const turnHost = process.env.TURN_URL || "global.relay.metered.ca";
     const turnUser = process.env.TURN_USERNAME || "eb5ef206ad4b56f7c91347f4";
@@ -40,15 +40,14 @@ app.get('/api/ice-config', (req, res) => {
         { urls: "stun:stun.l.google.com:19302" },
         { urls: "stun:stun1.l.google.com:19302" },
         { urls: "stun:stun2.l.google.com:19302" },
-        // Metered Primary Relay
-        { urls: `turn:${turnHost}:80`, username: turnUser, credential: turnPass },
-        { urls: `turn:${turnHost}:80?transport=tcp`, username: turnUser, credential: turnPass },
-        { urls: `turn:${turnHost}:443`, username: turnUser, credential: turnPass },
+        // Metered Primary Relay (TCP on 443 bypasses strict Wi-Fi firewalls instantly)
         { urls: `turn:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
         { urls: `turns:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
+        { urls: `turn:${turnHost}:80?transport=tcp`, username: turnUser, credential: turnPass },
+        { urls: `turn:${turnHost}:443`, username: turnUser, credential: turnPass },
         // ExpressTURN Secondary Relay
-        { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
-        { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
+        { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
+        { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
     ];
 
     res.json({ iceServers });
