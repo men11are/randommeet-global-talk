@@ -25,8 +25,6 @@
     <style>
         :root {
             --bg-base: #060913;
-            --bg-card: rgba(15, 23, 42, 0.75);
-            --border-glass: rgba(255, 255, 255, 0.1);
             --brand-primary: #06b6d4;
             --brand-glow: rgba(6, 182, 212, 0.35);
             --text-main: #f8fafc;
@@ -35,8 +33,6 @@
 
         body.light-mode {
             --bg-base: #f8fafc;
-            --bg-card: rgba(255, 255, 255, 0.85);
-            --border-glass: rgba(15, 23, 42, 0.08);
             --brand-primary: #0284c7;
             --brand-glow: rgba(2, 132, 199, 0.25);
             --text-main: #0f172a;
@@ -80,7 +76,7 @@
             user-select: none; z-index: -2; letter-spacing: 6px;
         }
 
-        /* Glassmorphism Classes */
+        /* Glassmorphism Styles */
         .glass-panel {
             background: rgba(11, 17, 32, 0.78);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -175,7 +171,7 @@
 </head>
 <body class="flex flex-col relative select-none">
 
-    <!-- Original Background Layers -->
+    <!-- Original Preserved Background Layers -->
     <div class="bg-premium-image"></div>
     <div class="bg-theme-overlay"></div>
     <div class="bg-watermark">RANDOMMEET</div>
@@ -185,7 +181,7 @@
         <div class="splash-text">RANDOMMEET</div>
     </div>
 
-    <!-- Image Viewer Modal -->
+    <!-- Full Screen Image Modal -->
     <div id="imageViewerModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[10000] hidden-ui flex flex-col items-center justify-center p-4">
         <img id="fullScreenImg" src="" alt="Full Screen Preview" class="max-w-[95vw] max-h-[85vh] object-contain rounded-xl shadow-2xl">
         <div class="mt-4 flex gap-4">
@@ -194,9 +190,9 @@
         </div>
     </div>
 
-    <!-- Mobile-Responsive Donation Modal (All Original Options & Crypto Preserved) -->
+    <!-- Mobile-Responsive Donation Modal (All Original Options & Crypto Restored) -->
     <div id="donationModal" class="hidden-ui fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-3">
-        <div class="glass-panel w-full max-w-sm max-h-[88vh] rounded-3xl p-5 relative flex flex-col border border-white/10 shadow-2xl">
+        <div class="glass-panel w-full max-w-sm max-h-[85vh] rounded-3xl p-5 relative flex flex-col border border-white/10 shadow-2xl">
             <button onclick="document.getElementById('donationModal').classList.add('hidden-ui')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg z-50">✕</button>
             
             <div class="w-full overflow-y-auto pr-1 text-left space-y-3">
@@ -260,7 +256,7 @@
         </div>
     </header>
 
-    <!-- Support Marquee Banner (NordVPN Completely Removed) -->
+    <!-- Support Banner (NordVPN Cleanly Removed) -->
     <div id="homeTicker" class="ticker-marquee bg-cyan-950/30 border-b border-cyan-500/20 py-1.5 text-[11px] font-semibold text-cyan-300">
         <div class="ticker-content">
             🚨 This app is completely free & anonymous! Support the solo developer to manage high bandwidth costs. Click 'Donate' above to help! 🙏
@@ -317,28 +313,28 @@
         </div>
     </main>
 
-    <!-- Call View (STABLE FIXED LAYOUT - Video NEVER shifts on Chat!) -->
+    <!-- Call View (STABLE FIXED LAYOUT — Video NEVER Moves when Chatting!) -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
         
-        <!-- FIXED FULL-SCREEN VIDEO CANVAS (Completely Independent from Chat) -->
-        <div class="fixed inset-0 z-0 bg-black flex items-center justify-center">
+        <!-- FIXED STRANGER VIDEO CANVAS -->
+        <div class="fixed inset-0 z-0 bg-black flex items-center justify-center pointer-events-none">
             <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline webkit-playsinline></video>
-            
-            <!-- Audio Unmute Fallback Pill -->
-            <button id="unmuteFallbackBtn" class="absolute top-16 z-40 hidden-ui px-4 py-2 rounded-full bg-cyan-600/90 text-white text-xs font-bold shadow-2xl backdrop-blur-md animate-bounce flex items-center gap-2">
-                <span>🔊 Tap to Unmute Stranger</span>
-            </button>
+        </div>
 
-            <!-- Stranger Badge -->
-            <div id="uiStrangerTag" class="absolute top-4 left-4 z-20 hidden-ui px-3 py-1 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-[10px] font-bold text-slate-200">
-                Stranger
-            </div>
+        <!-- Audio Unmute Fallback Pill -->
+        <button id="unmuteFallbackBtn" class="absolute top-16 left-1/2 -translate-x-1/2 z-40 hidden-ui px-4 py-2 rounded-full bg-cyan-600/90 text-white text-xs font-bold shadow-2xl backdrop-blur-md animate-bounce flex items-center gap-2">
+            <span>🔊 Tap to Unmute Stranger</span>
+        </button>
 
-            <!-- Spinner Overlay -->
-            <div id="searchSpinner" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/95">
-                <div class="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
-                <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-cyan-400 animate-pulse">Connecting to Partner...</p>
-            </div>
+        <!-- Stranger Tag -->
+        <div id="uiStrangerTag" class="absolute top-4 left-4 z-20 hidden-ui px-3 py-1 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-[10px] font-bold text-slate-200">
+            Stranger
+        </div>
+
+        <!-- Matchmaking Spinner Overlay -->
+        <div id="searchSpinner" class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-black/95">
+            <div class="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
+            <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-cyan-400 animate-pulse">Connecting to Partner...</p>
         </div>
 
         <!-- Draggable PIP Local Camera Box -->
@@ -347,7 +343,7 @@
             <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white">YOU</div>
         </div>
 
-        <!-- FLOATING BOTTOM OVERLAY (Pointer-events-none so video is touchable) -->
+        <!-- FLOATING BOTTOM CONTROLS & GLASS CHAT DECK -->
         <div class="fixed bottom-0 inset-x-0 z-30 flex flex-col pointer-events-none p-3 pb-safe">
             
             <!-- Quick Hardware Controls -->
@@ -362,7 +358,7 @@
                 <div id="strangerCountryBox" class="text-center mb-1.5 hidden-ui">
                     <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black/60 border border-cyan-500/30 text-[10px] font-semibold text-cyan-300 backdrop-blur-md">
                         <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-                        Connected via Low Latency Direct Route
+                        Connected via Low-Latency Direct Relay
                     </span>
                 </div>
 
@@ -376,7 +372,7 @@
                     </button>
                 </div>
 
-                <!-- High-Readability 40% Transparent Chat Stream -->
+                <!-- High-Readability 40% Transparent Glass Chat -->
                 <div id="chatBox" class="w-full max-h-[19vh] overflow-y-auto flex flex-col gap-1.5 p-2 mb-2 bg-slate-950/45 backdrop-blur-xl rounded-2xl border border-white/10 scroll-smooth shadow-lg"></div>
 
                 <!-- Input Deck -->
@@ -391,9 +387,7 @@
     </main>
 
     <script>
-        // -----------------------------------------------------------------
-        // THEME & CORE APPLICATION CONTROLLERS
-        // -----------------------------------------------------------------
+        // Theme Toggle Controller
         document.getElementById('themeToggle').addEventListener('click', (e) => {
             document.body.classList.toggle('light-mode');
             e.target.innerText = document.body.classList.contains('light-mode') ? '🌙 Dark' : '☀ Light';
@@ -428,7 +422,6 @@
         };
 
         let localStream = null;
-        let remoteStream = null;
         let peerConn = null;
         let partnerId = null;
         let isFront = true, isAudioMuted = false, isVideoMuted = false;
@@ -437,6 +430,15 @@
         let iceQueue = [];
         let pendingOffer = null;
         let cachedIceServers = null;
+
+        // Hardcoded zero-failure ICE configuration fallback
+        const DEFAULT_ICE_SERVERS = [
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+            { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+            { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+            { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
+        ];
 
         setInterval(() => { if (socket.connected) socket.emit('ping'); }, 20000);
 
@@ -459,15 +461,12 @@
             try {
                 const res = await fetch('/api/ice-config');
                 const data = await res.json();
-                if (data && data.iceServers) {
+                if (data && data.iceServers && data.iceServers.length > 0) {
                     cachedIceServers = data.iceServers;
                     return cachedIceServers;
                 }
             } catch (err) {}
-            return [
-                { urls: "stun:stun.l.google.com:19302" },
-                { urls: "stun:stun1.l.google.com:19302" }
-            ];
+            return DEFAULT_ICE_SERVERS;
         }
 
         async function getMediaStream(facing) {
@@ -509,6 +508,7 @@
             currentState = 'SEARCHING';
             currentSessionId++;
             partnerId = null;
+            iceQueue = [];
 
             ui.btnStart.disabled = true;
             ui.btnNext.disabled = false;
@@ -534,7 +534,7 @@
                 await ui.localVid.play().catch(() => {});
                 ui.localVidBox.classList.remove('hidden-ui');
             } catch (err) {
-                alert("Camera and Microphone access are required!");
+                alert("Camera and Microphone permissions required!");
                 fullNukeAndReset();
                 return;
             }
@@ -590,7 +590,7 @@
         });
 
         // =================================================================
-        // DEFINITIVE WEBRTC ENGINE: RE-BINDING ON VIDEO TRACK ARRIVAL
+        // DEFINITIVE WEBRTC ENGINE: BULLETPROOF TRACK & ICE BINDING
         // =================================================================
         async function createPeerConnection(sessionId) {
             const iceServers = await fetchIceConfig();
@@ -602,8 +602,6 @@
                 rtcpMuxPolicy: "require",
                 iceCandidatePoolSize: 2
             });
-            iceQueue = [];
-            remoteStream = new MediaStream();
 
             peerConn.oniceconnectionstatechange = () => {
                 if (peerConn && (peerConn.iceConnectionState === 'failed' || peerConn.iceConnectionState === 'disconnected')) {
@@ -611,37 +609,33 @@
                 }
             };
 
-            // EXACT FIX FOR MACBOOK / MOBILE BLANK SCREEN
+            // EXACT FIX: DIRECT NATIVE MEDIASTREAM ASSIGNMENT + UNMUTE HOOK
             peerConn.ontrack = (event) => {
-                if (sessionId !== currentSessionId || currentState !== 'CONNECTED') return;
+                if (sessionId !== currentSessionId) return;
 
                 const remoteVid = ui.remoteVid;
+                const stream = (event.streams && event.streams[0]) ? event.streams[0] : null;
 
-                // 1. Add track to persistent stream
-                if (!remoteStream.getTracks().some(t => t.id === event.track.id)) {
-                    remoteStream.addTrack(event.track);
+                if (stream) {
+                    if (remoteVid.srcObject !== stream) {
+                        remoteVid.srcObject = stream;
+                    }
+                } else {
+                    if (!remoteVid.srcObject) {
+                        remoteVid.srcObject = new MediaStream();
+                    }
+                    if (!remoteVid.srcObject.getTracks().some(t => t.id === event.track.id)) {
+                        remoteVid.srcObject.addTrack(event.track);
+                    }
                 }
 
-                // 2. FORCED PIPELINE REBUILD WHEN VIDEO TRACK ARRIVES:
-                // Prevents Chromium / Safari from locking into audio-only playback
-                if (event.track.kind === 'video') {
-                    remoteVid.srcObject = null;
-                    remoteVid.srcObject = remoteStream;
-
-                    event.track.onunmute = () => {
-                        attemptPlay();
-                    };
-                } else if (!remoteVid.srcObject) {
-                    remoteVid.srcObject = remoteStream;
-                }
-
-                const attemptPlay = () => {
+                const forcePlay = () => {
                     const playPromise = remoteVid.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
                             ui.unmuteFallback.classList.add('hidden-ui');
                         }).catch(() => {
-                            // Autoplay blocked by OS/browser -> unlock visually as muted
+                            // Safari/MacBook Autoplay Policy Bypass: Mute audio temporarily to render video
                             remoteVid.muted = true;
                             remoteVid.play().then(() => {
                                 ui.unmuteFallback.classList.remove('hidden-ui');
@@ -650,9 +644,10 @@
                     }
                 };
 
-                remoteVid.onloadedmetadata = attemptPlay;
-                remoteVid.oncanplay = attemptPlay;
-                attemptPlay();
+                event.track.onunmute = forcePlay;
+                remoteVid.onloadedmetadata = forcePlay;
+                remoteVid.oncanplay = forcePlay;
+                forcePlay();
             };
 
             peerConn.onicecandidate = (e) => {
@@ -682,7 +677,8 @@
                 await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
                 while (iceQueue.length > 0) {
-                    await peerConn.addIceCandidate(iceQueue.shift()).catch(() => {});
+                    const c = iceQueue.shift();
+                    await peerConn.addIceCandidate(c).catch(() => {});
                 }
 
                 const answer = await peerConn.createAnswer();
@@ -698,7 +694,8 @@
                 if (peerConn && peerConn.signalingState !== "closed") {
                     await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
                     while (iceQueue.length > 0) {
-                        await peerConn.addIceCandidate(iceQueue.shift()).catch(() => {});
+                        const c = iceQueue.shift();
+                        await peerConn.addIceCandidate(c).catch(() => {});
                     }
                 }
             } catch (err) {}
@@ -740,10 +737,6 @@
                 ui.remoteVid.oncanplay = null;
                 ui.remoteVid.pause();
                 ui.remoteVid.srcObject = null;
-            }
-            if (remoteStream) {
-                remoteStream.getTracks().forEach(t => t.stop());
-                remoteStream = null;
             }
             ui.unmuteFallback.classList.add('hidden-ui');
             partnerId = null;
@@ -788,9 +781,9 @@
             if (ui.homeTicker) ui.homeTicker.classList.remove('hidden-ui');
         }
 
-        // -----------------------------------------------------------------
+        // =================================================================
         // MESSAGING (30 WORDS LIMIT) & MEDIA SHARING (15MB CHUNKS)
-        // -----------------------------------------------------------------
+        // =================================================================
         ui.btnSend.addEventListener('click', sendMsg);
         ui.inputChat.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); sendMsg(); }
@@ -875,7 +868,7 @@
 
         function addMsg(sender, text, isMe, isVideo, isAudio) {
             const d = document.createElement('div');
-            d.className = `max-w-[85%] p-2.5 rounded-2xl ${isMe ? 'bg-cyan-600/90 text-white rounded-br-none self-end shadow-md shadow-cyan-950/40' : 'bg-slate-900/90 border border-white/10 text-slate-100 rounded-bl-none self-start backdrop-blur-md shadow-md'} text-xs leading-relaxed`;
+            d.className = `max-w-[85%] p-2.5 rounded-2xl ${isMe ? 'bg-cyan-600/90 text-white rounded-br-none self-end shadow-md' : 'bg-slate-900/90 border border-white/10 text-slate-100 rounded-bl-none self-start backdrop-blur-md shadow-md'} text-xs leading-relaxed`;
 
             if (isVideo) {
                 d.innerHTML = `<span class="text-[9px] font-bold block mb-1 opacity-70">${escapeHTML(sender)}</span><video controls autoplay muted playsinline class="chat-media-preview"><source src="${text}"></video>`;
@@ -908,9 +901,7 @@
         });
         ui.closeImgBtn.addEventListener('click', () => ui.imgModal.classList.add('hidden-ui'));
 
-        // -----------------------------------------------------------------
-        // CONTROLS & PIP DRAGGING
-        // -----------------------------------------------------------------
+        // Controls & PIP Dragging Logic
         document.getElementById('muteBtn').addEventListener('click', (e) => {
             if (!localStream) return;
             isAudioMuted = !isAudioMuted;
@@ -953,7 +944,7 @@
             }
         });
 
-        // Touch & Mouse Dragging for PIP Local Box
+        // Touch & Mouse Drag for PIP Box
         let isDragging = false, startX, startY, initialRight, initialBottom;
         ui.localVidBox.addEventListener('touchstart', dragStart, {passive: false});
         ui.localVidBox.addEventListener('touchmove', drag, {passive: false});
