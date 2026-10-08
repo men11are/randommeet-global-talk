@@ -17,7 +17,7 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Cache control: Ensure browsers always fetch latest client code
+// Cache control: Ensure clients receive fresh bundles
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     next();
@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: 0
 }));
 
-// Secure ICE configuration endpoint
+// Dynamic ICE config endpoint
 app.get('/api/ice-config', (req, res) => {
     const iceServers = [
         { urls: "stun:stun.l.google.com:19302" },
@@ -114,7 +114,7 @@ io.on('connection', (socket) => {
         if (data && data.partnerId) io.to(data.partnerId).emit('chat-message', data.message);
     });
 
-    function cleanUpSession(sockId) {
+    function cleanUpDisconnect(sockId) {
         waitingQueue = waitingQueue.filter(u => u.socketId !== sockId);
         const partnerId = activePairs.get(sockId);
         if (partnerId) {
@@ -124,14 +124,14 @@ io.on('connection', (socket) => {
         }
     }
 
-    socket.on('skip', () => cleanUpSession(socket.id));
+    socket.on('skip', () => cleanUpDisconnect(socket.id));
     socket.on('disconnect', () => {
-        cleanUpSession(socket.id);
+        cleanUpDisconnect(socket.id);
         broadcastLiveUsers();
     });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`RandomMeet Engine listening on port ${PORT}`);
+    console.log(`RandomMeet Core Engine active on port ${PORT}`);
 });
