@@ -1,6 +1,6 @@
 {
   "name": "randommeet-global-talk",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Production WebRTC Real-Time Video Chat Platform",
   "main": "index.js",
   "scripts": {
