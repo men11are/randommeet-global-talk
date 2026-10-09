@@ -1,7 +1,7 @@
 {
   "name": "randommeet-global-talk",
-  "version": "2.4.0",
-  "description": "Production WebRTC Real-Time Video Chat Platform",
+  "version": "2.5.0",
+  "description": "Enterprise-grade real-time video chat with WebRTC and Socket.io",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
