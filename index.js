@@ -14,7 +14,7 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Cache-busting headers: ensures client always receives fresh JS/HTML
+// Cache control: browser hamesha fresh code uthaye
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public'), { etag: false, maxAge: 0 }));
 
-// Multi-Tier Dynamic ICE Endpoint with Port-Safe Relays
+// Dynamic ICE config endpoint
 app.get('/api/ice-config', (req, res) => {
     const iceServers = [
         { urls: "stun:stun.l.google.com:19302" },
@@ -36,7 +36,7 @@ app.get('/api/ice-config', (req, res) => {
     const turnUser = process.env.TURN_USERNAME || "eb5ef206ad4b56f7c91347f4";
     const turnPass = process.env.TURN_CREDENTIAL || "ELkjSHNeiKI1svYE";
 
-    // Metered Relays (Ports 443 & 80 TCP for strict NAT/Firewall bypass)
+    // Verified Metered TCP Relays (Fixed syntax)
     iceServers.push(
         { urls: `turn:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
         { urls: `turns:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
@@ -44,7 +44,7 @@ app.get('/api/ice-config', (req, res) => {
         { urls: `turn:${turnHost}:3478?transport=udp`, username: turnUser, credential: turnPass }
     );
 
-    // Redundant Fallback: ExpressTURN on verified Port 3478
+    // ExpressTURN Relay fallback
     iceServers.push(
         { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
         { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
@@ -133,5 +133,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`RandomMeet Core Engine active on port ${PORT}`);
+    console.log(`RandomMeet Core active on port ${PORT}`);
 });
