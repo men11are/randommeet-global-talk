@@ -8,10 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <title>RandomMeet — Premium Global Video Chat</title>
-    <meta name="description" content="Connect instantly with random people around the world in high-definition 720p video. Free, anonymous, secure live chat.">
+    <meta name="description" content="Connect instantly with random people around the world in high-definition video. Free, anonymous, secure live chat.">
     
-    <!-- Verified Favicons & Icons for Google Search and Browsers -->
+    <!-- Favicon & Site Icons (Configured for Browser Tabs & Google Search Crawlers) -->
     <link rel="icon" type="image/svg+xml" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
+    <link rel="shortcut icon" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
     <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#07090e">
@@ -57,7 +58,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(225, 29, 72, 0.5); border-radius: 999px; }
 
-        /* Original Preserved Background Image & Atmosphere */
+        /* Original Preserved Background Image & Blur Layer */
         .bg-premium-image {
             position: fixed; inset: 0;
             background-image: url('https://images.unsplash.com/photo-1542224566-6e85f2e6772f?q=80&w=2000&auto=format&fit=crop');
@@ -86,7 +87,6 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(225, 29, 72, 0.15);
         }
 
-        /* Subtle Luxury Click Interaction Feedback */
         .interactive-btn {
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
@@ -189,7 +189,7 @@
 </head>
 <body class="flex flex-col relative select-none">
 
-    <!-- Original Preserved Background Layers -->
+    <!-- Original Background Layers -->
     <div class="bg-premium-image"></div>
     <div class="bg-theme-overlay"></div>
     <div class="bg-watermark">RANDOMMEET</div>
@@ -208,7 +208,7 @@
         </div>
     </div>
 
-    <!-- Mobile-Responsive Donation Modal (All Original Options Preserved) -->
+    <!-- Mobile-Responsive Donation Modal (All Original Options Intact) -->
     <div id="donationModal" class="hidden-ui fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-3">
         <div class="gold-red-border w-full max-w-sm max-h-[85vh] rounded-3xl p-5 relative flex flex-col shadow-2xl">
             <button onclick="document.getElementById('donationModal').classList.add('hidden-ui')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg z-50">✕</button>
@@ -258,7 +258,7 @@
         </div>
     </div>
 
-    <!-- Header Navigation (Clean Home Header — Quality Selector Removed from Home) -->
+    <!-- Header Navigation (Clean Home View) -->
     <header class="w-full shrink-0 z-40 px-4 py-2.5 flex items-center justify-between border-b border-white/[0.08] bg-slate-950/70 backdrop-blur-lg">
         <div id="logoBtn" class="flex items-center gap-2 cursor-pointer">
             <img src="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff" alt="Logo" class="w-7 h-7 rounded-full shadow-lg border border-amber-500/40">
@@ -273,7 +273,7 @@
         </div>
     </header>
 
-    <!-- Original Preserved Both Tickers (NordVPN 100% Removed) -->
+    <!-- Preserved Tickers (NordVPN Cleanly Removed) -->
     <div id="homeTicker" class="ticker-wrap bg-slate-950/60 border-b border-rose-500/20 py-1 text-[11px] font-semibold text-rose-400">
         <div class="ticker-content">
             🚨 This app is completely free! Support the solo developer to manage high server costs. <span class="underline">Click 'Donate' above to help!</span> 🙏
@@ -287,7 +287,7 @@
 
     <!-- Home View -->
     <main id="homeScreen" class="flex-1 flex flex-col items-center justify-center px-4 relative z-10 w-full">
-        <!-- Original Preserved Slide-In Waiting Prompt -->
+        <!-- Restored "Someone is waiting" Banner Loop -->
         <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40">
             <span class="cursor-pointer" onclick="document.getElementById('startBtn').click()">🔥 Someone is waiting! Tap to match...</span>
             <button onclick="this.parentElement.classList.add('hidden-ui')" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
@@ -335,18 +335,18 @@
             </button>
         </div>
 
-        <!-- Original Preserved Footer -->
+        <!-- Preserved Footer -->
         <div class="absolute bottom-4 text-center w-full px-4 text-[10px] text-slate-400 z-10 font-medium">
             By entering, you take 100% legal responsibility.<br>Nudity, vulgarity, or illegal conduct is strictly prohibited.
         </div>
     </main>
 
-    <!-- Call View (STABLE FIXED LAYOUT — Video Canvas Never Moves) -->
+    <!-- Call View (STABLE FIXED LAYOUT) -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
         
-        <!-- FIXED STRANGER VIDEO CANVAS -->
+        <!-- FIXED STRANGER VIDEO CANVAS (Starts Muted to Guarantee Instant Video Decode) -->
         <div class="fixed inset-0 z-0 bg-black flex items-center justify-center pointer-events-none">
-            <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline webkit-playsinline></video>
+            <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline muted></video>
         </div>
 
         <!-- RESTORED CONNECTED USER STATUS HEADER + QUALITY SELECTOR -->
@@ -356,7 +356,7 @@
                 <span class="text-xs font-bold text-white tracking-wide">Connected with Stranger</span>
             </div>
 
-            <!-- Quality Selector (Only Inside Connected Video Interface) -->
+            <!-- Quality Selector (Only inside Call Screen) -->
             <div class="flex items-center gap-2">
                 <select id="qualitySelector" class="interactive-btn px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-amber-500/40 text-[10px] font-bold text-amber-300 outline-none cursor-pointer shadow-xl">
                     <option value="720p" selected>720p HD</option>
@@ -366,9 +366,9 @@
             </div>
         </div>
 
-        <!-- Audio Unmute Fallback Pill -->
+        <!-- Audio Unmute Fallback Pill (Appears only if browser requires gesture) -->
         <button id="unmuteFallbackBtn" class="interactive-btn absolute top-16 left-1/2 -translate-x-1/2 z-40 hidden-ui px-4 py-2 rounded-full primary-glow-btn text-white text-xs font-bold shadow-2xl backdrop-blur-md animate-bounce flex items-center gap-2">
-            <span>🔊 Tap to Unmute Stranger</span>
+            <span>🔊 Tap to Unmute Audio</span>
         </button>
 
         <!-- Matchmaking Spinner Overlay -->
@@ -383,7 +383,7 @@
             <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white">YOU</div>
         </div>
 
-        <!-- FLOATING BOTTOM CONTROLS & TELEGRAM/WHATSAPP STYLE GLASS CHAT -->
+        <!-- FLOATING BOTTOM CONTROLS & GLASS CHAT DECK -->
         <div class="fixed bottom-0 inset-x-0 z-30 flex flex-col pointer-events-none p-3 pb-safe">
             
             <!-- Quick Hardware Controls & Chat Toggle -->
@@ -399,7 +399,7 @@
                 <div id="strangerCountryBox" class="text-center mb-1.5 hidden-ui">
                     <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black/60 border border-amber-500/30 text-[10px] font-semibold text-amber-300 backdrop-blur-md">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                        Connected via High-Speed Direct Tunnel
+                        Connected via Low-Latency Route
                     </span>
                 </div>
 
@@ -416,7 +416,7 @@
                 <!-- Transparent Glass Chat Window with Dedicated 'X' Button -->
                 <div id="chatWindowWrapper" class="flex flex-col">
                     <div class="flex justify-between items-center px-3 py-1.5 bg-slate-950/60 backdrop-blur-md rounded-t-2xl border-t border-x border-white/10 text-[10px] text-slate-300">
-                        <span class="font-bold flex items-center gap-1.5"><span>💬</span> Live Chat (Telegram Glass)</span>
+                        <span class="font-bold flex items-center gap-1.5"><span>💬</span> Live Chat</span>
                         <button id="closeChatBtn" class="text-slate-400 hover:text-white font-bold px-2 py-0.5 rounded hover:bg-white/10" title="Close Chat Panel">✕</button>
                     </div>
                     
@@ -435,11 +435,8 @@
     </main>
 
     <script>
-        // Production Service Worker Registration for Safe Asset Updates
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').then(reg => {
-                reg.update();
-            }).catch(() => {});
+            navigator.serviceWorker.register('/sw.js').then(reg => reg.update()).catch(() => {});
         }
 
         const socket = io();
@@ -485,35 +482,17 @@
         let currentSessionId = 0;
         let iceQueue = [];
         let pendingOffer = null;
-
-        // Reliable fallback ICE servers with explicit TCP transport
-        const RELIABLE_ICE_SERVERS = [
-            { urls: "stun:stun.l.google.com:19302" },
-            { urls: "stun:stun1.l.google.com:19302" },
-            { urls: "stun:stun2.l.google.com:19302" },
-            { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
-            { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
-        ];
+        let waitingInterval = null;
 
         setInterval(() => { if (socket.connected) socket.emit('ping'); }, 20000);
 
         socket.on('live-users', (count) => {
             const el = document.getElementById('liveUsersCount');
             if (el) el.innerText = count;
-            
-            // "Someone is waiting" slide-in trigger
-            if (count >= 2 && currentState === 'IDLE' && ui.livePrompt) {
-                ui.livePrompt.classList.remove('hidden-ui');
-                setTimeout(() => {
-                    if (ui.livePrompt) ui.livePrompt.classList.add('hidden-ui');
-                }, 4000);
-            }
         });
 
         socket.on('disconnect', () => {
-            addSystemMsg("Connection lost. Resetting session...");
+            addSystemMsg("Signaling connection lost. Resetting session...");
             fullNukeAndReset();
         });
 
@@ -521,18 +500,38 @@
             if (currentState !== 'IDLE') ui.endChatBtn.click();
         });
 
-        // Chat Panel Visibility Toggles
-        ui.closeChatBtn.addEventListener('click', () => {
-            ui.chatWindow.classList.add('hidden-ui');
-        });
-        ui.toggleChatBtn.addEventListener('click', () => {
-            ui.chatWindow.classList.toggle('hidden-ui');
-        });
-        ui.inputChat.addEventListener('focus', () => {
-            ui.chatWindow.classList.remove('hidden-ui');
-        });
+        // Chat Visibility Toggles
+        ui.closeChatBtn.addEventListener('click', () => ui.chatWindow.classList.add('hidden-ui'));
+        ui.toggleChatBtn.addEventListener('click', () => ui.chatWindow.classList.toggle('hidden-ui'));
+        ui.inputChat.addEventListener('focus', () => ui.chatWindow.classList.remove('hidden-ui'));
 
-        // Camera Acquisition (720p HD Default — Adaptive to orientation)
+        // "Someone is waiting" Loop (Triggered every 5 seconds during search)
+        function startWaitingLoop() {
+            stopWaitingLoop();
+            ui.livePrompt.classList.remove('hidden-ui');
+            setTimeout(() => { if (currentState === 'SEARCHING') ui.livePrompt.classList.add('hidden-ui'); }, 3000);
+
+            waitingInterval = setInterval(() => {
+                if (currentState === 'SEARCHING') {
+                    ui.livePrompt.classList.remove('hidden-ui');
+                    setTimeout(() => {
+                        if (currentState === 'SEARCHING') ui.livePrompt.classList.add('hidden-ui');
+                    }, 3000);
+                } else {
+                    stopWaitingLoop();
+                }
+            }, 5000);
+        }
+
+        function stopWaitingLoop() {
+            if (waitingInterval) {
+                clearInterval(waitingInterval);
+                waitingInterval = null;
+            }
+            if (ui.livePrompt) ui.livePrompt.classList.add('hidden-ui');
+        }
+
+        // Adaptive Camera Acquisition (720p HD Default)
         async function getMediaStream(targetQuality, facingConstraint) {
             const chosenFacing = facingConstraint || (isFront ? "user" : "environment");
             const quality = targetQuality || ui.qualitySelector.value || "720p";
@@ -569,7 +568,7 @@
             }
         }
 
-        // On-the-fly 720p/1080p Quality Switcher inside call
+        // On-the-fly Resolution Switcher Inside Call
         ui.qualitySelector.addEventListener('change', async () => {
             if (!localStream) return;
             const newStream = await getMediaStream(ui.qualitySelector.value);
@@ -618,7 +617,6 @@
             ui.home.classList.add('hidden-ui');
             if (ui.homeTicker) ui.homeTicker.classList.add('hidden-ui');
             if (ui.shareTicker) ui.shareTicker.classList.add('hidden-ui');
-            if (ui.livePrompt) ui.livePrompt.classList.add('hidden-ui');
 
             ui.call.classList.remove('hidden-ui');
             ui.controls.classList.add('hidden-ui');
@@ -643,6 +641,8 @@
                 return;
             }
 
+            startWaitingLoop();
+
             ui.spinnerText.innerText = "Finding Match...";
             socket.emit('join', {
                 myGender: document.getElementById('myGender').value,
@@ -654,6 +654,7 @@
         socket.on('matched', async (data) => {
             if (currentState !== 'SEARCHING') { socket.emit('skip'); return; }
 
+            stopWaitingLoop();
             currentState = 'CONNECTED';
             partnerId = data.partnerId;
             ui.btnNext.disabled = false;
@@ -668,7 +669,7 @@
 
             addSystemMsg("Stranger connected. Say Hi!");
 
-            createPeerConnection(currentSessionId);
+            await createPeerConnection(currentSessionId);
 
             if (localStream) {
                 localStream.getTracks().forEach(track => {
@@ -695,11 +696,25 @@
         });
 
         // =================================================================
-        // DEFINITIVE WEBRTC ENGINE: RE-CREATES STREAM SINK ON VIDEO TRACK
+        // DEFINITIVE WEBRTC ENGINE: VIDEO-FIRST DECODE & AUTOPLAY GUARD
         // =================================================================
-        function createPeerConnection(sessionId) {
+        async function fetchIceConfig() {
+            try {
+                const res = await fetch('/api/ice-config');
+                const data = await res.json();
+                if (data && data.iceServers) return data.iceServers;
+            } catch(e) {}
+            return [
+                { urls: "stun:stun.l.google.com:19302" },
+                { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
+            ];
+        }
+
+        async function createPeerConnection(sessionId) {
+            const iceServers = await fetchIceConfig();
+
             peerConn = new RTCPeerConnection({
-                iceServers: RELIABLE_ICE_SERVERS,
+                iceServers: iceServers,
                 iceTransportPolicy: "all",
                 bundlePolicy: "max-bundle",
                 rtcpMuxPolicy: "require",
@@ -712,7 +727,6 @@
                 }
             };
 
-            // BULLETPROOF ONTRACK PIPELINE: DIRECT NATIVE ATTACHMENT
             peerConn.ontrack = (event) => {
                 if (sessionId !== currentSessionId) return;
 
@@ -732,25 +746,27 @@
                     }
                 }
 
-                const triggerPlay = () => {
-                    const playPromise = remoteVid.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            ui.unmuteFallback.classList.add('hidden-ui');
-                        }).catch(() => {
-                            // Autoplay audio blocked by Safari/MacBook -> Mute to render video frames!
-                            remoteVid.muted = true;
-                            remoteVid.play().then(() => {
-                                ui.unmuteFallback.classList.remove('hidden-ui');
-                            }).catch(() => {});
-                        });
-                    }
+                // PRIORITY 2: Remote video MUST start muted to guarantee visual frame decoding
+                remoteVid.muted = true;
+                const playPromise = remoteVid.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => console.warn("Video muted play notice:", e));
+                }
+
+                // Unmute audio only after the first REAL video frame is decoded and painted
+                const onFirstRenderedFrame = () => {
+                    attemptAudioUnmute();
                 };
 
-                event.track.onunmute = triggerPlay;
-                remoteVid.onloadedmetadata = triggerPlay;
-                remoteVid.oncanplay = triggerPlay;
-                triggerPlay();
+                if ('requestVideoFrameCallback' in remoteVid) {
+                    remoteVid.requestVideoFrameCallback(onFirstRenderedFrame);
+                } else {
+                    remoteVid.onloadeddata = onFirstRenderedFrame;
+                }
+
+                event.track.onunmute = () => {
+                    remoteVid.play().catch(() => {});
+                };
             };
 
             peerConn.onicecandidate = (e) => {
@@ -761,18 +777,31 @@
             };
         }
 
-        ui.unmuteFallback.addEventListener('click', () => {
+        function attemptAudioUnmute() {
+            if (!ui.remoteVid || currentState !== 'CONNECTED') return;
             ui.remoteVid.muted = false;
-            ui.unmuteFallback.classList.add('hidden-ui');
-        });
+            ui.remoteVid.play().then(() => {
+                ui.unmuteFallback.classList.add('hidden-ui');
+            }).catch(() => {
+                // Browser Autoplay Policy blocked unmuted playback -> Keep video rendering and show tap button
+                ui.remoteVid.muted = true;
+                ui.unmuteFallback.classList.remove('hidden-ui');
+            });
+        }
 
-        // 1-Tap Unmute Anywhere On Screen
-        document.addEventListener('click', () => {
-            if (ui.remoteVid && ui.remoteVid.srcObject && ui.remoteVid.muted && currentState === 'CONNECTED') {
+        ui.unmuteFallback.addEventListener('click', () => {
+            if (ui.remoteVid) {
                 ui.remoteVid.muted = false;
                 ui.remoteVid.play().then(() => {
                     ui.unmuteFallback.classList.add('hidden-ui');
                 }).catch(() => {});
+            }
+        });
+
+        // 1-Tap Unmute fallback anywhere on screen
+        document.addEventListener('click', () => {
+            if (ui.remoteVid && ui.remoteVid.muted && currentState === 'CONNECTED') {
+                attemptAudioUnmute();
             }
         }, { passive: true });
 
@@ -845,8 +874,7 @@
                 peerConn = null;
             }
             if (ui.remoteVid) {
-                ui.remoteVid.onloadedmetadata = null;
-                ui.remoteVid.oncanplay = null;
+                ui.remoteVid.onloadeddata = null;
                 ui.remoteVid.pause();
                 ui.remoteVid.srcObject = null;
             }
@@ -857,6 +885,7 @@
         }
 
         function fullNukeAndReset() {
+            stopWaitingLoop();
             currentState = 'IDLE';
             currentSessionId++;
             socket.emit('skip');
@@ -1086,6 +1115,37 @@
             ui.localVidBox.style.right = Math.max(0, Math.min(newRight, maxRight)) + 'px';
             ui.localVidBox.style.bottom = Math.max(0, Math.min(newBottom, maxBottom)) + 'px';
         }
+
+        // Live Diagnostic Tool (Run from Console)
+        window.runWebRTCDiagnostics = async () => {
+            if (!peerConn) return console.warn("No active PeerConnection.");
+            const stats = await peerConn.getStats();
+            let videoStats = { bytesReceived: 0, framesDecoded: 0, packetsReceived: 0 };
+            let selectedCandidatePair = "None";
+
+            stats.forEach(report => {
+                if (report.type === 'inbound-rtp' && report.kind === 'video') {
+                    videoStats.bytesReceived = report.bytesReceived || 0;
+                    videoStats.framesDecoded = report.framesDecoded || 0;
+                    videoStats.packetsReceived = report.packetsReceived || 0;
+                }
+                if (report.type === 'transport' && report.selectedCandidatePairId) {
+                    selectedCandidatePair = report.selectedCandidatePairId;
+                }
+            });
+
+            console.table({
+                "ICE Connection State": peerConn.iceConnectionState,
+                "Signaling State": peerConn.signalingState,
+                "Inbound Packets": videoStats.packetsReceived,
+                "Frames Decoded": videoStats.framesDecoded,
+                "Bytes Received": videoStats.bytesReceived,
+                "Video Width": ui.remoteVid.videoWidth,
+                "Video Height": ui.remoteVid.videoHeight,
+                "Video Paused": ui.remoteVid.paused,
+                "Video Muted": ui.remoteVid.muted
+            });
+        };
     </script>
 </body>
 </html>
