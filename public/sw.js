@@ -1,5 +1,4 @@
-// Service Worker Cache Lifecycle - Safe Production Versioning
-const CACHE_NAME = 'rm-v2.3.0';
+const CACHE_NAME = 'rm-v2.4.0';
 
 self.addEventListener('install', (event) => {
     self.skipWaiting();
@@ -19,7 +18,6 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Network-first strategy for dynamic WebRTC app
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET' || event.request.url.includes('/socket.io/') || event.request.url.includes('/api/')) {
         return;
