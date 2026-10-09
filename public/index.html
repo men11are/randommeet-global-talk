@@ -10,17 +10,16 @@
     <title>RandomMeet — Premium Global Video Chat</title>
     <meta name="description" content="Connect instantly with random people around the world in high-definition video. Free, anonymous, secure live chat.">
     
-    <!-- Favicon & Site Icons (Configured for Browser Tabs & Google Search Crawlers) -->
-    <link rel="icon" type="image/svg+xml" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
-    <link rel="shortcut icon" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
-    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
-    <link rel="manifest" href="/manifest.json">
+    <!-- Favicon & Search Engine Metadata (Priority 5) -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff">
+    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff">
     <meta name="theme-color" content="#07090e">
 
     <!-- Open Graph Metadata -->
     <meta property="og:title" content="RandomMeet — Premium Global Video Chat">
     <meta property="og:description" content="Free, instant, anonymous 720p HD peer-to-peer video chat with people globally.">
-    <meta property="og:image" content="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff">
+    <meta property="og:image" content="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff">
     <meta property="og:type" content="website">
 
     <!-- Google Analytics -->
@@ -58,7 +57,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(225, 29, 72, 0.5); border-radius: 999px; }
 
-        /* Original Preserved Background Image & Blur Layer */
+        /* Priority 4: Restored Original Background Layer */
         .bg-premium-image {
             position: fixed; inset: 0;
             background-image: url('https://images.unsplash.com/photo-1542224566-6e85f2e6772f?q=80&w=2000&auto=format&fit=crop');
@@ -79,7 +78,6 @@
             user-select: none; z-index: -2; letter-spacing: 6px;
         }
 
-        /* Luxury Gold + Red Blend Border System */
         .gold-red-border {
             border: 1px solid transparent;
             background: linear-gradient(rgba(13, 17, 28, 0.85), rgba(13, 17, 28, 0.92)) padding-box,
@@ -105,9 +103,7 @@
             box-shadow: 0 0 25px rgba(225, 29, 72, 0.7), 0 0 10px rgba(245, 158, 11, 0.5);
             transform: translateY(-1px);
         }
-        .primary-glow-btn:active {
-            transform: scale(0.97);
-        }
+        .primary-glow-btn:active { transform: scale(0.97); }
 
         .action-ctrl-btn {
             background: rgba(15, 23, 42, 0.75);
@@ -121,9 +117,7 @@
             background: rgba(225, 29, 72, 0.2);
             transform: translateY(-2px);
         }
-        .action-ctrl-btn:active {
-            transform: scale(0.92);
-        }
+        .action-ctrl-btn:active { transform: scale(0.92); }
 
         .brand-text-gradient {
             background: linear-gradient(135deg, #ffffff 30%, #f59e0b 70%, #e11d48 100%);
@@ -151,7 +145,6 @@
 
         .true-mirror { transform: scaleX(-1); }
 
-        /* Draggable PIP Local Camera */
         #localVideoContainer {
             position: absolute; bottom: 210px; right: 16px;
             width: 105px; height: 145px; border-radius: 16px;
@@ -160,7 +153,7 @@
             background: linear-gradient(#000, #000) padding-box,
                         linear-gradient(135deg, #f59e0b, #e11d48) border-box;
             box-shadow: 0 10px 30px rgba(0,0,0,0.7); cursor: grab;
-            touch-action: none; transition: border-color 0.2s;
+            touch-action: none;
         }
         #localVideoContainer:active { cursor: grabbing; }
 
@@ -189,17 +182,15 @@
 </head>
 <body class="flex flex-col relative select-none">
 
-    <!-- Original Background Layers -->
     <div class="bg-premium-image"></div>
     <div class="bg-theme-overlay"></div>
     <div class="bg-watermark">RANDOMMEET</div>
 
-    <!-- Splash Screen -->
     <div id="splashScreen">
         <div class="splash-text">RANDOMMEET</div>
     </div>
 
-    <!-- Full Screen Image Modal -->
+    <!-- Media Full Screen Viewer Modal -->
     <div id="imageViewerModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[10000] hidden-ui flex flex-col items-center justify-center p-4">
         <img id="fullScreenImg" src="" alt="Full Screen Preview" class="max-w-[95vw] max-h-[85vh] object-contain rounded-xl shadow-2xl">
         <div class="mt-4 flex gap-4">
@@ -208,7 +199,7 @@
         </div>
     </div>
 
-    <!-- Mobile-Responsive Donation Modal (All Original Options Intact) -->
+    <!-- Preserved Donation Modal -->
     <div id="donationModal" class="hidden-ui fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-3">
         <div class="gold-red-border w-full max-w-sm max-h-[85vh] rounded-3xl p-5 relative flex flex-col shadow-2xl">
             <button onclick="document.getElementById('donationModal').classList.add('hidden-ui')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg z-50">✕</button>
@@ -221,7 +212,6 @@
                     <span class="text-amber-400 font-bold">🌍 Global:</span> Buy Coffee or send $5+ Crypto. 🙏
                 </p>
 
-                <!-- 1. UPI India -->
                 <div class="border border-emerald-500/40 rounded-2xl p-2.5 bg-emerald-950/20">
                     <p class="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider mb-1">1. UPI (India)</p>
                     <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-emerald-500/30">
@@ -230,13 +220,11 @@
                     </div>
                 </div>
 
-                <!-- 2. Buy me a Coffee -->
                 <div class="border border-amber-500/40 rounded-2xl p-2.5 bg-amber-950/20">
                     <p class="text-[10px] text-amber-400 font-extrabold uppercase tracking-wider mb-1">2. Global Cards / PayPal</p>
                     <a href="https://www.buymeacoffee.com/randommeet" target="_blank" class="interactive-btn block w-full primary-glow-btn text-center py-2 rounded-xl text-xs font-bold text-white transition">☕ Buy me a Coffee</a>
                 </div>
 
-                <!-- 3. Crypto Options -->
                 <div class="border border-rose-500/40 rounded-2xl p-2.5 bg-rose-950/20 space-y-2">
                     <p class="text-[10px] text-rose-400 font-extrabold uppercase tracking-wider mb-1">3. Crypto (Instant)</p>
                     <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-rose-500/30">
@@ -258,10 +246,10 @@
         </div>
     </div>
 
-    <!-- Header Navigation (Clean Home View) -->
+    <!-- Header Navigation -->
     <header class="w-full shrink-0 z-40 px-4 py-2.5 flex items-center justify-between border-b border-white/[0.08] bg-slate-950/70 backdrop-blur-lg">
         <div id="logoBtn" class="flex items-center gap-2 cursor-pointer">
-            <img src="https://api.dicebear.com/7.x/initials/svg?seed=RM&backgroundColor=e11d48&textColor=ffffff" alt="Logo" class="w-7 h-7 rounded-full shadow-lg border border-amber-500/40">
+            <img src="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff" alt="Logo" class="w-7 h-7 rounded-full shadow-lg border border-amber-500/40">
             <h1 class="text-lg font-extrabold tracking-wider brand-text-gradient uppercase">RandomMeet</h1>
         </div>
         <div class="flex items-center gap-2">
@@ -273,7 +261,7 @@
         </div>
     </header>
 
-    <!-- Preserved Tickers (NordVPN Cleanly Removed) -->
+    <!-- Preserved Tickers -->
     <div id="homeTicker" class="ticker-wrap bg-slate-950/60 border-b border-rose-500/20 py-1 text-[11px] font-semibold text-rose-400">
         <div class="ticker-content">
             🚨 This app is completely free! Support the solo developer to manage high server costs. <span class="underline">Click 'Donate' above to help!</span> 🙏
@@ -285,9 +273,9 @@
         </div>
     </div>
 
-    <!-- Home View -->
+    <!-- Home Screen -->
     <main id="homeScreen" class="flex-1 flex flex-col items-center justify-center px-4 relative z-10 w-full">
-        <!-- Restored "Someone is waiting" Banner Loop -->
+        <!-- Priority 3: Restored "Someone is waiting" Notification Loop -->
         <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40">
             <span class="cursor-pointer" onclick="document.getElementById('startBtn').click()">🔥 Someone is waiting! Tap to match...</span>
             <button onclick="this.parentElement.classList.add('hidden-ui')" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
@@ -335,28 +323,25 @@
             </button>
         </div>
 
-        <!-- Preserved Footer -->
         <div class="absolute bottom-4 text-center w-full px-4 text-[10px] text-slate-400 z-10 font-medium">
             By entering, you take 100% legal responsibility.<br>Nudity, vulgarity, or illegal conduct is strictly prohibited.
         </div>
     </main>
 
-    <!-- Call View (STABLE FIXED LAYOUT) -->
+    <!-- Call Screen -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
-        
-        <!-- FIXED STRANGER VIDEO CANVAS (Starts Muted to Guarantee Instant Video Decode) -->
+        <!-- Priority 2: Remote video element starts muted by default to guarantee rendering -->
         <div class="fixed inset-0 z-0 bg-black flex items-center justify-center pointer-events-none">
             <video id="remoteVideo" class="w-full h-full object-cover bg-black" autoplay playsinline muted></video>
         </div>
 
-        <!-- RESTORED CONNECTED USER STATUS HEADER + QUALITY SELECTOR -->
+        <!-- Call Header -->
         <div id="callHeaderBar" class="absolute top-3 inset-x-3 z-40 flex items-center justify-between pointer-events-auto">
             <div id="strangerStatusBar" class="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 shadow-xl">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-xs font-bold text-white tracking-wide">Connected with Stranger</span>
             </div>
 
-            <!-- Quality Selector (Only inside Call Screen) -->
             <div class="flex items-center gap-2">
                 <select id="qualitySelector" class="interactive-btn px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-amber-500/40 text-[10px] font-bold text-amber-300 outline-none cursor-pointer shadow-xl">
                     <option value="720p" selected>720p HD</option>
@@ -366,27 +351,24 @@
             </div>
         </div>
 
-        <!-- Audio Unmute Fallback Pill (Appears only if browser requires gesture) -->
+        <!-- Priority 2 Fallback Button: Appears only if browser strict autoplay blocks unmuted audio -->
         <button id="unmuteFallbackBtn" class="interactive-btn absolute top-16 left-1/2 -translate-x-1/2 z-40 hidden-ui px-4 py-2 rounded-full primary-glow-btn text-white text-xs font-bold shadow-2xl backdrop-blur-md animate-bounce flex items-center gap-2">
             <span>🔊 Tap to Unmute Audio</span>
         </button>
 
-        <!-- Matchmaking Spinner Overlay -->
         <div id="searchSpinner" class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-black/95">
             <div class="w-12 h-12 border-4 border-rose-500/20 border-t-rose-500 rounded-full animate-spin"></div>
             <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-rose-500 animate-pulse">Connecting to Partner...</p>
         </div>
 
-        <!-- Draggable PIP Local Camera Box -->
+        <!-- PIP Local Camera Box -->
         <div id="localVideoContainer" class="hidden-ui">
             <video id="localVideo" class="w-full h-full object-cover true-mirror" autoplay playsinline muted></video>
             <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white">YOU</div>
         </div>
 
-        <!-- FLOATING BOTTOM CONTROLS & GLASS CHAT DECK -->
+        <!-- Floating Deck & Chat Controls -->
         <div class="fixed bottom-0 inset-x-0 z-30 flex flex-col pointer-events-none p-3 pb-safe">
-            
-            <!-- Quick Hardware Controls & Chat Toggle -->
             <div id="mediaControls" class="flex justify-center items-center gap-3 mb-2 pointer-events-auto hidden-ui">
                 <button id="muteBtn" class="action-ctrl-btn p-3 rounded-2xl text-sm" title="Toggle Mic">🎤</button>
                 <button id="camBtn" class="action-ctrl-btn p-3 rounded-2xl text-sm" title="Toggle Cam">📷</button>
@@ -394,7 +376,6 @@
                 <button id="toggleChatBtn" class="action-ctrl-btn p-3 rounded-2xl text-sm" title="Toggle Chat Panel">💬</button>
             </div>
 
-            <!-- Glass Chat Deck -->
             <div id="chatDeckContainer" class="w-full max-w-md mx-auto pointer-events-auto flex flex-col transition-all duration-300">
                 <div id="strangerCountryBox" class="text-center mb-1.5 hidden-ui">
                     <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black/60 border border-amber-500/30 text-[10px] font-semibold text-amber-300 backdrop-blur-md">
@@ -403,7 +384,6 @@
                     </span>
                 </div>
 
-                <!-- Match Switch Controls -->
                 <div class="flex gap-2 mb-2">
                     <button id="nextBtn" class="interactive-btn w-1/2 primary-glow-btn py-2.5 rounded-xl text-white font-extrabold text-xs uppercase tracking-wider">
                         Next Match ⏭
@@ -413,7 +393,6 @@
                     </button>
                 </div>
 
-                <!-- Transparent Glass Chat Window with Dedicated 'X' Button -->
                 <div id="chatWindowWrapper" class="flex flex-col">
                     <div class="flex justify-between items-center px-3 py-1.5 bg-slate-950/60 backdrop-blur-md rounded-t-2xl border-t border-x border-white/10 text-[10px] text-slate-300">
                         <span class="font-bold flex items-center gap-1.5"><span>💬</span> Live Chat</span>
@@ -423,7 +402,6 @@
                     <div id="chatBox" class="w-full max-h-[19vh] overflow-y-auto flex flex-col gap-1.5 p-2 bg-slate-950/45 backdrop-blur-2xl rounded-b-2xl border-b border-x border-white/10 scroll-smooth shadow-2xl mb-2"></div>
                 </div>
 
-                <!-- Chat Input Deck -->
                 <div class="flex items-center gap-2 bg-slate-950/65 border border-white/15 rounded-2xl p-1.5 backdrop-blur-2xl">
                     <input type="file" id="fileUpload" accept="image/*,video/*,audio/*" class="hidden-ui">
                     <button id="attachBtn" class="interactive-btn p-2 text-slate-400 hover:text-rose-400" title="Attach (Max 15MB)">📎</button>
@@ -500,12 +478,11 @@
             if (currentState !== 'IDLE') ui.endChatBtn.click();
         });
 
-        // Chat Visibility Toggles
         ui.closeChatBtn.addEventListener('click', () => ui.chatWindow.classList.add('hidden-ui'));
         ui.toggleChatBtn.addEventListener('click', () => ui.chatWindow.classList.toggle('hidden-ui'));
         ui.inputChat.addEventListener('focus', () => ui.chatWindow.classList.remove('hidden-ui'));
 
-        // "Someone is waiting" Loop (Triggered every 5 seconds during search)
+        // Priority 3: Restored "Someone is waiting" Notification Loop without leaks
         function startWaitingLoop() {
             stopWaitingLoop();
             ui.livePrompt.classList.remove('hidden-ui');
@@ -531,7 +508,6 @@
             if (ui.livePrompt) ui.livePrompt.classList.add('hidden-ui');
         }
 
-        // Adaptive Camera Acquisition (720p HD Default)
         async function getMediaStream(targetQuality, facingConstraint) {
             const chosenFacing = facingConstraint || (isFront ? "user" : "environment");
             const quality = targetQuality || ui.qualitySelector.value || "720p";
@@ -568,7 +544,6 @@
             }
         }
 
-        // On-the-fly Resolution Switcher Inside Call
         ui.qualitySelector.addEventListener('change', async () => {
             if (!localStream) return;
             const newStream = await getMediaStream(ui.qualitySelector.value);
@@ -695,9 +670,6 @@
             }
         });
 
-        // =================================================================
-        // DEFINITIVE WEBRTC ENGINE: VIDEO-FIRST DECODE & AUTOPLAY GUARD
-        // =================================================================
         async function fetchIceConfig() {
             try {
                 const res = await fetch('/api/ice-config');
@@ -706,7 +678,7 @@
             } catch(e) {}
             return [
                 { urls: "stun:stun.l.google.com:19302" },
-                { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
+                { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" }
             ];
         }
 
@@ -721,12 +693,14 @@
                 iceCandidatePoolSize: 2
             });
 
+            // Situation 5: Silent ICE Reconnect on packet loss
             peerConn.oniceconnectionstatechange = () => {
                 if (peerConn && (peerConn.iceConnectionState === 'failed' || peerConn.iceConnectionState === 'disconnected')) {
                     peerConn.restartIce();
                 }
             };
 
+            // Situations 2 & 3: Bulletproof Native ontrack & Frame Detection
             peerConn.ontrack = (event) => {
                 if (sessionId !== currentSessionId) return;
 
@@ -746,14 +720,14 @@
                     }
                 }
 
-                // PRIORITY 2: Remote video MUST start muted to guarantee visual frame decoding
+                // Remote video starts muted to guarantee zero-millisecond decoding on Safari & Mobile
                 remoteVid.muted = true;
                 const playPromise = remoteVid.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(e => console.warn("Video muted play notice:", e));
                 }
 
-                // Unmute audio only after the first REAL video frame is decoded and painted
+                // Detect first real decoded visual frame before unmuting remote audio
                 const onFirstRenderedFrame = () => {
                     attemptAudioUnmute();
                 };
@@ -783,7 +757,7 @@
             ui.remoteVid.play().then(() => {
                 ui.unmuteFallback.classList.add('hidden-ui');
             }).catch(() => {
-                // Browser Autoplay Policy blocked unmuted playback -> Keep video rendering and show tap button
+                // If browser autoplay policy blocks unmuted audio, maintain visual video and show pill
                 ui.remoteVid.muted = true;
                 ui.unmuteFallback.classList.remove('hidden-ui');
             });
@@ -798,7 +772,6 @@
             }
         });
 
-        // 1-Tap Unmute fallback anywhere on screen
         document.addEventListener('click', () => {
             if (ui.remoteVid && ui.remoteVid.muted && currentState === 'CONNECTED') {
                 attemptAudioUnmute();
@@ -922,7 +895,7 @@
             if (ui.shareTicker) ui.shareTicker.classList.remove('hidden-ui');
         }
 
-        // 30 Words Limit Messaging & 15MB Media Sharing
+        // 30 Words Limit Messaging & 15MB File Sharing
         ui.btnSend.addEventListener('click', sendMsg);
         ui.inputChat.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); sendMsg(); }
@@ -1040,7 +1013,6 @@
         });
         ui.closeImgBtn.addEventListener('click', () => ui.imgModal.classList.add('hidden-ui'));
 
-        // Controls & PIP Dragging Logic
         document.getElementById('muteBtn').addEventListener('click', (e) => {
             if (!localStream) return;
             isAudioMuted = !isAudioMuted;
@@ -1083,7 +1055,6 @@
             }
         });
 
-        // Touch & Mouse Drag for PIP Box
         let isDragging = false, startX, startY, initialRight, initialBottom;
         ui.localVidBox.addEventListener('touchstart', dragStart, {passive: false});
         ui.localVidBox.addEventListener('touchmove', drag, {passive: false});
@@ -1116,12 +1087,12 @@
             ui.localVidBox.style.bottom = Math.max(0, Math.min(newBottom, maxBottom)) + 'px';
         }
 
-        // Live Diagnostic Tool (Run from Console)
+        // Live Diagnostic Command (Accessible in DevTools Console)
         window.runWebRTCDiagnostics = async () => {
             if (!peerConn) return console.warn("No active PeerConnection.");
             const stats = await peerConn.getStats();
             let videoStats = { bytesReceived: 0, framesDecoded: 0, packetsReceived: 0 };
-            let selectedCandidatePair = "None";
+            let selectedPair = "None";
 
             stats.forEach(report => {
                 if (report.type === 'inbound-rtp' && report.kind === 'video') {
@@ -1130,7 +1101,7 @@
                     videoStats.packetsReceived = report.packetsReceived || 0;
                 }
                 if (report.type === 'transport' && report.selectedCandidatePairId) {
-                    selectedCandidatePair = report.selectedCandidatePairId;
+                    selectedPair = report.selectedCandidatePairId;
                 }
             });
 
