@@ -14,7 +14,7 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Cache control headers
+// Strict cache-busting headers
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
@@ -24,7 +24,6 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public'), { etag: false, maxAge: 0 }));
 
-// Multi-Tier Dynamic ICE Endpoint
 app.get('/api/ice-config', (req, res) => {
     const turnHost = process.env.TURN_URL || "global.relay.metered.ca";
     const turnUser = process.env.TURN_USERNAME || "eb5ef206ad4b56f7c91347f4";
@@ -60,7 +59,6 @@ function getClientIp(socket) {
     return socket.handshake.address;
 }
 
-// REAL IP CHECK: Emit 'waiting-status' only when a stranger with DIFFERENT IP is waiting
 function updateWaitingStatus() {
     io.sockets.sockets.forEach((sock) => {
         const myIp = getClientIp(sock);
