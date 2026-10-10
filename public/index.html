@@ -15,6 +15,7 @@
     <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff">
     <meta name="theme-color" content="#07090e">
 
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GJP65F2CD8"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-GJP65F2CD8');</script>
 
@@ -115,7 +116,7 @@
         }
         @keyframes hideSplash { to { display: none; z-index: -1; } }
 
-        /* Real Selfie Mirroring (Clean Natural Reflection) */
+        /* Natural Mirror View for Selfie Cam */
         .camera-mirror {
             transform: scaleX(-1) !important;
             object-fit: cover !important;
@@ -125,10 +126,10 @@
             object-fit: cover !important;
         }
 
-        /* Fixed Portrait 3:4 Box (No Squeezed or Distorted Face) */
+        /* 3:4 Aspect Ratio Local Video PIP (Eliminates Face Squeeze Distortion) */
         #localVideoContainer {
             position: absolute; bottom: 220px; right: 16px;
-            width: 110px; height: 147px; border-radius: 16px;
+            width: 108px; height: 144px; border-radius: 16px;
             overflow: hidden; z-index: 50;
             border: 2px solid transparent;
             background: linear-gradient(#000, #000) padding-box,
@@ -137,7 +138,7 @@
             touch-action: none;
         }
 
-        /* Extremely Transparent Chat */
+        /* Highly Transparent Chat Deck */
         .transparent-chat-deck {
             background: rgba(7, 9, 14, 0.18) !important;
             backdrop-filter: blur(4px);
@@ -254,6 +255,7 @@
 
     <!-- Home Screen -->
     <main id="homeScreen" class="flex-1 flex flex-col items-center justify-center px-4 relative z-10 w-full">
+        <!-- Real Stranger Waiting Notification -->
         <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40 animate-pulse">
             <span class="cursor-pointer" onclick="document.getElementById('startBtn').click()">🔥 Someone is waiting! Tap to match...</span>
             <button id="dismissPromptBtn" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
@@ -308,12 +310,12 @@
 
     <!-- Call Screen -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
-        <!-- Remote Video Layer (NO duplicate autoplay attribute to eliminate AbortError) -->
+        <!-- Remote Video Layer (No duplicate autoplay attribute = Zero AbortError) -->
         <div class="fixed inset-0 z-0 bg-black flex items-center justify-center pointer-events-none">
             <video id="remoteVideo" class="w-full h-full object-cover camera-normal" playsinline muted></video>
         </div>
 
-        <!-- Audio Element for Remote Sound -->
+        <!-- Dedicated Remote Audio Receiver -->
         <audio id="remoteAudio" playsinline></audio>
 
         <!-- Call Screen Header -->
@@ -386,11 +388,11 @@
     </main>
 
     <script>
-        // Clean unregistration of stale service worker
+        // Automatic cleanup of legacy service worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(registrations => {
-                for (let registration of registrations) {
-                    registration.unregister();
+                for (let r of registrations) {
+                    r.unregister();
                 }
             });
         }
@@ -438,6 +440,7 @@
         let currentState = 'IDLE';
         let iceQueue = [];
         let pendingOffer = null;
+        let isRestartingIce = false;
 
         let isPromptDismissedForEpisode = false;
         let promptHideTimeout = null;
@@ -448,9 +451,8 @@
             { urls: "stun:stun1.l.google.com:19302" },
             { urls: "stun:stun.relay.metered.ca:80" },
             { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+            { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" }
         ];
 
@@ -469,6 +471,7 @@
             hasActiveStrangerWaiting = !!data.hasRealStranger;
         });
 
+        // 5s Check, 3s Visibility, X-Dismissal Lifecycle
         setInterval(() => {
             if (currentState === 'CONNECTED') {
                 ui.livePrompt.classList.add('hidden-ui');
@@ -666,6 +669,7 @@
             }
         });
 
+        // Robust PeerConnection with Network-Switch Auto-Recovery
         function initPeerConnection() {
             peerConn = new RTCPeerConnection({
                 iceServers: cachedIceServers,
@@ -681,7 +685,7 @@
                     ui.remoteVid.srcObject = stream;
                     ui.remoteVid.muted = true;
                     ui.remoteVid.onloadedmetadata = () => {
-                        ui.remoteVid.play().catch(e => console.warn("Video play err:", e));
+                        ui.remoteVid.play().catch(e => console.warn("Video play notice:", e));
                     };
                 } else if (event.track.kind === 'audio') {
                     const aStream = event.streams[0] || new MediaStream([event.track]);
@@ -707,14 +711,46 @@
                 }
             };
 
+            // Seamless Network Switch (Wi-Fi <-> Cellular) - No pause / No drop
             peerConn.oniceconnectionstatechange = () => {
-                if (peerConn && (peerConn.iceConnectionState === 'failed' || peerConn.iceConnectionState === 'disconnected')) {
-                    if (typeof peerConn.restartIce === 'function') {
-                        peerConn.restartIce();
-                    }
+                console.log("ICE Connection State:", peerConn.iceConnectionState);
+                if (peerConn.iceConnectionState === 'disconnected') {
+                    setTimeout(() => {
+                        if (peerConn && peerConn.iceConnectionState === 'disconnected') {
+                            triggerSeamlessIceRestart();
+                        }
+                    }, 1500);
+                } else if (peerConn.iceConnectionState === 'failed') {
+                    triggerSeamlessIceRestart();
                 }
             };
         }
+
+        // Automatic ICE Restart without pausing or closing video
+        async function triggerSeamlessIceRestart() {
+            if (isRestartingIce || !peerConn || currentState !== 'CONNECTED' || !partnerId) return;
+            isRestartingIce = true;
+            console.log("Network switch detected: restarting ICE tunnel...");
+            try {
+                const offer = await peerConn.createOffer({ iceRestart: true });
+                await peerConn.setLocalDescription(offer);
+                socket.emit('offer', {
+                    sdp: peerConn.localDescription.sdp,
+                    type: peerConn.localDescription.type,
+                    partnerId,
+                    isIceRestart: true
+                });
+            } catch (err) {
+                console.warn("ICE restart notice:", err);
+            }
+            setTimeout(() => { isRestartingIce = false; }, 3000);
+        }
+
+        window.addEventListener('online', () => {
+            if (currentState === 'CONNECTED' && peerConn) {
+                triggerSeamlessIceRestart();
+            }
+        });
 
         function unlockAudio() {
             if (ui.remoteAud && ui.remoteAud.srcObject) {
@@ -818,6 +854,7 @@
             partnerId = null;
             pendingOffer = null;
             iceQueue = [];
+            isRestartingIce = false;
         }
 
         function fullNukeAndReset() {
@@ -1016,6 +1053,7 @@
             }
         });
 
+        // Draggable Local Video Box
         let isDragging = false, startX, startY, initialRight, initialBottom;
         ui.localVidBox.addEventListener('touchstart', dragStart, {passive: false});
         ui.localVidBox.addEventListener('touchmove', drag, {passive: false});
