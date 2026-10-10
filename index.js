@@ -14,7 +14,7 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Cache control: browser hamesha fresh code uthaye
+// Cache-busting headers
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
@@ -24,31 +24,23 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public'), { etag: false, maxAge: 0 }));
 
-// Dynamic ICE config endpoint
+// Multi-Tier Dynamic ICE Endpoint
 app.get('/api/ice-config', (req, res) => {
-    const iceServers = [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-        { urls: "stun:stun2.l.google.com:19302" }
-    ];
-
     const turnHost = process.env.TURN_URL || "global.relay.metered.ca";
     const turnUser = process.env.TURN_USERNAME || "eb5ef206ad4b56f7c91347f4";
     const turnPass = process.env.TURN_CREDENTIAL || "ELkjSHNeiKI1svYE";
 
-    // Verified Metered TCP Relays (Fixed syntax)
-    iceServers.push(
+    const iceServers = [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" },
+        { urls: "stun:stun2.l.google.com:19302" },
         { urls: `turn:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
         { urls: `turns:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
         { urls: `turn:${turnHost}:80?transport=tcp`, username: turnUser, credential: turnPass },
-        { urls: `turn:${turnHost}:3478?transport=udp`, username: turnUser, credential: turnPass }
-    );
-
-    // ExpressTURN Relay fallback
-    iceServers.push(
+        { urls: `turn:${turnHost}:3478?transport=udp`, username: turnUser, credential: turnPass },
         { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
         { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
-    );
+    ];
 
     res.json({ iceServers });
 });
@@ -60,9 +52,27 @@ app.get('*', (req, res) => {
 let waitingQueue = [];
 let activePairs = new Map();
 
+function getClientIp(socket) {
+    const forwarded = socket.handshake.headers['x-forwarded-for'];
+    if (forwarded) return forwarded.split(',')[0].trim();
+    return socket.handshake.address;
+}
+
+// REAL IP CHECK: Emit 'waiting-status' only when a stranger with a DIFFERENT IP is waiting
+function updateWaitingStatus() {
+    io.sockets.sockets.forEach((sock) => {
+        const myIp = getClientIp(sock);
+        const hasRealStranger = waitingQueue.some(u => u.socketId !== sock.id && u.ip !== myIp);
+        sock.emit('waiting-status', { hasRealStranger });
+    });
+}
+
 function broadcastLiveUsers() {
     io.emit('live-users', io.engine.clientsCount);
+    updateWaitingStatus();
 }
+
+setInterval(updateWaitingStatus, 5000);
 
 io.on('connection', (socket) => {
     broadcastLiveUsers();
@@ -70,6 +80,7 @@ io.on('connection', (socket) => {
     socket.on('ping', () => socket.emit('pong'));
 
     socket.on('join', (preferences) => {
+        const clientIp = getClientIp(socket);
         waitingQueue = waitingQueue.filter(u => u.socketId !== socket.id);
 
         let matchIndex = -1;
@@ -91,11 +102,12 @@ io.on('connection', (socket) => {
                 socket.emit('matched', { partnerId: partner.socketId, initiator: true });
                 partnerSocket.emit('matched', { partnerId: socket.id, initiator: false });
             } else {
-                waitingQueue.push({ socketId: socket.id, prefs: preferences });
+                waitingQueue.push({ socketId: socket.id, ip: clientIp, prefs: preferences });
             }
         } else {
-            waitingQueue.push({ socketId: socket.id, prefs: preferences });
+            waitingQueue.push({ socketId: socket.id, ip: clientIp, prefs: preferences });
         }
+        updateWaitingStatus();
     });
 
     socket.on('offer', (data) => {
@@ -122,6 +134,7 @@ io.on('connection', (socket) => {
             activePairs.delete(partnerId);
             io.to(partnerId).emit('peer-disconnected');
         }
+        updateWaitingStatus();
     }
 
     socket.on('skip', () => cleanUpDisconnect(socket.id));
