@@ -14,7 +14,7 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Strict cache-busting headers
+// Cache-busting headers
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
@@ -24,25 +24,53 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public'), { etag: false, maxAge: 0 }));
 
-app.get('/api/ice-config', (req, res) => {
+// Dynamic Metered ICE Engine with Geo-Optimization & Local Cache
+let cachedIceServers = null;
+let lastIceFetch = 0;
+
+async function getLiveIceServers() {
+    const now = Date.now();
+    // Cache credentials for 10 minutes to prevent API throttling
+    if (cachedIceServers && (now - lastIceFetch < 600000)) {
+        return cachedIceServers;
+    }
+
+    try {
+        const apiKey = process.env.METERED_API_KEY || "f558e7d08cc69aa9b9eb0713257cbdcfa88f";
+        const appName = process.env.METERED_APP_NAME || "randommeet";
+        const response = await fetch(`https://${appName}.metered.live/api/v1/turn/credentials?apiKey=${apiKey}`);
+        
+        if (response.ok) {
+            const servers = await response.json();
+            if (Array.isArray(servers) && servers.length > 0) {
+                cachedIceServers = servers;
+                lastIceFetch = now;
+                return cachedIceServers;
+            }
+        }
+    } catch (err) {
+        console.warn("Metered REST API notice, falling back to static relays:", err.message);
+    }
+
+    // Static Multi-Port Relays from Metered Dashboard
     const turnHost = process.env.TURN_URL || "global.relay.metered.ca";
     const turnUser = process.env.TURN_USERNAME || "eb5ef206ad4b56f7c91347f4";
     const turnPass = process.env.TURN_CREDENTIAL || "ELkjSHNeiKI1svYE";
 
-    const iceServers = [
+    return [
         { urls: "stun:stun.l.google.com:19302" },
         { urls: "stun:stun1.l.google.com:19302" },
-        { urls: "stun:stun2.l.google.com:19302" },
         { urls: "stun:stun.relay.metered.ca:80" },
         { urls: `turn:${turnHost}:80`, username: turnUser, credential: turnPass },
-        { urls: `turn:${turnHost}:443`, username: turnUser, credential: turnPass },
         { urls: `turn:${turnHost}:80?transport=tcp`, username: turnUser, credential: turnPass },
-        { urls: `turn:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
+        { urls: `turn:${turnHost}:443`, username: turnUser, credential: turnPass },
         { urls: `turns:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
-        { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
-        { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
+        { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
     ];
+}
 
+app.get('/api/ice-config', async (req, res) => {
+    const iceServers = await getLiveIceServers();
     res.json({ iceServers });
 });
 
@@ -59,6 +87,7 @@ function getClientIp(socket) {
     return socket.handshake.address;
 }
 
+// Emits waiting-status ONLY if there is another user waiting with a DIFFERENT IP
 function updateWaitingStatus() {
     io.sockets.sockets.forEach((sock) => {
         const myIp = getClientIp(sock);
