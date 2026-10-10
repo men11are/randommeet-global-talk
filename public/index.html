@@ -15,7 +15,6 @@
     <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff">
     <meta name="theme-color" content="#07090e">
 
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GJP65F2CD8"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-GJP65F2CD8');</script>
 
@@ -48,7 +47,6 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(225, 29, 72, 0.5); border-radius: 999px; }
 
-        /* Mountain Lake Backdrop */
         .bg-full-backdrop {
             position: fixed; inset: 0;
             background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2000&auto=format&fit=crop');
@@ -76,19 +74,13 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(225, 29, 72, 0.15);
         }
 
-        .interactive-btn {
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        .interactive-btn { transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
         .interactive-btn:active { transform: scale(0.96); }
 
         .primary-glow-btn {
             background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
             box-shadow: 0 4px 20px rgba(225, 29, 72, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
             border: 1px solid rgba(245, 158, 11, 0.4);
-        }
-        .primary-glow-btn:hover {
-            box-shadow: 0 0 25px rgba(225, 29, 72, 0.7), 0 0 10px rgba(245, 158, 11, 0.5);
-            transform: translateY(-1px);
         }
 
         .action-ctrl-btn {
@@ -123,17 +115,20 @@
         }
         @keyframes hideSplash { to { display: none; z-index: -1; } }
 
-        /* Camera Mirror Fix: Front Camera Is Mirrored (Like a Real Mirror) */
+        /* Real Selfie Mirroring (Clean Natural Reflection) */
         .camera-mirror {
             transform: scaleX(-1) !important;
+            object-fit: cover !important;
         }
         .camera-normal {
             transform: none !important;
+            object-fit: cover !important;
         }
 
+        /* Fixed Portrait 3:4 Box (No Squeezed or Distorted Face) */
         #localVideoContainer {
             position: absolute; bottom: 220px; right: 16px;
-            width: 105px; height: 145px; border-radius: 16px;
+            width: 110px; height: 147px; border-radius: 16px;
             overflow: hidden; z-index: 50;
             border: 2px solid transparent;
             background: linear-gradient(#000, #000) padding-box,
@@ -149,9 +144,7 @@
             -webkit-backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.12);
         }
-        .transparent-chat-box {
-            background: rgba(7, 9, 14, 0.10) !important;
-        }
+        .transparent-chat-box { background: rgba(7, 9, 14, 0.10) !important; }
 
         .chat-media-preview {
             border-radius: 10px; max-width: 100%; max-height: 160px;
@@ -185,7 +178,7 @@
         </div>
     </div>
 
-    <!-- Donation Modal -->
+    <!-- Donation Modal (Preserved UPI, Buymeacoffee, Crypto) -->
     <div id="donationModal" class="hidden-ui fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-3">
         <div class="gold-red-border w-full max-w-sm max-h-[85vh] rounded-3xl p-5 relative flex flex-col shadow-2xl">
             <button onclick="document.getElementById('donationModal').classList.add('hidden-ui')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg z-50">✕</button>
@@ -261,7 +254,6 @@
 
     <!-- Home Screen -->
     <main id="homeScreen" class="flex-1 flex flex-col items-center justify-center px-4 relative z-10 w-full">
-        <!-- Real Stranger Waiting Notification -->
         <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40 animate-pulse">
             <span class="cursor-pointer" onclick="document.getElementById('startBtn').click()">🔥 Someone is waiting! Tap to match...</span>
             <button id="dismissPromptBtn" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
@@ -316,13 +308,13 @@
 
     <!-- Call Screen -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
-        <!-- Remote Video Layer (Always Natural Orientation, Starts Muted to Guarantee 100% Visual Render) -->
+        <!-- Remote Video Layer (NO duplicate autoplay attribute to eliminate AbortError) -->
         <div class="fixed inset-0 z-0 bg-black flex items-center justify-center pointer-events-none">
-            <video id="remoteVideo" class="w-full h-full object-cover camera-normal" autoplay playsinline muted></video>
+            <video id="remoteVideo" class="w-full h-full object-cover camera-normal" playsinline muted></video>
         </div>
 
-        <!-- Hidden Remote Audio Element (Decoupled to Avoid Pausing Video) -->
-        <audio id="remoteAudio" autoplay playsinline></audio>
+        <!-- Audio Element for Remote Sound -->
+        <audio id="remoteAudio" playsinline></audio>
 
         <!-- Call Screen Header -->
         <div class="absolute top-14 inset-x-3 z-40 flex items-center justify-between pointer-events-auto">
@@ -349,9 +341,9 @@
             <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-rose-500 animate-pulse">Starting Camera (1080p FHD)...</p>
         </div>
 
-        <!-- Local Camera PIP: Restored camera-mirror for Natural Selfie Mirror View -->
+        <!-- Local Camera PIP (True Selfie Mirror View) -->
         <div id="localVideoContainer" class="hidden-ui">
-            <video id="localVideo" class="w-full h-full object-cover camera-mirror" autoplay playsinline muted></video>
+            <video id="localVideo" class="w-full h-full object-cover camera-mirror" playsinline muted></video>
             <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white">YOU</div>
         </div>
 
@@ -394,8 +386,13 @@
     </main>
 
     <script>
+        // Clean unregistration of stale service worker
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').then(r => r.update()).catch(() => {});
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
         }
 
         const socket = io();
@@ -454,9 +451,7 @@
             { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
-            { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
+            { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" }
         ];
 
         fetch('/api/ice-config').then(r => r.json()).then(data => {
@@ -474,7 +469,6 @@
             hasActiveStrangerWaiting = !!data.hasRealStranger;
         });
 
-        // 5s Check, 3s Visibility, X-Dismissal
         setInterval(() => {
             if (currentState === 'CONNECTED') {
                 ui.livePrompt.classList.add('hidden-ui');
@@ -511,7 +505,6 @@
         ui.toggleChatBtn.addEventListener('click', () => ui.chatWindow.classList.toggle('hidden-ui'));
         ui.inputChat.addEventListener('focus', () => ui.chatWindow.classList.remove('hidden-ui'));
 
-        // Default 1080p FHD Capture
         async function getMediaStream(targetQuality, facingConstraint) {
             const chosenFacing = facingConstraint || (isFront ? "user" : "environment");
             const quality = targetQuality || ui.qualitySelector.value || "1080p";
@@ -673,7 +666,6 @@
             }
         });
 
-        // Fail-Safe RTCPeerConnection Implementation
         function initPeerConnection() {
             peerConn = new RTCPeerConnection({
                 iceServers: cachedIceServers,
@@ -682,21 +674,25 @@
                 rtcpMuxPolicy: "require"
             });
 
-            // Decoupled Multi-Track Pipeline: Eliminates Autoplay Pause & Blank Screens
+            // Resilient ontrack pipeline (Safe metadata playback, Zero AbortError)
             peerConn.ontrack = (event) => {
                 if (event.track.kind === 'video') {
-                    // Video directly attached to remoteVideo
-                    ui.remoteVid.srcObject = event.streams[0] || new MediaStream([event.track]);
-                    ui.remoteVid.muted = true; // Guaranteed playback on iOS Safari & Android Chrome
-                    ui.remoteVid.play().catch(e => console.warn("Video play err:", e));
+                    const stream = event.streams[0] || new MediaStream([event.track]);
+                    ui.remoteVid.srcObject = stream;
+                    ui.remoteVid.muted = true;
+                    ui.remoteVid.onloadedmetadata = () => {
+                        ui.remoteVid.play().catch(e => console.warn("Video play err:", e));
+                    };
                 } else if (event.track.kind === 'audio') {
-                    // Audio played through audio element to prevent interrupting video decoder
-                    ui.remoteAud.srcObject = event.streams[0] || new MediaStream([event.track]);
-                    ui.remoteAud.play().then(() => {
-                        ui.unmuteFallback.classList.add('hidden-ui');
-                    }).catch(() => {
-                        ui.unmuteFallback.classList.remove('hidden-ui');
-                    });
+                    const aStream = event.streams[0] || new MediaStream([event.track]);
+                    ui.remoteAud.srcObject = aStream;
+                    ui.remoteAud.onloadedmetadata = () => {
+                        ui.remoteAud.play().then(() => {
+                            ui.unmuteFallback.classList.add('hidden-ui');
+                        }).catch(() => {
+                            ui.unmuteFallback.classList.remove('hidden-ui');
+                        });
+                    };
                 }
 
                 event.track.onunmute = () => {
@@ -860,7 +856,6 @@
             if (ui.shareTicker) ui.shareTicker.classList.remove('hidden-ui');
         }
 
-        // Chat: 30 Words Limit & 15MB File Sharing (Preserved)
         ui.btnSend.addEventListener('click', sendMsg);
         ui.inputChat.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); sendMsg(); }
@@ -1021,7 +1016,6 @@
             }
         });
 
-        // Draggable Local Video Box
         let isDragging = false, startX, startY, initialRight, initialBottom;
         ui.localVidBox.addEventListener('touchstart', dragStart, {passive: false});
         ui.localVidBox.addEventListener('touchmove', drag, {passive: false});
