@@ -14,7 +14,7 @@ const io = new Server(server, {
     pingInterval: 25000
 });
 
-// Cache-busting headers
+// Cache control headers
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
@@ -34,12 +34,14 @@ app.get('/api/ice-config', (req, res) => {
         { urls: "stun:stun.l.google.com:19302" },
         { urls: "stun:stun1.l.google.com:19302" },
         { urls: "stun:stun2.l.google.com:19302" },
+        { urls: "stun:stun.relay.metered.ca:80" },
+        { urls: `turn:${turnHost}:80`, username: turnUser, credential: turnPass },
+        { urls: `turn:${turnHost}:443`, username: turnUser, credential: turnPass },
+        { urls: `turn:${turnHost}:80?transport=tcp`, username: turnUser, credential: turnPass },
         { urls: `turn:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
         { urls: `turns:${turnHost}:443?transport=tcp`, username: turnUser, credential: turnPass },
-        { urls: `turn:${turnHost}:80?transport=tcp`, username: turnUser, credential: turnPass },
-        { urls: `turn:${turnHost}:3478?transport=udp`, username: turnUser, credential: turnPass },
-        { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
-        { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
+        { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
+        { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
     ];
 
     res.json({ iceServers });
@@ -58,12 +60,12 @@ function getClientIp(socket) {
     return socket.handshake.address;
 }
 
-// REAL IP CHECK: Emit 'waiting-status' only when a stranger with a DIFFERENT IP is waiting
+// REAL IP CHECK: Emit 'waiting-status' only when a stranger with DIFFERENT IP is waiting
 function updateWaitingStatus() {
     io.sockets.sockets.forEach((sock) => {
         const myIp = getClientIp(sock);
         const hasRealStranger = waitingQueue.some(u => u.socketId !== sock.id && u.ip !== myIp);
-        sock.emit('waiting-status', { hasRealStranger });
+        sock.emit('waiting-status', { hasRealStranger: (io.engine.clientsCount >= 2 && hasRealStranger) });
     });
 }
 
