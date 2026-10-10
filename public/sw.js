@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rm-v3.0.0';
+const CACHE_NAME = 'rm-v4.5.0';
 
 self.addEventListener('install', (event) => {
     self.skipWaiting();
@@ -13,8 +13,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Socket.io aur API ko kabhi chhedna nahi
-    if (event.request.url.includes('/socket.io/') || event.request.url.includes('/api/')) {
+    if (
+        event.request.method !== 'GET' ||
+        event.request.url.includes('/socket.io/') ||
+        event.request.url.includes('/api/')
+    ) {
         return;
     }
 
