@@ -1,4 +1,4 @@
-// Self-cleaning service worker to destroy old 503 errors
+// Self-cleaning service worker: completely destroys legacy 503 cache
 self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
@@ -10,7 +10,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Network-only passthrough: Never block HTML, APIs, or WebSockets
+// Direct passthrough: Never intercepts HTML, WebSocket, or API calls
 self.addEventListener('fetch', (event) => {
     event.respondWith(fetch(event.request));
 });
