@@ -1,31 +1,16 @@
-const CACHE_NAME = 'rm-v4.5.0';
-
+// Self-cleaning service worker to destroy old 503 errors
 self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((keys) => {
-            return Promise.all(keys.map((k) => caches.delete(k)));
-        }).then(() => self.clients.claim())
+        caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+            .then(() => self.clients.claim())
     );
 });
 
+// Network-only passthrough: Never block HTML, APIs, or WebSockets
 self.addEventListener('fetch', (event) => {
-    if (
-        event.request.method !== 'GET' ||
-        event.request.url.includes('/socket.io/') ||
-        event.request.url.includes('/api/')
-    ) {
-        return;
-    }
-
-    event.respondWith(
-        fetch(event.request).catch(async () => {
-            const cached = await caches.match(event.request);
-            if (cached) return cached;
-            return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
-        })
-    );
+    event.respondWith(fetch(event.request));
 });
