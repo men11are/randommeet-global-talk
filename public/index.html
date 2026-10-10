@@ -48,7 +48,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(225, 29, 72, 0.5); border-radius: 999px; }
 
-        /* Background: Turquoise Mountain Lake */
+        /* Mountain Lake Backdrop */
         .bg-full-backdrop {
             position: fixed; inset: 0;
             background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2000&auto=format&fit=crop');
@@ -79,9 +79,7 @@
         .interactive-btn {
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .interactive-btn:active {
-            transform: scale(0.96);
-        }
+        .interactive-btn:active { transform: scale(0.96); }
 
         .primary-glow-btn {
             background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
@@ -125,13 +123,16 @@
         }
         @keyframes hideSplash { to { display: none; z-index: -1; } }
 
-        /* Camera Movement Fix (No reverse inverted motion) */
-        .camera-natural {
+        /* Camera Mirror Fix: Front Camera Is Mirrored (Like a Real Mirror) */
+        .camera-mirror {
+            transform: scaleX(-1) !important;
+        }
+        .camera-normal {
             transform: none !important;
         }
 
         #localVideoContainer {
-            position: absolute; bottom: 215px; right: 16px;
+            position: absolute; bottom: 220px; right: 16px;
             width: 105px; height: 145px; border-radius: 16px;
             overflow: hidden; z-index: 50;
             border: 2px solid transparent;
@@ -139,6 +140,17 @@
                         linear-gradient(135deg, #f59e0b, #e11d48) border-box;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8); cursor: grab;
             touch-action: none;
+        }
+
+        /* Extremely Transparent Chat */
+        .transparent-chat-deck {
+            background: rgba(7, 9, 14, 0.18) !important;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .transparent-chat-box {
+            background: rgba(7, 9, 14, 0.10) !important;
         }
 
         .chat-media-preview {
@@ -173,7 +185,7 @@
         </div>
     </div>
 
-    <!-- Donation Modal (Preserved UPI, Buymeacoffee, Crypto) -->
+    <!-- Donation Modal -->
     <div id="donationModal" class="hidden-ui fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-3">
         <div class="gold-red-border w-full max-w-sm max-h-[85vh] rounded-3xl p-5 relative flex flex-col shadow-2xl">
             <button onclick="document.getElementById('donationModal').classList.add('hidden-ui')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg z-50">✕</button>
@@ -220,7 +232,7 @@
         </div>
     </div>
 
-    <!-- Header Navigation (Mobile Overlap Fixed) -->
+    <!-- Header Navigation (Protected Mobile Layout) -->
     <header class="w-full shrink-0 z-40 px-3 py-2 flex items-center justify-between border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
         <div id="logoBtn" class="flex items-center gap-1.5 cursor-pointer shrink-0">
             <img src="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff" alt="Logo" class="w-6 h-6 rounded-full border border-amber-500/40">
@@ -249,10 +261,10 @@
 
     <!-- Home Screen -->
     <main id="homeScreen" class="flex-1 flex flex-col items-center justify-center px-4 relative z-10 w-full">
-        <!-- REAL IP-Verified Notification: Comes ONLY when a REAL user from DIFFERENT IP is waiting -->
+        <!-- Real Stranger Waiting Notification -->
         <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40 animate-pulse">
             <span class="cursor-pointer" onclick="document.getElementById('startBtn').click()">🔥 Someone is waiting! Tap to match...</span>
-            <button onclick="this.parentElement.classList.add('hidden-ui')" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
+            <button id="dismissPromptBtn" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
         </div>
 
         <div class="gold-red-border w-full max-w-sm rounded-3xl p-6 text-center backdrop-blur-xl">
@@ -304,20 +316,21 @@
 
     <!-- Call Screen -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
-        <!-- Direct Remote Video Rendering -->
+        <!-- Remote Video Layer (Always Natural Orientation, Starts Muted to Guarantee 100% Visual Render) -->
         <div class="fixed inset-0 z-0 bg-black flex items-center justify-center pointer-events-none">
-            <video id="remoteVideo" class="w-full h-full object-cover" autoplay playsinline muted></video>
+            <video id="remoteVideo" class="w-full h-full object-cover camera-normal" autoplay playsinline muted></video>
         </div>
+
+        <!-- Hidden Remote Audio Element (Decoupled to Avoid Pausing Video) -->
+        <audio id="remoteAudio" autoplay playsinline></audio>
 
         <!-- Call Screen Header -->
         <div class="absolute top-14 inset-x-3 z-40 flex items-center justify-between pointer-events-auto">
-            <!-- Stranger Status in Left Corner -->
             <div id="strangerStatusBar" class="flex items-center gap-2 bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/40 shadow-xl">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-[11px] font-bold text-white tracking-wide">Connected with Stranger</span>
             </div>
 
-            <!-- Visible Quality Selector (Default 1080p FHD) -->
             <select id="qualitySelector" class="interactive-btn px-3 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-amber-500/50 text-[10px] font-extrabold text-amber-300 outline-none cursor-pointer shadow-xl">
                 <option value="1080p" selected>1080p FHD ⚡</option>
                 <option value="720p">720p HD</option>
@@ -325,9 +338,9 @@
             </select>
         </div>
 
-        <!-- Audio Unmute Fallback Pill -->
+        <!-- Audio Unmute Fallback Button -->
         <button id="unmuteFallbackBtn" class="interactive-btn absolute top-28 left-1/2 -translate-x-1/2 z-40 hidden-ui px-4 py-2 rounded-full primary-glow-btn text-white text-xs font-bold shadow-2xl backdrop-blur-md animate-bounce flex items-center gap-2">
-            <span>🔊 Tap to Unmute Audio</span>
+            <span>🔊 Tap for Stranger Sound</span>
         </button>
 
         <!-- Search Spinner -->
@@ -336,13 +349,13 @@
             <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-rose-500 animate-pulse">Starting Camera (1080p FHD)...</p>
         </div>
 
-        <!-- Local Camera PIP (Natural Movement - Not Inverted) -->
+        <!-- Local Camera PIP: Restored camera-mirror for Natural Selfie Mirror View -->
         <div id="localVideoContainer" class="hidden-ui">
-            <video id="localVideo" class="w-full h-full object-cover camera-natural" autoplay playsinline muted></video>
+            <video id="localVideo" class="w-full h-full object-cover camera-mirror" autoplay playsinline muted></video>
             <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white">YOU</div>
         </div>
 
-        <!-- Floating Deck & Controls -->
+        <!-- Floating Controls & Transparent Chat Deck -->
         <div class="fixed bottom-0 inset-x-0 z-30 flex flex-col pointer-events-none p-3 pb-safe">
             <div id="mediaControls" class="flex justify-center items-center gap-3 mb-2 pointer-events-auto hidden-ui">
                 <button id="muteBtn" class="action-ctrl-btn p-3 rounded-2xl text-sm" title="Toggle Mic">🎤</button>
@@ -362,17 +375,17 @@
                 </div>
 
                 <div id="chatWindowWrapper" class="flex flex-col">
-                    <div class="flex justify-between items-center px-3 py-1.5 bg-slate-950/70 backdrop-blur-md rounded-t-2xl border-t border-x border-white/10 text-[10px] text-slate-300">
+                    <div class="flex justify-between items-center px-3 py-1.5 transparent-chat-deck rounded-t-2xl text-[10px] text-slate-300 border-b-0">
                         <span class="font-bold flex items-center gap-1.5"><span>💬</span> Live Chat</span>
                         <button id="closeChatBtn" class="text-slate-400 hover:text-white font-bold px-2 py-0.5 rounded hover:bg-white/10" title="Close Chat Panel">✕</button>
                     </div>
                     
-                    <div id="chatBox" class="w-full max-h-[19vh] overflow-y-auto flex flex-col gap-1.5 p-2 bg-slate-950/50 backdrop-blur-2xl rounded-b-2xl border-b border-x border-white/10 scroll-smooth shadow-2xl mb-2"></div>
+                    <div id="chatBox" class="w-full max-h-[19vh] overflow-y-auto flex flex-col gap-1.5 p-2 transparent-chat-deck transparent-chat-box rounded-b-2xl scroll-smooth shadow-2xl mb-2 border-t-0"></div>
                 </div>
 
-                <div class="flex items-center gap-2 bg-slate-950/70 border border-white/15 rounded-2xl p-1.5 backdrop-blur-2xl">
+                <div class="flex items-center gap-2 transparent-chat-deck rounded-2xl p-1.5 shadow-2xl">
                     <input type="file" id="fileUpload" accept="image/*,video/*,audio/*" class="hidden-ui">
-                    <button id="attachBtn" class="interactive-btn p-2 text-slate-400 hover:text-rose-400" title="Attach (Max 15MB)">📎</button>
+                    <button id="attachBtn" class="interactive-btn p-2 text-slate-300 hover:text-rose-400" title="Attach (Max 15MB)">📎</button>
                     <input type="text" id="chatInput" maxlength="250" class="flex-1 bg-transparent px-2 text-xs text-white placeholder-slate-400 outline-none" placeholder="Message stranger (max 30 words)..." disabled>
                     <button id="sendBtn" class="interactive-btn px-4 py-2 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs uppercase tracking-wider" disabled>Send</button>
                 </div>
@@ -393,6 +406,7 @@
             localVid: document.getElementById('localVideo'),
             localVidBox: document.getElementById('localVideoContainer'),
             remoteVid: document.getElementById('remoteVideo'),
+            remoteAud: document.getElementById('remoteAudio'),
             chatBox: document.getElementById('chatBox'),
             chatDeck: document.getElementById('chatDeckContainer'),
             chatWindow: document.getElementById('chatWindowWrapper'),
@@ -415,6 +429,7 @@
             homeTicker: document.getElementById('homeTicker'),
             shareTicker: document.getElementById('shareTicker'),
             livePrompt: document.getElementById('livePrompt'),
+            dismissPromptBtn: document.getElementById('dismissPromptBtn'),
             qualitySelector: document.getElementById('qualitySelector'),
             strangerStatus: document.getElementById('strangerStatusBar')
         };
@@ -427,15 +442,21 @@
         let iceQueue = [];
         let pendingOffer = null;
 
-        // Instant Pre-Cached ICE Servers (Zero delay on match)
+        let isPromptDismissedForEpisode = false;
+        let promptHideTimeout = null;
+        let hasActiveStrangerWaiting = false;
+
         let cachedIceServers = [
             { urls: "stun:stun.l.google.com:19302" },
             { urls: "stun:stun1.l.google.com:19302" },
-            { urls: "stun:stun2.l.google.com:19302" },
+            { urls: "stun:stun.relay.metered.ca:80" },
+            { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+            { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+            { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
+            { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
+            { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
         ];
 
         fetch('/api/ice-config').then(r => r.json()).then(data => {
@@ -449,13 +470,32 @@
             if (el) el.innerText = count;
         });
 
-        // Backend-driven notification: Only displays if someone from DIFFERENT IP is actually waiting
         socket.on('waiting-status', (data) => {
-            if (data.hasRealStranger && (currentState === 'SEARCHING' || currentState === 'IDLE')) {
+            hasActiveStrangerWaiting = !!data.hasRealStranger;
+        });
+
+        // 5s Check, 3s Visibility, X-Dismissal
+        setInterval(() => {
+            if (currentState === 'CONNECTED') {
+                ui.livePrompt.classList.add('hidden-ui');
+                return;
+            }
+            if (hasActiveStrangerWaiting && !isPromptDismissedForEpisode) {
                 ui.livePrompt.classList.remove('hidden-ui');
+                if (promptHideTimeout) clearTimeout(promptHideTimeout);
+                promptHideTimeout = setTimeout(() => {
+                    ui.livePrompt.classList.add('hidden-ui');
+                }, 3000);
             } else {
                 ui.livePrompt.classList.add('hidden-ui');
             }
+        }, 5000);
+
+        ui.dismissPromptBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isPromptDismissedForEpisode = true;
+            if (promptHideTimeout) clearTimeout(promptHideTimeout);
+            ui.livePrompt.classList.add('hidden-ui');
         });
 
         socket.on('disconnect', () => {
@@ -478,7 +518,7 @@
 
             let idealW = 1920, idealH = 1080;
             if (quality === "720p") { idealW = 1280; idealH = 720; }
-            else if (quality === "480p") { idealW = 640; idealH = 480; }
+            else if (quality === "480p") { idealW = 854; idealH = 480; }
 
             const constraints = {
                 audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
@@ -486,6 +526,7 @@
                     facingMode: chosenFacing,
                     width: { ideal: idealW },
                     height: { ideal: idealH },
+                    aspectRatio: { ideal: 1.7777777778 },
                     frameRate: { ideal: 30, max: 30 }
                 }
             };
@@ -503,21 +544,32 @@
 
         ui.qualitySelector.addEventListener('change', async () => {
             if (!localStream) return;
-            const newStream = await getMediaStream(ui.qualitySelector.value);
-            const newTrack = newStream.getVideoTracks()[0];
-            const oldTrack = localStream.getVideoTracks()[0];
+            const chosenQuality = ui.qualitySelector.value;
+            let targetW = 1920, targetH = 1080;
+            if (chosenQuality === '720p') { targetW = 1280; targetH = 720; }
+            else if (chosenQuality === '480p') { targetW = 854; targetH = 480; }
 
-            if (newTrack && oldTrack) {
-                oldTrack.stop();
-                localStream.removeTrack(oldTrack);
-                localStream.addTrack(newTrack);
-                ui.localVid.srcObject = localStream;
-
-                if (peerConn) {
-                    const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
-                    if (sender) {
-                        await sender.replaceTrack(newTrack);
-                        addSystemMsg(`Quality set to ${ui.qualitySelector.value}`);
+            const videoTrack = localStream.getVideoTracks()[0];
+            if (videoTrack) {
+                try {
+                    await videoTrack.applyConstraints({
+                        width: { ideal: targetW },
+                        height: { ideal: targetH },
+                        aspectRatio: { ideal: 1.7777777778 }
+                    });
+                    addSystemMsg(`Quality adjusted to ${chosenQuality}`);
+                } catch (err) {
+                    const newStream = await getMediaStream(chosenQuality);
+                    const newTrack = newStream.getVideoTracks()[0];
+                    if (newTrack) {
+                        videoTrack.stop();
+                        localStream.removeTrack(videoTrack);
+                        localStream.addTrack(newTrack);
+                        ui.localVid.srcObject = localStream;
+                        if (peerConn) {
+                            const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
+                            if (sender) await sender.replaceTrack(newTrack);
+                        }
                     }
                 }
             }
@@ -541,6 +593,7 @@
             currentState = 'SEARCHING';
             partnerId = null;
             iceQueue = [];
+            isPromptDismissedForEpisode = false;
 
             ui.btnStart.disabled = true;
             ui.btnNext.disabled = false;
@@ -563,6 +616,8 @@
                     localStream = await getMediaStream();
                 }
                 ui.localVid.srcObject = localStream;
+                ui.localVid.classList.toggle('camera-mirror', isFront);
+                ui.localVid.classList.toggle('camera-normal', !isFront);
                 await ui.localVid.play().catch(() => {});
                 ui.localVidBox.classList.remove('hidden-ui');
             } catch (err) {
@@ -606,14 +661,11 @@
 
             if (data.initiator) {
                 try {
-                    const offer = await peerConn.createOffer({
-                        offerToReceiveAudio: true,
-                        offerToReceiveVideo: true
-                    });
+                    const offer = await peerConn.createOffer();
                     await peerConn.setLocalDescription(offer);
-                    socket.emit('offer', { sdp: peerConn.localDescription, partnerId });
+                    socket.emit('offer', { sdp: peerConn.localDescription.sdp, type: peerConn.localDescription.type, partnerId });
                 } catch (err) {
-                    console.error("Offer Error:", err);
+                    console.error("Offer negotiation error:", err);
                 }
             } else if (pendingOffer) {
                 await handleOffer(pendingOffer);
@@ -621,7 +673,7 @@
             }
         });
 
-        // Synchronous RTCPeerConnection Initialization (Eliminates Race Conditions)
+        // Fail-Safe RTCPeerConnection Implementation
         function initPeerConnection() {
             peerConn = new RTCPeerConnection({
                 iceServers: cachedIceServers,
@@ -630,26 +682,27 @@
                 rtcpMuxPolicy: "require"
             });
 
-            // Direct Native Stream Attachment - Resolves the Blank Screen Freeze
+            // Decoupled Multi-Track Pipeline: Eliminates Autoplay Pause & Blank Screens
             peerConn.ontrack = (event) => {
-                if (event.streams && event.streams[0]) {
-                    if (ui.remoteVid.srcObject !== event.streams[0]) {
-                        ui.remoteVid.srcObject = event.streams[0];
-                    }
+                if (event.track.kind === 'video') {
+                    // Video directly attached to remoteVideo
+                    ui.remoteVid.srcObject = event.streams[0] || new MediaStream([event.track]);
+                    ui.remoteVid.muted = true; // Guaranteed playback on iOS Safari & Android Chrome
+                    ui.remoteVid.play().catch(e => console.warn("Video play err:", e));
+                } else if (event.track.kind === 'audio') {
+                    // Audio played through audio element to prevent interrupting video decoder
+                    ui.remoteAud.srcObject = event.streams[0] || new MediaStream([event.track]);
+                    ui.remoteAud.play().then(() => {
+                        ui.unmuteFallback.classList.add('hidden-ui');
+                    }).catch(() => {
+                        ui.unmuteFallback.classList.remove('hidden-ui');
+                    });
                 }
-                
-                ui.remoteVid.muted = true; // Guarantees instant autoplay
-                ui.remoteVid.play().then(() => {
-                    setTimeout(() => {
-                        ui.remoteVid.muted = false;
-                        ui.remoteVid.play().catch(() => {
-                            ui.remoteVid.muted = true;
-                            ui.unmuteFallback.classList.remove('hidden-ui');
-                        });
-                    }, 250);
-                }).catch(() => {
-                    ui.unmuteFallback.classList.remove('hidden-ui');
-                });
+
+                event.track.onunmute = () => {
+                    if (event.track.kind === 'video') ui.remoteVid.play().catch(() => {});
+                    if (event.track.kind === 'audio') ui.remoteAud.play().catch(() => {});
+                };
             };
 
             peerConn.onicecandidate = (e) => {
@@ -660,28 +713,23 @@
 
             peerConn.oniceconnectionstatechange = () => {
                 if (peerConn && (peerConn.iceConnectionState === 'failed' || peerConn.iceConnectionState === 'disconnected')) {
-                    peerConn.restartIce();
+                    if (typeof peerConn.restartIce === 'function') {
+                        peerConn.restartIce();
+                    }
                 }
             };
         }
 
-        ui.unmuteFallback.addEventListener('click', () => {
-            if (ui.remoteVid) {
-                ui.remoteVid.muted = false;
-                ui.remoteVid.play().then(() => {
+        function unlockAudio() {
+            if (ui.remoteAud && ui.remoteAud.srcObject) {
+                ui.remoteAud.play().then(() => {
                     ui.unmuteFallback.classList.add('hidden-ui');
                 }).catch(() => {});
             }
-        });
+        }
 
-        document.addEventListener('click', () => {
-            if (ui.remoteVid && ui.remoteVid.muted && currentState === 'CONNECTED') {
-                ui.remoteVid.muted = false;
-                ui.remoteVid.play().then(() => ui.unmuteFallback.classList.add('hidden-ui')).catch(() => {
-                    ui.remoteVid.muted = true;
-                });
-            }
-        }, { passive: true });
+        ui.unmuteFallback.addEventListener('click', unlockAudio);
+        document.addEventListener('click', unlockAudio, { passive: true });
 
         socket.on('offer', async (data) => {
             if (currentState !== 'CONNECTED' || !peerConn) {
@@ -694,38 +742,50 @@
         async function handleOffer(data) {
             if (!peerConn) return;
             try {
-                await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                const sdpStr = typeof data.sdp === 'string' ? data.sdp : (data.sdp && data.sdp.sdp ? data.sdp.sdp : data.sdp);
+                const sdpType = data.type || (data.sdp && data.sdp.type) || 'offer';
+                await peerConn.setRemoteDescription(new RTCSessionDescription({ type: sdpType, sdp: sdpStr }));
 
                 while (iceQueue.length > 0) {
                     const c = iceQueue.shift();
-                    await peerConn.addIceCandidate(c).catch(() => {});
+                    if (c && c.candidate) {
+                        await peerConn.addIceCandidate(new RTCIceCandidate(c)).catch(() => {});
+                    }
                 }
 
                 const answer = await peerConn.createAnswer();
                 await peerConn.setLocalDescription(answer);
-                socket.emit('answer', { sdp: peerConn.localDescription, partnerId });
+                socket.emit('answer', { sdp: peerConn.localDescription.sdp, type: peerConn.localDescription.type, partnerId });
             } catch (err) {
-                console.error("Answer Error:", err);
+                console.error("Answer negotiation error:", err);
             }
         }
 
         socket.on('answer', async (data) => {
             try {
                 if (peerConn && peerConn.signalingState !== "closed") {
-                    await peerConn.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    const sdpStr = typeof data.sdp === 'string' ? data.sdp : (data.sdp && data.sdp.sdp ? data.sdp.sdp : data.sdp);
+                    const sdpType = data.type || (data.sdp && data.sdp.type) || 'answer';
+                    await peerConn.setRemoteDescription(new RTCSessionDescription({ type: sdpType, sdp: sdpStr }));
                     while (iceQueue.length > 0) {
                         const c = iceQueue.shift();
-                        await peerConn.addIceCandidate(c).catch(() => {});
+                        if (c && c.candidate) {
+                            await peerConn.addIceCandidate(new RTCIceCandidate(c)).catch(() => {});
+                        }
                     }
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.error("SetRemoteDescription answer error:", err);
+            }
         });
 
         socket.on('ice-candidate', async (data) => {
-            if (!data.candidate) return;
-            const c = new RTCIceCandidate(data.candidate);
+            if (!data || !data.candidate) return;
+            const c = data.candidate;
             if (peerConn && peerConn.remoteDescription && peerConn.remoteDescription.type) {
-                await peerConn.addIceCandidate(c).catch(() => {});
+                if (c && c.candidate) {
+                    await peerConn.addIceCandidate(new RTCIceCandidate(c)).catch(() => {});
+                }
             } else {
                 iceQueue.push(c);
             }
@@ -754,6 +814,10 @@
                 ui.remoteVid.pause();
                 ui.remoteVid.srcObject = null;
             }
+            if (ui.remoteAud) {
+                ui.remoteAud.pause();
+                ui.remoteAud.srcObject = null;
+            }
             ui.unmuteFallback.classList.add('hidden-ui');
             partnerId = null;
             pendingOffer = null;
@@ -762,6 +826,7 @@
 
         function fullNukeAndReset() {
             currentState = 'IDLE';
+            isPromptDismissedForEpisode = false;
             socket.emit('skip');
             killWebRTC();
 
@@ -795,7 +860,7 @@
             if (ui.shareTicker) ui.shareTicker.classList.remove('hidden-ui');
         }
 
-        // 30 Words Limit Chat & 15MB File Sharing (Preserved)
+        // Chat: 30 Words Limit & 15MB File Sharing (Preserved)
         ui.btnSend.addEventListener('click', sendMsg);
         ui.inputChat.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); sendMsg(); }
@@ -880,7 +945,7 @@
 
         function addMsg(sender, text, isMe, isVideo, isAudio) {
             const d = document.createElement('div');
-            d.className = `max-w-[85%] p-2.5 rounded-2xl ${isMe ? 'bg-rose-600/90 text-white rounded-br-none self-end shadow-md' : 'bg-slate-900/90 border border-white/10 text-slate-100 rounded-bl-none self-start backdrop-blur-md shadow-md'} text-xs leading-relaxed`;
+            d.className = `max-w-[85%] p-2 rounded-2xl ${isMe ? 'bg-rose-600/85 text-white rounded-br-none self-end shadow-md' : 'bg-slate-900/80 border border-white/10 text-slate-100 rounded-bl-none self-start backdrop-blur-md shadow-md'} text-xs leading-relaxed`;
 
             if (isVideo) {
                 d.innerHTML = `<span class="text-[9px] font-bold block mb-1 opacity-70">${escapeHTML(sender)}</span><video controls autoplay muted playsinline class="chat-media-preview"><source src="${text}"></video>`;
@@ -898,7 +963,7 @@
 
         function addSystemMsg(text) {
             const d = document.createElement('div');
-            d.className = "text-center text-[10px] font-bold text-slate-300 my-1 py-1 rounded-full mx-auto px-4 bg-slate-900/70 border border-white/10 backdrop-blur-md";
+            d.className = "text-center text-[10px] font-bold text-slate-300 my-1 py-0.5 rounded-full mx-auto px-3 bg-slate-900/60 border border-white/10 backdrop-blur-md";
             d.innerText = text;
             ui.chatBox.appendChild(d);
             setTimeout(() => ui.chatBox.scrollTop = ui.chatBox.scrollHeight, 40);
@@ -943,6 +1008,8 @@
                 localStream.removeTrack(oldVideoTrack);
                 localStream.addTrack(newTrack);
                 ui.localVid.srcObject = localStream;
+                ui.localVid.classList.toggle('camera-mirror', isFront);
+                ui.localVid.classList.toggle('camera-normal', !isFront);
 
                 if (peerConn) {
                     const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
@@ -967,7 +1034,7 @@
             isDragging = true;
             const style = window.getComputedStyle(ui.localVidBox);
             initialRight = parseInt(style.right) || 16;
-            initialBottom = parseInt(style.bottom) || 215;
+            initialBottom = parseInt(style.bottom) || 220;
             startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
             startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
         }
