@@ -116,7 +116,7 @@
         }
         @keyframes hideSplash { to { display: none; z-index: -1; } }
 
-        /* Natural Mirror View for Selfie Cam */
+        /* Aaine (Mirror) Jaisa Natural Selfie View */
         .camera-mirror {
             transform: scaleX(-1) !important;
             object-fit: cover !important;
@@ -126,7 +126,15 @@
             object-fit: cover !important;
         }
 
-        /* 3:4 Aspect Ratio Local Video PIP (Eliminates Face Squeeze Distortion) */
+        /* Responsive Framing: Full uncropped view by default */
+        .video-contain {
+            object-fit: contain !important;
+        }
+        .video-cover {
+            object-fit: cover !important;
+        }
+
+        /* 3:4 Aspect Ratio PIP Container (No Squeeze / No Distortion) */
         #localVideoContainer {
             position: absolute; bottom: 220px; right: 16px;
             width: 108px; height: 144px; border-radius: 16px;
@@ -226,7 +234,7 @@
         </div>
     </div>
 
-    <!-- Header Navigation (Protected Mobile Layout) -->
+    <!-- Header Navigation -->
     <header class="w-full shrink-0 z-40 px-3 py-2 flex items-center justify-between border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
         <div id="logoBtn" class="flex items-center gap-1.5 cursor-pointer shrink-0">
             <img src="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff" alt="Logo" class="w-6 h-6 rounded-full border border-amber-500/40">
@@ -255,8 +263,8 @@
 
     <!-- Home Screen -->
     <main id="homeScreen" class="flex-1 flex flex-col items-center justify-center px-4 relative z-10 w-full">
-        <!-- Real Stranger Waiting Notification -->
-        <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40 animate-pulse">
+        <!-- 5s Interval & 3s Visibility Waiting Notification (When >= 2 Live Users) -->
+        <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40 animate-pulse transition-all">
             <span class="cursor-pointer" onclick="document.getElementById('startBtn').click()">🔥 Someone is waiting! Tap to match...</span>
             <button id="dismissPromptBtn" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
         </div>
@@ -310,26 +318,33 @@
 
     <!-- Call Screen -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
-        <!-- Remote Video Layer (No duplicate autoplay attribute = Zero AbortError) -->
+        <!-- Remote Video Layer (Uncropped 'video-contain' by default: Full face & body visible on any device) -->
         <div class="fixed inset-0 z-0 bg-black flex items-center justify-center pointer-events-none">
-            <video id="remoteVideo" class="w-full h-full object-cover camera-normal" playsinline muted></video>
+            <video id="remoteVideo" class="w-full h-full video-contain camera-normal" playsinline muted></video>
         </div>
 
         <!-- Dedicated Remote Audio Receiver -->
         <audio id="remoteAudio" playsinline></audio>
 
         <!-- Call Screen Header -->
-        <div class="absolute top-14 inset-x-3 z-40 flex items-center justify-between pointer-events-auto">
-            <div id="strangerStatusBar" class="flex items-center gap-2 bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/40 shadow-xl">
+        <div class="absolute top-14 inset-x-3 z-40 flex items-center justify-between pointer-events-auto gap-2">
+            <div id="strangerStatusBar" class="flex items-center gap-1.5 bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/40 shadow-xl">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="text-[11px] font-bold text-white tracking-wide">Connected with Stranger</span>
+                <span class="text-[10px] sm:text-[11px] font-bold text-white tracking-wide">Connected with Stranger</span>
             </div>
 
-            <select id="qualitySelector" class="interactive-btn px-3 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-amber-500/50 text-[10px] font-extrabold text-amber-300 outline-none cursor-pointer shadow-xl">
-                <option value="1080p" selected>1080p FHD ⚡</option>
-                <option value="720p">720p HD</option>
-                <option value="480p">480p Saver</option>
-            </select>
+            <div class="flex items-center gap-1.5">
+                <!-- Fit / Fill Mode Toggle Button -->
+                <button id="zoomToggleBtn" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/20 text-[9px] sm:text-[10px] font-bold text-slate-200 shadow-xl">
+                    🔲 Fit
+                </button>
+
+                <select id="qualitySelector" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-amber-500/50 text-[9px] sm:text-[10px] font-extrabold text-amber-300 outline-none cursor-pointer shadow-xl">
+                    <option value="1080p" selected>1080p FHD ⚡</option>
+                    <option value="720p">720p HD</option>
+                    <option value="480p">480p Saver</option>
+                </select>
+            </div>
         </div>
 
         <!-- Audio Unmute Fallback Button -->
@@ -430,7 +445,8 @@
             livePrompt: document.getElementById('livePrompt'),
             dismissPromptBtn: document.getElementById('dismissPromptBtn'),
             qualitySelector: document.getElementById('qualitySelector'),
-            strangerStatus: document.getElementById('strangerStatusBar')
+            strangerStatus: document.getElementById('strangerStatusBar'),
+            zoomToggleBtn: document.getElementById('zoomToggleBtn')
         };
 
         let localStream = null;
@@ -441,9 +457,12 @@
         let iceQueue = [];
         let pendingOffer = null;
         let isRestartingIce = false;
+        let isCoverMode = false;
 
+        // Waiting Notification States
         let isPromptDismissedForEpisode = false;
         let promptHideTimeout = null;
+        let currentLiveCount = 0;
         let hasActiveStrangerWaiting = false;
 
         let cachedIceServers = [
@@ -462,37 +481,58 @@
 
         setInterval(() => { if (socket.connected) socket.emit('ping'); }, 20000);
 
+        // Feature 3: Updated Waiting Notification (5s repeat, 3s duration, >= 2 live users)
+        function triggerWaitingPromptCycle() {
+            if (currentState !== 'IDLE' || isPromptDismissedForEpisode) {
+                ui.livePrompt.classList.add('hidden-ui');
+                return;
+            }
+
+            // Show prompt if 2 or more users are live on the website
+            if (currentLiveCount >= 2 || hasActiveStrangerWaiting) {
+                ui.livePrompt.classList.remove('hidden-ui');
+                if (promptHideTimeout) clearTimeout(promptHideTimeout);
+                promptHideTimeout = setTimeout(() => {
+                    ui.livePrompt.classList.add('hidden-ui');
+                }, 3000); // Stays visible for 3 seconds
+            } else {
+                ui.livePrompt.classList.add('hidden-ui');
+            }
+        }
+
         socket.on('live-users', (count) => {
+            currentLiveCount = count;
             const el = document.getElementById('liveUsersCount');
             if (el) el.innerText = count;
+            if (currentLiveCount < 2) ui.livePrompt.classList.add('hidden-ui');
         });
 
         socket.on('waiting-status', (data) => {
             hasActiveStrangerWaiting = !!data.hasRealStranger;
         });
 
-        // 5s Check, 3s Visibility, X-Dismissal Lifecycle
-        setInterval(() => {
-            if (currentState === 'CONNECTED') {
-                ui.livePrompt.classList.add('hidden-ui');
-                return;
-            }
-            if (hasActiveStrangerWaiting && !isPromptDismissedForEpisode) {
-                ui.livePrompt.classList.remove('hidden-ui');
-                if (promptHideTimeout) clearTimeout(promptHideTimeout);
-                promptHideTimeout = setTimeout(() => {
-                    ui.livePrompt.classList.add('hidden-ui');
-                }, 3000);
-            } else {
-                ui.livePrompt.classList.add('hidden-ui');
-            }
-        }, 5000);
+        // Ticks every 5 seconds
+        setInterval(triggerWaitingPromptCycle, 5000);
 
         ui.dismissPromptBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             isPromptDismissedForEpisode = true;
             if (promptHideTimeout) clearTimeout(promptHideTimeout);
             ui.livePrompt.classList.add('hidden-ui');
+        });
+
+        // Fit / Fill View Toggle (Fix for zoomed-in face on all screens)
+        ui.zoomToggleBtn.addEventListener('click', () => {
+            isCoverMode = !isCoverMode;
+            if (isCoverMode) {
+                ui.remoteVid.classList.remove('video-contain');
+                ui.remoteVid.classList.add('video-cover');
+                ui.zoomToggleBtn.innerText = '🔳 Fill';
+            } else {
+                ui.remoteVid.classList.remove('video-cover');
+                ui.remoteVid.classList.add('video-contain');
+                ui.zoomToggleBtn.innerText = '🔲 Fit';
+            }
         });
 
         socket.on('disconnect', () => {
@@ -508,6 +548,7 @@
         ui.toggleChatBtn.addEventListener('click', () => ui.chatWindow.classList.toggle('hidden-ui'));
         ui.inputChat.addEventListener('focus', () => ui.chatWindow.classList.remove('hidden-ui'));
 
+        // Feature 1 & 2: Dynamic Resolution & Standard Noise Cancellation
         async function getMediaStream(targetQuality, facingConstraint) {
             const chosenFacing = facingConstraint || (isFront ? "user" : "environment");
             const quality = targetQuality || ui.qualitySelector.value || "1080p";
@@ -516,24 +557,46 @@
             if (quality === "720p") { idealW = 1280; idealH = 720; }
             else if (quality === "480p") { idealW = 854; idealH = 480; }
 
-            const constraints = {
-                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-                video: {
-                    facingMode: chosenFacing,
-                    width: { ideal: idealW },
-                    height: { ideal: idealH },
-                    aspectRatio: { ideal: 1.7777777778 },
-                    frameRate: { ideal: 30, max: 30 }
-                }
+            const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (window.innerWidth < window.innerHeight && window.innerWidth < 768);
+
+            // Responsive Video Constraints (No sensor crop zoom on mobile portrait)
+            let videoConstraints = {
+                facingMode: chosenFacing,
+                frameRate: { ideal: 30, max: 30 }
+            };
+
+            if (isMobileDevice) {
+                // Mobile Portrait: height is long dimension (1920), width is short dimension (1080)
+                videoConstraints.width = { ideal: idealH };
+                videoConstraints.height = { ideal: idealW };
+                videoConstraints.aspectRatio = { ideal: 0.5625 };
+            } else {
+                // Laptop / Desktop: standard 16:9 widescreen
+                videoConstraints.width = { ideal: idealW };
+                videoConstraints.height = { ideal: idealH };
+                videoConstraints.aspectRatio = { ideal: 1.7777777778 };
+            }
+
+            // Balanced Standard Noise Cancellation (Suppresses background noise without muting user)
+            const audioConstraints = {
+                echoCancellation: { ideal: true },
+                noiseSuppression: { ideal: true },
+                autoGainControl: { ideal: true }
             };
 
             try {
-                return await navigator.mediaDevices.getUserMedia(constraints);
+                return await navigator.mediaDevices.getUserMedia({
+                    audio: audioConstraints,
+                    video: videoConstraints
+                });
             } catch (e1) {
                 try {
-                    return await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: true });
+                    return await navigator.mediaDevices.getUserMedia({
+                        audio: audioConstraints,
+                        video: { facingMode: chosenFacing, width: { ideal: 1280 }, height: { ideal: 720 } }
+                    });
                 } catch (e2) {
-                    return await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    return await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
                 }
             }
         }
@@ -550,8 +613,7 @@
                 try {
                     await videoTrack.applyConstraints({
                         width: { ideal: targetW },
-                        height: { ideal: targetH },
-                        aspectRatio: { ideal: 1.7777777778 }
+                        height: { ideal: targetH }
                     });
                     addSystemMsg(`Quality adjusted to ${chosenQuality}`);
                 } catch (err) {
@@ -594,6 +656,7 @@
             ui.btnStart.disabled = true;
             ui.btnNext.disabled = false;
             ui.home.classList.add('hidden-ui');
+            ui.livePrompt.classList.add('hidden-ui');
             if (ui.homeTicker) ui.homeTicker.classList.add('hidden-ui');
             if (ui.shareTicker) ui.shareTicker.classList.add('hidden-ui');
 
@@ -726,7 +789,6 @@
             };
         }
 
-        // Automatic ICE Restart without pausing or closing video
         async function triggerSeamlessIceRestart() {
             if (isRestartingIce || !peerConn || currentState !== 'CONNECTED' || !partnerId) return;
             isRestartingIce = true;
@@ -893,6 +955,7 @@
             if (ui.shareTicker) ui.shareTicker.classList.remove('hidden-ui');
         }
 
+        // Chat: 30 Words Limit & 15MB File Sharing (Preserved)
         ui.btnSend.addEventListener('click', sendMsg);
         ui.inputChat.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); sendMsg(); }
