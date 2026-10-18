@@ -11,9 +11,9 @@
     <meta name="description" content="Connect instantly with random people globally in 1080p Full HD video. Free, anonymous, secure live chat.">
     
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="192x192" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff">
-    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff">
-    <meta name="theme-color" content="#07090e">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=ea580c&textColor=ffffff">
+    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=ea580c&textColor=ffffff">
+    <meta name="theme-color" content="#14110f">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GJP65F2CD8"></script>
@@ -27,15 +27,17 @@
     
     <style>
         :root {
-            --bg-base: #07090e;
-            --brand-primary: #e11d48;
-            --brand-gold: #f59e0b;
+            --bg-core-base: #13100e;
+            --core-orange: #ea580c;
+            --core-amber: #f59e0b;
+            --core-copper: #c2410c;
+            --core-slate: #1e3a4c;
         }
 
         html, body {
             margin: 0; padding: 0;
             width: 100%; height: 100dvh;
-            background-color: var(--bg-base);
+            background-color: var(--bg-core-base);
             color: #f8fafc;
             font-family: 'Outfit', sans-serif;
             overflow: hidden;
@@ -44,120 +46,165 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(225, 29, 72, 0.5); border-radius: 999px; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(20, 17, 15, 0.6); }
+        ::-webkit-scrollbar-thumb { background: rgba(234, 88, 12, 0.55); border-radius: 999px; }
 
+        /* CoreDAO-Inspired Warm Amber/Orange + Cool Slate Atmospheric Backdrop */
         .bg-full-backdrop {
             position: fixed; inset: 0;
-            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2000&auto=format&fit=crop');
-            background-size: cover; background-position: center;
+            background:
+                radial-gradient(circle at 8% 92%, rgba(234, 88, 12, 0.82) 0%, rgba(194, 65, 12, 0.48) 28%, rgba(124, 45, 18, 0.20) 52%, transparent 72%),
+                radial-gradient(circle at 26% 58%, rgba(217, 119, 6, 0.28) 0%, transparent 50%),
+                radial-gradient(circle at 90% 16%, rgba(56, 189, 248, 0.18) 0%, rgba(30, 58, 76, 0.42) 36%, transparent 66%),
+                radial-gradient(circle at 75% 75%, rgba(15, 23, 42, 0.65) 0%, transparent 60%),
+                linear-gradient(135deg, #17120f 0%, #211712 38%, #16181d 74%, #0f1722 100%);
             z-index: -4; pointer-events: none;
         }
+
         .bg-dark-tint {
             position: fixed; inset: 0;
-            background: radial-gradient(circle at 50% 20%, rgba(225, 29, 72, 0.15), rgba(7, 9, 14, 0.90) 80%);
-            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
             z-index: -3; pointer-events: none;
         }
-        .bg-watermark {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(-25deg);
-            font-size: 16vw; font-weight: 900; color: #ffffff;
-            opacity: 0.03; white-space: nowrap; pointer-events: none;
-            user-select: none; z-index: -2; letter-spacing: 6px;
+
+        /* 3D Isometric Hexagon Cube Background Emblem (Like CoreDAO Reference) */
+        .bg-core-hexagon {
+            position: fixed;
+            right: 4%;
+            top: 52%;
+            transform: translateY(-50%);
+            width: min(56vw, 640px);
+            height: min(56vw, 640px);
+            opacity: 0.18;
+            z-index: -2;
+            pointer-events: none;
+            user-select: none;
+            filter: drop-shadow(0 25px 60px rgba(0, 0, 0, 0.7));
+        }
+
+        /* Glassmorphic Warm Bronze / Slate Cards */
+        .bento-card {
+            background: linear-gradient(145deg, rgba(34, 26, 22, 0.68) 0%, rgba(20, 18, 18, 0.78) 100%);
+            border: 1px solid rgba(251, 146, 60, 0.20);
+            box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .gold-red-border {
             border: 1px solid transparent;
-            background: linear-gradient(rgba(13, 17, 28, 0.88), rgba(13, 17, 28, 0.95)) padding-box,
-                        linear-gradient(135deg, rgba(245, 158, 11, 0.8) 0%, rgba(225, 29, 72, 0.9) 50%, rgba(245, 158, 11, 0.4) 100%) border-box;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(225, 29, 72, 0.15);
+            background:
+                linear-gradient(155deg, rgba(28, 22, 19, 0.88), rgba(17, 15, 16, 0.94)) padding-box,
+                linear-gradient(135deg, rgba(245, 158, 11, 0.75) 0%, rgba(234, 88, 12, 0.85) 50%, rgba(56, 189, 248, 0.45) 100%) border-box;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(234, 88, 12, 0.18);
         }
 
         .interactive-btn { transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
         .interactive-btn:active { transform: scale(0.96); }
 
         .primary-glow-btn {
-            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
-            box-shadow: 0 4px 20px rgba(225, 29, 72, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, #ea580c 0%, #d97706 55%, #e11d48 100%);
+            box-shadow: 0 8px 26px rgba(234, 88, 12, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(253, 186, 116, 0.45);
+        }
+        .primary-glow-btn:hover {
+            filter: brightness(1.08);
         }
 
         .action-ctrl-btn {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(24, 20, 18, 0.85);
+            border: 1px solid rgba(251, 146, 60, 0.32);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
         }
 
         .brand-text-gradient {
-            background: linear-gradient(135deg, #ffffff 30%, #f59e0b 70%, #e11d48 100%);
+            background: linear-gradient(135deg, #ffffff 25%, #fdba74 65%, #f97316 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        /* Typewriter Cursor Blinking */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: #f97316;
+            margin-left: 4px;
+            vertical-align: middle;
+            animation: blinkCursor 0.8s infinite;
+        }
+        @keyframes blinkCursor {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
         #splashScreen {
-            position: fixed; inset: 0; background: #03050a;
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at 30% 70%, #431407 0%, #13100e 75%);
             z-index: 100000; display: flex; align-items: center; justify-content: center;
-            animation: hideSplash 0.1s 3.0s forwards;
+            animation: hideSplash 0.1s 2.2s forwards;
         }
         .splash-text {
-            font-size: 2.2rem; font-weight: 800; letter-spacing: 0.35em;
-            color: #e11d48; text-shadow: 0 0 35px rgba(225, 29, 72, 0.8), 0 0 15px rgba(245, 158, 11, 0.6);
-            animation: zoomSplash 3.0s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            font-size: 2.1rem; font-weight: 800; letter-spacing: 0.32em;
+            color: #fb923c; text-shadow: 0 0 35px rgba(234, 88, 12, 0.75), 0 0 15px rgba(245, 158, 11, 0.6);
+            animation: zoomSplash 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
         @keyframes zoomSplash {
-            0% { transform: scale(0.5); opacity: 0; }
-            40% { transform: scale(1.05); opacity: 1; }
+            0% { transform: scale(0.6); opacity: 0; }
+            40% { transform: scale(1.04); opacity: 1; }
             75% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(16); opacity: 0; }
+            100% { transform: scale(12); opacity: 0; }
         }
         @keyframes hideSplash { to { display: none; z-index: -1; } }
 
-        /* Aaine (Mirror) Jaisa Natural Selfie View */
+        /* Natural Mirror View for Selfie Camera */
         .camera-mirror {
             transform: scaleX(-1) !important;
             object-fit: cover !important;
         }
         .camera-normal {
             transform: none !important;
-            object-fit: cover !important;
         }
 
-        /* Responsive Framing: Full uncropped view by default */
+        /* Uncropped Full-Frame Presentation by Default */
         .video-contain {
             object-fit: contain !important;
+            object-position: center center !important;
         }
         .video-cover {
             object-fit: cover !important;
+            object-position: center center !important;
         }
 
-        /* 3:4 Aspect Ratio PIP Container (No Squeeze / No Distortion) */
+        /* 3:4 Aspect Ratio PIP Container */
         #localVideoContainer {
             position: absolute; bottom: 220px; right: 16px;
             width: 108px; height: 144px; border-radius: 16px;
             overflow: hidden; z-index: 50;
             border: 2px solid transparent;
-            background: linear-gradient(#000, #000) padding-box,
-                        linear-gradient(135deg, #f59e0b, #e11d48) border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); cursor: grab;
+            background: linear-gradient(#13100e, #13100e) padding-box,
+                        linear-gradient(135deg, #f59e0b, #ea580c) border-box;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85); cursor: grab;
             touch-action: none;
         }
 
-        /* Highly Transparent Chat Deck */
+        /* Refined Frosted Chat Deck */
         .transparent-chat-deck {
-            background: rgba(7, 9, 14, 0.18) !important;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(19, 16, 14, 0.48) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(251, 146, 60, 0.22);
         }
-        .transparent-chat-box { background: rgba(7, 9, 14, 0.10) !important; }
+        .transparent-chat-box { background: rgba(19, 16, 14, 0.28) !important; }
 
         .chat-media-preview {
             border-radius: 10px; max-width: 100%; max-height: 160px;
-            object-fit: cover; cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+            object-fit: cover; cursor: pointer; border: 1px solid rgba(255,255,255,0.18);
         }
 
         .ticker-wrap { overflow: hidden; white-space: nowrap; width: 100%; }
@@ -170,20 +217,41 @@
 </head>
 <body class="flex flex-col relative select-none">
 
+    <!-- CoreDAO Inspired Warm Amber/Copper + Slate Atmospheric Backdrop -->
     <div class="bg-full-backdrop"></div>
     <div class="bg-dark-tint"></div>
-    <div class="bg-watermark">RANDOMMEET</div>
+
+    <!-- 3D Isometric Hexagon Emblem in Background -->
+    <svg class="bg-core-hexagon" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="hexGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.65"/>
+                <stop offset="50%" stop-color="#ea580c" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.25"/>
+            </linearGradient>
+            <linearGradient id="hexGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#78350f" stop-opacity="0.55"/>
+                <stop offset="100%" stop-color="#1e293b" stop-opacity="0.45"/>
+            </linearGradient>
+        </defs>
+        <!-- Outer 3D Hexagon Ring -->
+        <polygon points="250,30 440,140 440,360 250,470 60,360 60,140" stroke="url(#hexGrad1)" stroke-width="26" fill="url(#hexGrad2)"/>
+        <!-- Inner Isometric Cube Faces -->
+        <polygon points="250,115 365,182 250,250 135,182" fill="rgba(245, 158, 11, 0.22)" stroke="rgba(251, 146, 60, 0.45)" stroke-width="4"/>
+        <polygon points="135,182 250,250 250,385 135,318" fill="rgba(180, 83, 9, 0.30)" stroke="rgba(251, 146, 60, 0.35)" stroke-width="4"/>
+        <polygon points="365,182 250,250 250,385 365,318" fill="rgba(30, 58, 76, 0.38)" stroke="rgba(56, 189, 248, 0.30)" stroke-width="4"/>
+    </svg>
 
     <div id="splashScreen">
         <div class="splash-text">RANDOMMEET</div>
     </div>
 
     <!-- Media Full Screen Modal -->
-    <div id="imageViewerModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[10000] hidden-ui flex flex-col items-center justify-center p-4">
+    <div id="imageViewerModal" class="fixed inset-0 bg-black/90 backdrop-blur-lg z-[10000] hidden-ui flex flex-col items-center justify-center p-4">
         <img id="fullScreenImg" src="" alt="Preview" class="max-w-[95vw] max-h-[85vh] object-contain rounded-xl shadow-2xl">
         <div class="mt-4 flex gap-4">
             <button id="closeViewerBtn" class="interactive-btn px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider">Close</button>
-            <a id="downloadImgBtn" href="" download="shared_file" class="interactive-btn px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider">Download</a>
+            <a id="downloadImgBtn" href="" download="shared_file" class="interactive-btn px-5 py-2 rounded-xl primary-glow-btn text-white font-bold text-xs uppercase tracking-wider">Download</a>
         </div>
     </div>
 
@@ -193,41 +261,41 @@
             <button onclick="document.getElementById('donationModal').classList.add('hidden-ui')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg z-50">✕</button>
             
             <div class="w-full overflow-y-auto pr-1 text-left space-y-3">
-                <h3 class="text-xl font-black text-center text-rose-500 mt-1">Support Developer 👑</h3>
+                <h3 class="text-xl font-black text-center text-amber-400 mt-1">Support Developer 👑</h3>
                 <p class="text-[11px] text-slate-300 text-center leading-relaxed">
                     Servers & TURN relays cost money.<br>
                     <span class="text-emerald-400 font-bold">🇮🇳 India:</span> ₹20, ₹50+ (UPI).<br>
-                    <span class="text-amber-400 font-bold">🌍 Global:</span> Buy Coffee or send Crypto. 🙏
+                    <span class="text-amber-300 font-bold">🌍 Global:</span> Buy Coffee or send Crypto. 🙏
                 </p>
 
-                <div class="border border-emerald-500/40 rounded-2xl p-2.5 bg-emerald-950/20">
+                <div class="border border-emerald-500/40 rounded-2xl p-2.5 bg-emerald-950/25">
                     <p class="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider mb-1">1. UPI (India)</p>
                     <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-emerald-500/30">
                         <span class="text-xs font-mono text-slate-200 truncate">BHARATPE.8001362463@fbpe</span>
-                        <button onclick="navigator.clipboard.writeText('BHARATPE.8001362463@fbpe'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="interactive-btn ml-2 px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg text-[10px] font-bold">COPY</button>
+                        <button onclick="copyDonationValue('BHARATPE.8001362463@fbpe', this)" class="interactive-btn ml-2 px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg text-[10px] font-bold">COPY</button>
                     </div>
                 </div>
 
-                <div class="border border-amber-500/40 rounded-2xl p-2.5 bg-amber-950/20">
-                    <p class="text-[10px] text-amber-400 font-extrabold uppercase tracking-wider mb-1">2. Global Cards / PayPal</p>
-                    <a href="https://www.buymeacoffee.com/randommeet" target="_blank" class="interactive-btn block w-full primary-glow-btn text-center py-2 rounded-xl text-xs font-bold text-white transition">☕ Buy me a Coffee</a>
+                <div class="border border-amber-500/40 rounded-2xl p-2.5 bg-amber-950/25">
+                    <p class="text-[10px] text-amber-300 font-extrabold uppercase tracking-wider mb-1">2. Global Cards / PayPal</p>
+                    <a href="https://www.buymeacoffee.com/randommeet" target="_blank" rel="noopener noreferrer" class="interactive-btn block w-full primary-glow-btn text-center py-2 rounded-xl text-xs font-bold text-white transition">☕ Buy me a Coffee</a>
                 </div>
 
-                <div class="border border-rose-500/40 rounded-2xl p-2.5 bg-rose-950/20 space-y-2">
-                    <p class="text-[10px] text-rose-400 font-extrabold uppercase tracking-wider mb-1">3. Crypto (Instant)</p>
-                    <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-rose-500/30">
+                <div class="border border-orange-500/40 rounded-2xl p-2.5 bg-orange-950/25 space-y-2">
+                    <p class="text-[10px] text-orange-300 font-extrabold uppercase tracking-wider mb-1">3. Crypto (Instant)</p>
+                    <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-orange-500/30">
                         <div class="text-left w-[78%]">
                             <span class="text-[9px] font-bold text-slate-300 block">BEP-20 / ETH</span>
                             <span class="text-[10px] font-mono text-slate-400 truncate block">0xE128CbFf52A3535aFca2cb5EFA466bEacc1De1fc</span>
                         </div>
-                        <button onclick="navigator.clipboard.writeText('0xE128CbFf52A3535aFca2cb5EFA466bEacc1De1fc'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="interactive-btn px-2 py-1 bg-rose-500/20 text-rose-300 rounded-lg text-[9px] font-bold">COPY</button>
+                        <button onclick="copyDonationValue('0xE128CbFf52A3535aFca2cb5EFA466bEacc1De1fc', this)" class="interactive-btn px-2 py-1 bg-orange-500/20 text-orange-300 rounded-lg text-[9px] font-bold">COPY</button>
                     </div>
-                    <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-rose-500/30">
+                    <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl border border-orange-500/30">
                         <div class="text-left w-[78%]">
                             <span class="text-[9px] font-bold text-slate-300 block">Solana (SOL)</span>
                             <span class="text-[10px] font-mono text-slate-400 truncate block">Gsf47T2RJDzS78efZTtdbYQLaj6bBK4t7sPhwMguJCPF</span>
                         </div>
-                        <button onclick="navigator.clipboard.writeText('Gsf47T2RJDzS78efZTtdbYQLaj6bBK4t7sPhwMguJCPF'); this.innerText='COPIED'; setTimeout(() => this.innerText='COPY', 2000);" class="interactive-btn px-2 py-1 bg-rose-500/20 text-rose-300 rounded-lg text-[9px] font-bold">COPY</button>
+                        <button onclick="copyDonationValue('Gsf47T2RJDzS78efZTtdbYQLaj6bBK4t7sPhwMguJCPF', this)" class="interactive-btn px-2 py-1 bg-orange-500/20 text-orange-300 rounded-lg text-[9px] font-bold">COPY</button>
                     </div>
                 </div>
             </div>
@@ -235,91 +303,247 @@
     </div>
 
     <!-- Header Navigation -->
-    <header class="w-full shrink-0 z-40 px-3 py-2 flex items-center justify-between border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
-        <div id="logoBtn" class="flex items-center gap-1.5 cursor-pointer shrink-0">
-            <img src="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=e11d48&textColor=ffffff" alt="Logo" class="w-6 h-6 rounded-full border border-amber-500/40">
+    <header class="w-full shrink-0 z-40 px-4 py-2.5 flex items-center justify-between border-b border-amber-500/15 bg-[#14110f]/80 backdrop-blur-xl">
+        <div id="logoBtn" class="flex items-center gap-2 cursor-pointer shrink-0">
+            <img src="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=ea580c&textColor=ffffff" alt="Logo" class="w-6 h-6 rounded-full border border-amber-400/50 shadow-sm">
             <h1 class="text-xs sm:text-base font-extrabold tracking-tight brand-text-gradient uppercase">RandomMeet</h1>
         </div>
-        <div class="flex items-center gap-1.5 shrink-0">
-            <div class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-emerald-400">
+        <div class="flex items-center gap-2 shrink-0">
+            <div class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 flex items-center gap-1.5 text-[10px] font-bold text-emerald-300">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span id="liveUsersCount">0</span> Live
             </div>
-            <button onclick="document.getElementById('donationModal').classList.remove('hidden-ui')" class="interactive-btn px-2.5 py-0.5 rounded-full primary-glow-btn text-[9px] sm:text-[10px] font-bold text-white">Donate</button>
+            <button onclick="document.getElementById('donationModal').classList.remove('hidden-ui')" class="interactive-btn px-3 py-0.5 rounded-full primary-glow-btn text-[10px] font-bold text-white">Donate</button>
         </div>
     </header>
 
     <!-- Tickers -->
-    <div id="homeTicker" class="ticker-wrap bg-slate-950/60 border-b border-rose-500/20 py-1 text-[11px] font-semibold text-rose-400">
+    <div id="homeTicker" class="ticker-wrap shrink-0 bg-orange-950/35 border-b border-amber-500/20 py-1 text-[11px] font-semibold text-amber-300">
         <div class="ticker-content">
             🚨 This app is completely free! Support the solo developer to manage high server costs. <span class="underline">Click 'Donate' above to help!</span> 🙏
         </div>
     </div>
-    <div id="shareTicker" class="ticker-wrap bg-slate-950/40 border-b border-white/5 py-1 text-[10.5px] font-semibold text-slate-400">
+    <div id="shareTicker" class="ticker-wrap shrink-0 bg-black/30 border-b border-white/5 py-1 text-[10.5px] font-semibold text-slate-300">
         <div class="ticker-content-2">
             🚀 Please invite your friends & share on WhatsApp, Telegram and Social Media. Thank you! ❤️
         </div>
     </div>
 
-    <!-- Home Screen -->
-    <main id="homeScreen" class="flex-1 flex flex-col items-center justify-center px-4 relative z-10 w-full">
-        <!-- 5s Interval & 3s Visibility Waiting Notification (When >= 2 Live Users) -->
-        <div id="livePrompt" class="absolute top-6 left-0 bg-emerald-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-xl border-y border-r border-emerald-400/40 animate-pulse transition-all">
+    <!-- Home Screen: Scrollable Container with Two-Column Hero & Detailed Footer (Zero Overlap on Mobile & Desktop) -->
+    <main id="homeScreen" class="flex-1 overflow-y-auto overflow-x-hidden relative z-10 w-full">
+        <!-- 5s Interval & 3s Visibility Waiting Notification -->
+        <div id="livePrompt" class="fixed top-24 left-0 bg-gradient-to-r from-emerald-600 to-teal-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-2xl border-y border-r border-emerald-300/40 animate-pulse transition-all">
             <span class="cursor-pointer" onclick="document.getElementById('startBtn').click()">🔥 Someone is waiting! Tap to match...</span>
-            <button id="dismissPromptBtn" class="text-white/80 hover:text-white bg-black/20 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
+            <button id="dismissPromptBtn" class="text-white/80 hover:text-white bg-black/25 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
         </div>
 
-        <div class="gold-red-border w-full max-w-sm rounded-3xl p-6 text-center backdrop-blur-xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-bold uppercase tracking-widest mb-4">
-                P2P Ultra Fast 1080p FHD
-            </div>
-            <h2 class="text-2xl font-black text-white tracking-wide mb-6">Find Match</h2>
-            
-            <div class="grid grid-cols-2 gap-3 mb-4 text-left">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">I am</label>
-                    <select id="myGender" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 outline-none">
-                        <option value="boy">Boy 👦</option>
-                        <option value="girl">Girl 👧</option>
-                    </select>
+        <!-- Main Hero Container (Two Columns on Laptop/Desktop, Clean Stack on Mobile) -->
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+                
+                <!-- LEFT COLUMN: Website Showcase & Auto-Typing Engine (7 Columns on Laptop) -->
+                <div class="lg:col-span-7 flex flex-col text-left space-y-5 order-2 lg:order-1">
+                    
+                    <!-- Top Status Badge -->
+                    <div class="inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-orange-500/15 border border-orange-400/30 text-orange-300 text-[11px] font-bold uppercase tracking-widest">
+                        <span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span>
+                        Next-Gen WebRTC Global Network
+                    </div>
+
+                    <!-- CoreDAO-Style Big Hero Heading + Auto-Typing Line -->
+                    <div class="space-y-1">
+                        <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                            Meet Strangers Globally —
+                        </h2>
+                        <div class="min-h-[2.5rem] sm:min-h-[3.5rem] flex items-center">
+                            <span id="heroTypewriter" class="text-2xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-rose-400"></span>
+                            <span class="typewriter-cursor"></span>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Auto-Typing Box About RandomMeet (Fixed Min-Height = Zero Overlap) -->
+                    <div class="bento-card rounded-2xl p-4 sm:p-5 border border-amber-500/25 relative">
+                        <div class="flex items-center justify-between mb-2.5 pb-2 border-b border-white/10">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-amber-300 ml-1">About RandomMeet Platform • Live Specs</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">v4.0 P2P</span>
+                        </div>
+                        <div class="min-h-[115px] sm:min-h-[105px] text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
+                            <span id="detailTypewriter"></span><span class="typewriter-cursor"></span>
+                        </div>
+                    </div>
+
+                    <!-- 3 Feature Highlights Cards (Like CoreDAO Bottom Cards) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="bento-card rounded-2xl p-3.5">
+                            <div class="text-amber-400 font-black text-sm mb-1 flex items-center gap-1.5">
+                                <span>⚡</span> 1080p Full HD
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                Adaptive bitrate streaming with geo-routed TURN relays for instant cross-network video across Wi-Fi, 4G, and 5G.
+                            </p>
+                        </div>
+
+                        <div class="bento-card rounded-2xl p-3.5">
+                            <div class="text-orange-400 font-black text-sm mb-1 flex items-center gap-1.5">
+                                <span>🎙️</span> Noise Shield
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                Hardware-accelerated echo cancellation and background noise suppression for studio-grade voice clarity.
+                            </p>
+                        </div>
+
+                        <div class="bento-card rounded-2xl p-3.5">
+                            <div class="text-emerald-400 font-black text-sm mb-1 flex items-center gap-1.5">
+                                <span>🔒</span> Zero-Log Privacy
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                Direct encrypted peer-to-peer streams. No registration, no account required, and zero video/chat storage.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Looking for</label>
-                    <select id="lookingFor" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 outline-none">
-                        <option value="any">Anyone 🌍</option>
-                        <option value="girl">Girl 👧</option>
-                        <option value="boy">Boy 👦</option>
-                    </select>
+
+                <!-- RIGHT COLUMN: Matchmaking Control Deck (5 Columns on Laptop, Top on Mobile) -->
+                <div class="lg:col-span-5 w-full max-w-md mx-auto order-1 lg:order-2">
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <!-- Bento Pill 1 -->
+                        <div class="bento-card rounded-2xl p-3 flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-300 text-sm shrink-0">
+                                ⚡
+                            </div>
+                            <div class="text-left overflow-hidden">
+                                <p class="text-[9px] font-bold uppercase tracking-wider text-amber-300">1080p Full HD</p>
+                                <p class="text-[11px] font-semibold text-slate-200 truncate">Adaptive Relay</p>
+                            </div>
+                        </div>
+
+                        <!-- Bento Pill 2 -->
+                        <div class="bento-card rounded-2xl p-3 flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-orange-500/15 border border-orange-400/30 flex items-center justify-center text-orange-300 text-sm shrink-0">
+                                🎙️
+                            </div>
+                            <div class="text-left overflow-hidden">
+                                <p class="text-[9px] font-bold uppercase tracking-wider text-orange-300">Crystal Audio</p>
+                                <p class="text-[11px] font-semibold text-slate-200 truncate">Noise Shield</p>
+                            </div>
+                        </div>
+
+                        <!-- Main Matchmaking Card -->
+                        <div class="col-span-2 gold-red-border rounded-3xl p-5 sm:p-6 text-center backdrop-blur-xl">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-[10px] font-bold uppercase tracking-widest mb-3">
+                                <span>✨</span> Instant Global P2P Video
+                            </div>
+                            <h2 class="text-xl sm:text-2xl font-black text-white tracking-wide mb-4">Start New Connection</h2>
+                            
+                            <div class="grid grid-cols-2 gap-2.5 mb-3 text-left">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">I am</label>
+                                    <select id="myGender" class="w-full bg-black/50 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-amber-500/25 focus:border-amber-400 outline-none">
+                                        <option value="boy">Boy 👦</option>
+                                        <option value="girl">Girl 👧</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">Looking for</label>
+                                    <select id="lookingFor" class="w-full bg-black/50 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-amber-500/25 focus:border-amber-400 outline-none">
+                                        <option value="any">Anyone 🌍</option>
+                                        <option value="girl">Girl 👧</option>
+                                        <option value="boy">Boy 👦</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-5 text-left">
+                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1 flex justify-between">
+                                    Preferred Region <span class="text-amber-300 text-[9px] bg-amber-500/15 px-1.5 py-0.2 rounded">AUTO-FALLBACK</span>
+                                </label>
+                                <select id="countryFilter" class="w-full bg-black/50 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-amber-500/25 focus:border-amber-400 outline-none">
+                                    <option value="global">🌍 Global (Fastest Match)</option>
+                                    <option value="in">🇮🇳 India</option>
+                                    <option value="us">🇺🇸 USA</option>
+                                    <option value="gb">🇬🇧 United Kingdom</option>
+                                    <option value="ca">🇨🇦 Canada</option>
+                                </select>
+                            </div>
+
+                            <button id="startBtn" class="interactive-btn w-full primary-glow-btn py-3.5 rounded-2xl text-white font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2">
+                                <span>Start Video Chat</span>
+                            </button>
+                        </div>
+
+                        <!-- Bottom Security Strip -->
+                        <div class="col-span-2 bento-card rounded-2xl px-4 py-2.5 flex items-center justify-between text-[10px] text-slate-300">
+                            <span class="flex items-center gap-1.5 font-semibold text-emerald-300">🔒 Zero-Log Encrypted</span>
+                            <span class="text-slate-500">•</span>
+                            <span class="font-medium text-amber-200">18+ Only • Be Respectful</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- DETAILED FOOTER: Terms & Conditions, Privacy Policy & Legal Disclaimer -->
+        <footer class="w-full border-t border-amber-500/20 bg-[#0d0b0a]/90 backdrop-blur-xl mt-4 px-4 sm:px-8 py-8 text-left">
+            <div class="max-w-6xl mx-auto space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                    
+                    <!-- Clause 1: 18+ Eligibility -->
+                    <div class="bento-card rounded-2xl p-4 space-y-1.5">
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-400">1. Strict 18+ Age Policy</h4>
+                        <p class="text-[11px] text-slate-300 leading-relaxed">
+                            RandomMeet is strictly restricted to adults aged <strong>18 years or older</strong>. By clicking "Start Video Chat" or accessing this platform, you legally represent and warrant that you are at least 18 years of age. Minors are strictly prohibited from using this service under any circumstances.
+                        </p>
+                    </div>
+
+                    <!-- Clause 2: Community Conduct & Zero Tolerance -->
+                    <div class="bento-card rounded-2xl p-4 space-y-1.5">
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-orange-400">2. Community Guidelines</h4>
+                        <p class="text-[11px] text-slate-300 leading-relaxed">
+                            We enforce a strict <strong>Zero-Tolerance Policy</strong> against nudity, sexually explicit conduct, harassment, bullying, hate speech, violence, spam, or illegal activities. Respect your fellow strangers. Always keep your camera frame appropriate and report/skip any offensive user immediately.
+                        </p>
+                    </div>
+
+                    <!-- Clause 3: P2P Privacy & Zero-Log Architecture -->
+                    <div class="bento-card rounded-2xl p-4 space-y-1.5">
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-emerald-400">3. Privacy & Zero-Log P2P</h4>
+                        <p class="text-[11px] text-slate-300 leading-relaxed">
+                            All live video, audio, and chat streams are transmitted via encrypted WebRTC Peer-to-Peer (P2P) connections and ephemeral TURN relays. <strong>RandomMeet does not record, store, or archive</strong> your video calls, voice conversations, or shared media files on our servers.
+                        </p>
+                    </div>
+
+                    <!-- Clause 4: Legal Liability & User Responsibility -->
+                    <div class="bento-card rounded-2xl p-4 space-y-1.5">
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-cyan-400">4. Legal Disclaimer</h4>
+                        <p class="text-[11px] text-slate-300 leading-relaxed">
+                            RandomMeet is provided on an "AS IS" basis without warranties. Because connections are live and unmoderated in real-time, you assume <strong>100% legal and personal responsibility</strong> for your interactions, conduct, and any text or media shared during a session.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Detailed Legal Summary & Copyright Bar -->
+                <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
+                    <p class="text-center sm:text-left leading-relaxed">
+                        <strong>Terms & Conditions Agreement:</strong> By using <span class="text-amber-300 font-semibold">randommeet.online</span>, you automatically agree to abide by all Terms of Service, Privacy Policies, and local cyber laws. Never share sensitive personal or financial data with strangers.
+                    </p>
+                    <p class="shrink-0 font-semibold text-slate-300">
+                        © 2026 RandomMeet Global • All Rights Reserved.
+                    </p>
                 </div>
             </div>
-
-            <div class="mb-6 text-left">
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex justify-between">
-                    Region <span class="text-amber-400 text-[9px] bg-amber-500/10 px-1.5 rounded">FASTEST</span>
-                </label>
-                <select id="countryFilter" class="w-full bg-slate-900/90 text-white text-xs font-semibold rounded-xl px-3 py-2.5 border border-white/10 outline-none">
-                    <option value="global">🌍 Global (Fastest Match)</option>
-                    <option value="in">🇮🇳 India</option>
-                    <option value="us">🇺🇸 USA</option>
-                    <option value="gb">🇬🇧 United Kingdom</option>
-                    <option value="ca">🇨🇦 Canada</option>
-                </select>
-            </div>
-
-            <button id="startBtn" class="interactive-btn w-full primary-glow-btn py-3.5 rounded-2xl text-white font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2">
-                <span>Start Video Chat</span>
-            </button>
-        </div>
-
-        <div class="absolute bottom-4 text-center w-full px-4 text-[10px] text-slate-400 z-10 font-medium">
-            By entering, you take 100% legal responsibility.<br>Nudity, vulgarity, or illegal conduct is strictly prohibited.
-        </div>
+        </footer>
     </main>
 
-    <!-- Call Screen -->
-    <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full">
-        <!-- Remote Video Layer (Uncropped 'video-contain' by default: Full face & body visible on any device) -->
-        <div class="fixed inset-0 z-0 bg-black flex items-center justify-center pointer-events-none">
+    <!-- Call Screen (Fixed Full-Screen When Active) -->
+    <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full bg-[#090807]">
+        <!-- Remote Video Layer: Uncropped 'video-contain' by default -->
+        <div class="fixed inset-0 z-0 bg-[#090807] flex items-center justify-center pointer-events-none">
             <video id="remoteVideo" class="w-full h-full video-contain camera-normal" playsinline muted></video>
         </div>
 
@@ -328,18 +552,18 @@
 
         <!-- Call Screen Header -->
         <div class="absolute top-14 inset-x-3 z-40 flex items-center justify-between pointer-events-auto gap-2">
-            <div id="strangerStatusBar" class="flex items-center gap-1.5 bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/40 shadow-xl">
+            <div id="strangerStatusBar" class="flex items-center gap-1.5 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-400/40 shadow-xl">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-[10px] sm:text-[11px] font-bold text-white tracking-wide">Connected with Stranger</span>
             </div>
 
             <div class="flex items-center gap-1.5">
                 <!-- Fit / Fill Mode Toggle Button -->
-                <button id="zoomToggleBtn" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/20 text-[9px] sm:text-[10px] font-bold text-slate-200 shadow-xl">
+                <button id="zoomToggleBtn" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-amber-400/35 text-[9px] sm:text-[10px] font-bold text-amber-200 shadow-xl">
                     🔲 Fit
                 </button>
 
-                <select id="qualitySelector" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-amber-500/50 text-[9px] sm:text-[10px] font-extrabold text-amber-300 outline-none cursor-pointer shadow-xl">
+                <select id="qualitySelector" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-orange-400/45 text-[9px] sm:text-[10px] font-extrabold text-amber-300 outline-none cursor-pointer shadow-xl">
                     <option value="1080p" selected>1080p FHD ⚡</option>
                     <option value="720p">720p HD</option>
                     <option value="480p">480p Saver</option>
@@ -353,15 +577,15 @@
         </button>
 
         <!-- Search Spinner -->
-        <div id="searchSpinner" class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-black/95">
-            <div class="w-12 h-12 border-4 border-rose-500/20 border-t-rose-500 rounded-full animate-spin"></div>
-            <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-rose-500 animate-pulse">Starting Camera (1080p FHD)...</p>
+        <div id="searchSpinner" class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-[#0d0a08]/95 backdrop-blur-md">
+            <div class="w-12 h-12 border-4 border-orange-500/25 border-t-amber-400 rounded-full animate-spin"></div>
+            <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-amber-300 animate-pulse">Starting Camera (1080p FHD)...</p>
         </div>
 
         <!-- Local Camera PIP (True Selfie Mirror View) -->
         <div id="localVideoContainer" class="hidden-ui">
             <video id="localVideo" class="w-full h-full object-cover camera-mirror" playsinline muted></video>
-            <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white">YOU</div>
+            <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-amber-300">YOU</div>
         </div>
 
         <!-- Floating Controls & Transparent Chat Deck -->
@@ -378,13 +602,13 @@
                     <button id="nextBtn" class="interactive-btn w-1/2 primary-glow-btn py-2.5 rounded-xl text-white font-extrabold text-xs uppercase tracking-wider">
                         Next Match ⏭
                     </button>
-                    <button id="endChatBtn" class="interactive-btn w-1/2 bg-slate-900/80 hover:bg-slate-800 border border-white/10 py-2.5 rounded-xl text-rose-400 font-extrabold text-xs uppercase tracking-wider backdrop-blur-md">
+                    <button id="endChatBtn" class="interactive-btn w-1/2 bg-slate-900/85 hover:bg-slate-800 border border-rose-500/35 py-2.5 rounded-xl text-rose-400 font-extrabold text-xs uppercase tracking-wider backdrop-blur-md">
                         End Chat ✕
                     </button>
                 </div>
 
                 <div id="chatWindowWrapper" class="flex flex-col">
-                    <div class="flex justify-between items-center px-3 py-1.5 transparent-chat-deck rounded-t-2xl text-[10px] text-slate-300 border-b-0">
+                    <div class="flex justify-between items-center px-3 py-1.5 transparent-chat-deck rounded-t-2xl text-[10px] text-slate-200 border-b-0">
                         <span class="font-bold flex items-center gap-1.5"><span>💬</span> Live Chat</span>
                         <button id="closeChatBtn" class="text-slate-400 hover:text-white font-bold px-2 py-0.5 rounded hover:bg-white/10" title="Close Chat Panel">✕</button>
                     </div>
@@ -394,7 +618,7 @@
 
                 <div class="flex items-center gap-2 transparent-chat-deck rounded-2xl p-1.5 shadow-2xl">
                     <input type="file" id="fileUpload" accept="image/*,video/*,audio/*" class="hidden-ui">
-                    <button id="attachBtn" class="interactive-btn p-2 text-slate-300 hover:text-rose-400" title="Attach (Max 15MB)">📎</button>
+                    <button id="attachBtn" class="interactive-btn p-2 text-slate-300 hover:text-amber-300" title="Attach (Max 15MB)">📎</button>
                     <input type="text" id="chatInput" maxlength="250" class="flex-1 bg-transparent px-2 text-xs text-white placeholder-slate-400 outline-none" placeholder="Message stranger (max 30 words)..." disabled>
                     <button id="sendBtn" class="interactive-btn px-4 py-2 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs uppercase tracking-wider" disabled>Send</button>
                 </div>
@@ -403,13 +627,77 @@
     </main>
 
     <script>
-        // Automatic cleanup of legacy service worker
+        // Dual Auto-Typing Engine for Hero Headline & Detailed Website Description
+        (function initAutoTypewriters() {
+            const heroPhrases = [
+                "In 1080p Full HD Video.",
+                "With Zero-Log P2P Privacy.",
+                "Across Wi-Fi & 5G Networks.",
+                "With Studio Noise Shield.",
+                "100% Free & Instant Match."
+            ];
+
+            const detailedParagraphs = [
+                "Welcome to RandomMeet — the next-generation global video chat platform built for instant human connection. Click 'Start Video Chat' to match face-to-face with strangers worldwide in crystal-clear 1080p Full HD resolution with zero registration required.",
+                "Engineered with advanced WebRTC Peer-to-Peer architecture and geo-optimized TURN relays, RandomMeet seamlessly connects you across home Wi-Fi, 4G, and 5G mobile networks without call drops, blank screens, or lag—even during live network switches.",
+                "Enjoy built-in studio noise cancellation, natural selfie-mirror framing, real-time live chat, and instant photo, audio, and video file sharing up to 15MB. Every session is 100% ephemeral and encrypted—nothing is ever stored or logged."
+            ];
+
+            function startLoopingTypewriter(elementId, phrases, typeSpeed, deleteSpeed, pauseMs) {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+                let phraseIdx = 0;
+                let charIdx = 0;
+                let isDeleting = false;
+
+                function tick() {
+                    const currentPhrase = phrases[phraseIdx];
+                    if (isDeleting) {
+                        charIdx--;
+                        el.textContent = currentPhrase.substring(0, charIdx);
+                    } else {
+                        charIdx++;
+                        el.textContent = currentPhrase.substring(0, charIdx);
+                    }
+
+                    let nextDelay = isDeleting ? deleteSpeed : typeSpeed;
+
+                    if (!isDeleting && charIdx === currentPhrase.length) {
+                        nextDelay = pauseMs;
+                        isDeleting = true;
+                    } else if (isDeleting && charIdx === 0) {
+                        isDeleting = false;
+                        phraseIdx = (phraseIdx + 1) % phrases.length;
+                        nextDelay = 350;
+                    }
+
+                    setTimeout(tick, nextDelay);
+                }
+
+                tick();
+            }
+
+            startLoopingTypewriter('heroTypewriter', heroPhrases, 55, 28, 2200);
+            startLoopingTypewriter('detailTypewriter', detailedParagraphs, 22, 10, 4200);
+        })();
+
+        // Safe Clipboard Copy Helper for Donation Modal
+        function copyDonationValue(text, btnEl) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    btnEl.innerText = 'COPIED';
+                    setTimeout(() => { btnEl.innerText = 'COPY'; }, 2000);
+                }).catch(() => {});
+            }
+        }
+
+        // Unregister any legacy service worker on page load
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(registrations => {
                 for (let r of registrations) {
                     r.unregister();
                 }
-            });
+            }).catch(() => {});
         }
 
         const socket = io();
@@ -452,6 +740,9 @@
         let localStream = null;
         let peerConn = null;
         let partnerId = null;
+        let isInitiator = false;
+        let isMakingOffer = false;
+        let isSettingRemoteDescription = false;
         let isFront = true, isAudioMuted = false, isVideoMuted = false;
         let currentState = 'IDLE';
         let iceQueue = [];
@@ -459,42 +750,96 @@
         let isRestartingIce = false;
         let isCoverMode = false;
 
+        // Tracked Timer IDs to prevent memory leaks & race conditions
+        let nextSearchTimer = null;
+        let peerDisconnectTimer = null;
+        let iceRestartTimer = null;
+        let watchdogTimer = null;
+
+        // File Sharing State
+        let incomingFiles = {};
+        let fileTransferSessionId = 0;
+
         // Waiting Notification States
         let isPromptDismissedForEpisode = false;
         let promptHideTimeout = null;
         let currentLiveCount = 0;
         let hasActiveStrangerWaiting = false;
 
+        // Multi-Port Fallback ICE Servers (UDP + TCP + TLS)
         let cachedIceServers = [
             { urls: "stun:stun.l.google.com:19302" },
             { urls: "stun:stun1.l.google.com:19302" },
+            { urls: "stun:stun2.l.google.com:19302" },
             { urls: "stun:stun.relay.metered.ca:80" },
             { urls: "turn:global.relay.metered.ca:80", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
             { urls: "turn:global.relay.metered.ca:443", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
-            { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" }
+            { urls: "turn:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+            { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+            { urls: "turn:global.relay.metered.ca:3478", username: "eb5ef206ad4b56f7c91347f4", credential: "ELkjSHNeiKI1svYE" },
+            { urls: "turn:free.expressturn.com:3478", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" },
+            { urls: "turn:free.expressturn.com:3478?transport=tcp", username: "000000002106630972", credential: "YUbWpt+T7WM3dguWcIF/ocLGKPU=" }
         ];
+        let lastIceLoadTime = 0;
+        let iceFetchPromise = null;
 
-        fetch('/api/ice-config').then(r => r.json()).then(data => {
-            if (data && data.iceServers) cachedIceServers = data.iceServers;
-        }).catch(() => {});
+        async function ensureIceServersLoaded() {
+            const now = Date.now();
+            if (lastIceLoadTime > 0 && (now - lastIceLoadTime < 480000)) {
+                return cachedIceServers;
+            }
+            if (iceFetchPromise) return iceFetchPromise;
+
+            iceFetchPromise = (async () => {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2500);
+                try {
+                    const r = await fetch('/api/ice-config', { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if (r.ok) {
+                        const data = await r.json();
+                        if (data && Array.isArray(data.iceServers) && data.iceServers.length > 0) {
+                            cachedIceServers = data.iceServers;
+                            lastIceLoadTime = Date.now();
+                        }
+                    }
+                } catch (e) {
+                    clearTimeout(timeoutId);
+                } finally {
+                    iceFetchPromise = null;
+                }
+                return cachedIceServers;
+            })();
+
+            return iceFetchPromise;
+        }
+
+        // Pre-warm ICE config on page load
+        ensureIceServersLoaded();
 
         setInterval(() => { if (socket.connected) socket.emit('ping'); }, 20000);
 
-        // Feature 3: Updated Waiting Notification (5s repeat, 3s duration, >= 2 live users)
+        function clearAllCallTimers() {
+            if (nextSearchTimer) { clearTimeout(nextSearchTimer); nextSearchTimer = null; }
+            if (peerDisconnectTimer) { clearTimeout(peerDisconnectTimer); peerDisconnectTimer = null; }
+            if (iceRestartTimer) { clearTimeout(iceRestartTimer); iceRestartTimer = null; }
+            if (watchdogTimer) { clearInterval(watchdogTimer); watchdogTimer = null; }
+        }
+
+        // Waiting Notification (5s repeat, 3s duration, >= 2 live users)
         function triggerWaitingPromptCycle() {
             if (currentState !== 'IDLE' || isPromptDismissedForEpisode) {
                 ui.livePrompt.classList.add('hidden-ui');
                 return;
             }
 
-            // Show prompt if 2 or more users are live on the website
             if (currentLiveCount >= 2 || hasActiveStrangerWaiting) {
                 ui.livePrompt.classList.remove('hidden-ui');
                 if (promptHideTimeout) clearTimeout(promptHideTimeout);
                 promptHideTimeout = setTimeout(() => {
                     ui.livePrompt.classList.add('hidden-ui');
-                }, 3000); // Stays visible for 3 seconds
+                }, 3000);
             } else {
                 ui.livePrompt.classList.add('hidden-ui');
             }
@@ -508,10 +853,9 @@
         });
 
         socket.on('waiting-status', (data) => {
-            hasActiveStrangerWaiting = !!data.hasRealStranger;
+            hasActiveStrangerWaiting = !!(data && data.hasRealStranger);
         });
 
-        // Ticks every 5 seconds
         setInterval(triggerWaitingPromptCycle, 5000);
 
         ui.dismissPromptBtn.addEventListener('click', (e) => {
@@ -521,7 +865,7 @@
             ui.livePrompt.classList.add('hidden-ui');
         });
 
-        // Fit / Fill View Toggle (Fix for zoomed-in face on all screens)
+        // Fit / Fill View Toggle
         ui.zoomToggleBtn.addEventListener('click', () => {
             isCoverMode = !isCoverMode;
             if (isCoverMode) {
@@ -548,87 +892,112 @@
         ui.toggleChatBtn.addEventListener('click', () => ui.chatWindow.classList.toggle('hidden-ui'));
         ui.inputChat.addEventListener('focus', () => ui.chatWindow.classList.remove('hidden-ui'));
 
-        // Feature 1 & 2: Dynamic Resolution & Standard Noise Cancellation
-        async function getMediaStream(targetQuality, facingConstraint) {
+        function getResolutionTargets(quality) {
+            let idealW = 1280, idealH = 720;
+            if (quality === "1080p") { idealW = 1920; idealH = 1080; }
+            else if (quality === "480p") { idealW = 854; idealH = 480; }
+            return { idealW, idealH };
+        }
+
+        // Natural Uncropped Sensor Capture + Balanced Noise Cancellation
+        async function getMediaStream(targetQuality, facingConstraint, videoOnly = false) {
             const chosenFacing = facingConstraint || (isFront ? "user" : "environment");
             const quality = targetQuality || ui.qualitySelector.value || "1080p";
+            const { idealW, idealH } = getResolutionTargets(quality);
 
-            let idealW = 1920, idealH = 1080;
-            if (quality === "720p") { idealW = 1280; idealH = 720; }
-            else if (quality === "480p") { idealW = 854; idealH = 480; }
-
-            const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (window.innerWidth < window.innerHeight && window.innerWidth < 768);
-
-            // Responsive Video Constraints (No sensor crop zoom on mobile portrait)
-            let videoConstraints = {
+            const videoConstraints = {
                 facingMode: chosenFacing,
+                width: { ideal: idealW },
+                height: { ideal: idealH },
                 frameRate: { ideal: 30, max: 30 }
             };
 
-            if (isMobileDevice) {
-                // Mobile Portrait: height is long dimension (1920), width is short dimension (1080)
-                videoConstraints.width = { ideal: idealH };
-                videoConstraints.height = { ideal: idealW };
-                videoConstraints.aspectRatio = { ideal: 0.5625 };
-            } else {
-                // Laptop / Desktop: standard 16:9 widescreen
-                videoConstraints.width = { ideal: idealW };
-                videoConstraints.height = { ideal: idealH };
-                videoConstraints.aspectRatio = { ideal: 1.7777777778 };
-            }
-
-            // Balanced Standard Noise Cancellation (Suppresses background noise without muting user)
-            const audioConstraints = {
+            const audioConstraints = videoOnly ? false : {
                 echoCancellation: { ideal: true },
                 noiseSuppression: { ideal: true },
                 autoGainControl: { ideal: true }
             };
 
             try {
-                return await navigator.mediaDevices.getUserMedia({
+                const stream = await navigator.mediaDevices.getUserMedia({
                     audio: audioConstraints,
                     video: videoConstraints
                 });
+                if (videoOnly) stream.getAudioTracks().forEach(t => t.stop());
+                return stream;
             } catch (e1) {
                 try {
-                    return await navigator.mediaDevices.getUserMedia({
+                    const stream = await navigator.mediaDevices.getUserMedia({
                         audio: audioConstraints,
                         video: { facingMode: chosenFacing, width: { ideal: 1280 }, height: { ideal: 720 } }
                     });
+                    if (videoOnly) stream.getAudioTracks().forEach(t => t.stop());
+                    return stream;
                 } catch (e2) {
-                    return await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: videoOnly ? false : true,
+                        video: true
+                    });
+                    if (videoOnly) stream.getAudioTracks().forEach(t => t.stop());
+                    return stream;
                 }
             }
+        }
+
+        // Safe Adaptive Bitrate Clamping
+        async function applyAdaptiveSenderBitrate(quality) {
+            if (!peerConn) return;
+            const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
+            if (!sender || typeof sender.getParameters !== 'function') return;
+
+            try {
+                const params = sender.getParameters();
+                if (!params.encodings || params.encodings.length === 0) {
+                    params.encodings = [{}];
+                }
+                let maxBitrate = 2000000;
+                if (quality === '720p') maxBitrate = 1100000;
+                else if (quality === '480p') maxBitrate = 550000;
+
+                params.encodings[0].maxBitrate = maxBitrate;
+                params.encodings[0].maxFramerate = 30;
+                await sender.setParameters(params);
+            } catch (e) {}
         }
 
         ui.qualitySelector.addEventListener('change', async () => {
             if (!localStream) return;
             const chosenQuality = ui.qualitySelector.value;
-            let targetW = 1920, targetH = 1080;
-            if (chosenQuality === '720p') { targetW = 1280; targetH = 720; }
-            else if (chosenQuality === '480p') { targetW = 854; targetH = 480; }
+            const { idealW, idealH } = getResolutionTargets(chosenQuality);
 
             const videoTrack = localStream.getVideoTracks()[0];
             if (videoTrack) {
                 try {
                     await videoTrack.applyConstraints({
-                        width: { ideal: targetW },
-                        height: { ideal: targetH }
+                        width: { ideal: idealW },
+                        height: { ideal: idealH }
                     });
+                    await applyAdaptiveSenderBitrate(chosenQuality);
                     addSystemMsg(`Quality adjusted to ${chosenQuality}`);
                 } catch (err) {
-                    const newStream = await getMediaStream(chosenQuality);
-                    const newTrack = newStream.getVideoTracks()[0];
-                    if (newTrack) {
-                        videoTrack.stop();
-                        localStream.removeTrack(videoTrack);
-                        localStream.addTrack(newTrack);
-                        ui.localVid.srcObject = localStream;
-                        if (peerConn) {
-                            const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
-                            if (sender) await sender.replaceTrack(newTrack);
+                    try {
+                        const newStream = await getMediaStream(chosenQuality, isFront ? "user" : "environment", true);
+                        const newTrack = newStream.getVideoTracks()[0];
+                        newStream.getAudioTracks().forEach(t => t.stop());
+                        if (newTrack) {
+                            newTrack.enabled = !isVideoMuted;
+                            videoTrack.stop();
+                            localStream.removeTrack(videoTrack);
+                            localStream.addTrack(newTrack);
+                            ui.localVid.srcObject = localStream;
+                            if (peerConn) {
+                                const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
+                                if (sender) await sender.replaceTrack(newTrack);
+                                await applyAdaptiveSenderBitrate(chosenQuality);
+                            }
+                            addSystemMsg(`Quality adjusted to ${chosenQuality}`);
                         }
-                    }
+                    } catch (e2) {}
                 }
             }
         });
@@ -642,15 +1011,23 @@
             ui.btnNext.disabled = true;
             killWebRTC();
             socket.emit('skip');
-            setTimeout(() => initiateSearch(), 350);
+            nextSearchTimer = setTimeout(() => {
+                nextSearchTimer = null;
+                initiateSearch();
+            }, 350);
         });
 
         ui.endChatBtn.addEventListener('click', () => fullNukeAndReset());
 
         async function initiateSearch() {
+            clearAllCallTimers();
             currentState = 'SEARCHING';
             partnerId = null;
+            isInitiator = false;
+            isMakingOffer = false;
+            isSettingRemoteDescription = false;
             iceQueue = [];
+            pendingOffer = null;
             isPromptDismissedForEpisode = false;
 
             ui.btnStart.disabled = true;
@@ -671,9 +1048,11 @@
             ui.spinner.classList.remove('hidden-ui');
 
             try {
-                if (!localStream || !localStream.active) {
+                if (!localStream || !localStream.active || localStream.getVideoTracks().length === 0) {
                     localStream = await getMediaStream();
                 }
+                localStream.getAudioTracks().forEach(t => { t.enabled = !isAudioMuted; });
+                localStream.getVideoTracks().forEach(t => { t.enabled = !isVideoMuted; });
                 ui.localVid.srcObject = localStream;
                 ui.localVid.classList.toggle('camera-mirror', isFront);
                 ui.localVid.classList.toggle('camera-normal', !isFront);
@@ -686,6 +1065,9 @@
             }
 
             ui.spinnerText.innerText = "Finding Match...";
+            await ensureIceServersLoaded();
+            if (currentState !== 'SEARCHING') return;
+
             socket.emit('join', {
                 myGender: document.getElementById('myGender').value,
                 lookingFor: document.getElementById('lookingFor').value,
@@ -693,12 +1075,52 @@
             });
         }
 
+        function safePlayVideo(vidEl) {
+            if (!vidEl || !vidEl.srcObject) return;
+            vidEl.muted = true;
+            if (vidEl.paused) {
+                vidEl.play().catch(() => {});
+            }
+        }
+
+        // Watchdog: Ensures remote video playback and triggers safe ICE recovery if transport stalls
+        function startRemoteVideoWatchdog() {
+            if (watchdogTimer) clearInterval(watchdogTimer);
+            let ticks = 0;
+            watchdogTimer = setInterval(async () => {
+                ticks++;
+                if (currentState !== 'CONNECTED' || !peerConn) {
+                    clearInterval(watchdogTimer);
+                    watchdogTimer = null;
+                    return;
+                }
+
+                if (ui.remoteVid.srcObject && (ui.remoteVid.paused || ui.remoteVid.readyState < 2 || ui.remoteVid.videoWidth === 0)) {
+                    safePlayVideo(ui.remoteVid);
+
+                    if (ticks === 3 && isInitiator) {
+                        const iceState = peerConn.iceConnectionState;
+                        if (iceState === 'disconnected' || iceState === 'failed' || ui.remoteVid.videoWidth === 0) {
+                            triggerSeamlessIceRestart();
+                        }
+                    }
+                }
+
+                if (ticks >= 10) {
+                    clearInterval(watchdogTimer);
+                    watchdogTimer = null;
+                }
+            }, 1750);
+        }
+
         socket.on('matched', async (data) => {
             if (currentState !== 'SEARCHING') { socket.emit('skip'); return; }
 
+            clearAllCallTimers();
             ui.livePrompt.classList.add('hidden-ui');
             currentState = 'CONNECTED';
             partnerId = data.partnerId;
+            isInitiator = !!data.initiator;
             ui.btnNext.disabled = false;
 
             ui.spinner.classList.add('hidden-ui');
@@ -716,55 +1138,80 @@
                 localStream.getTracks().forEach(track => {
                     peerConn.addTrack(track, localStream);
                 });
+                await applyAdaptiveSenderBitrate(ui.qualitySelector.value);
             }
 
-            if (data.initiator) {
+            startRemoteVideoWatchdog();
+
+            if (isInitiator) {
                 try {
+                    isMakingOffer = true;
                     const offer = await peerConn.createOffer();
-                    await peerConn.setLocalDescription(offer);
-                    socket.emit('offer', { sdp: peerConn.localDescription.sdp, type: peerConn.localDescription.type, partnerId });
+                    if (peerConn && peerConn.signalingState !== "closed") {
+                        await peerConn.setLocalDescription(offer);
+                        socket.emit('offer', {
+                            sdp: peerConn.localDescription.sdp,
+                            type: peerConn.localDescription.type,
+                            partnerId
+                        });
+                    }
                 } catch (err) {
                     console.error("Offer negotiation error:", err);
+                } finally {
+                    isMakingOffer = false;
                 }
             } else if (pendingOffer) {
-                await handleOffer(pendingOffer);
+                const offerToProcess = pendingOffer;
                 pendingOffer = null;
+                await handleOffer(offerToProcess);
             }
         });
 
-        // Robust PeerConnection with Network-Switch Auto-Recovery
+        // Robust PeerConnection with Isolated Single-Track Streams & Polite-Peer Recovery
         function initPeerConnection() {
             peerConn = new RTCPeerConnection({
                 iceServers: cachedIceServers,
                 iceTransportPolicy: "all",
                 bundlePolicy: "max-bundle",
-                rtcpMuxPolicy: "require"
+                rtcpMuxPolicy: "require",
+                iceCandidatePoolSize: 4
             });
 
-            // Resilient ontrack pipeline (Safe metadata playback, Zero AbortError)
             peerConn.ontrack = (event) => {
                 if (event.track.kind === 'video') {
-                    const stream = event.streams[0] || new MediaStream([event.track]);
-                    ui.remoteVid.srcObject = stream;
+                    const vStream = new MediaStream([event.track]);
+                    ui.remoteVid.srcObject = vStream;
                     ui.remoteVid.muted = true;
-                    ui.remoteVid.onloadedmetadata = () => {
-                        ui.remoteVid.play().catch(e => console.warn("Video play notice:", e));
-                    };
+
+                    const triggerPlay = () => safePlayVideo(ui.remoteVid);
+                    ui.remoteVid.onloadedmetadata = triggerPlay;
+                    ui.remoteVid.onloadeddata = triggerPlay;
+                    ui.remoteVid.oncanplay = triggerPlay;
+                    ui.remoteVid.onresize = triggerPlay;
+                    safePlayVideo(ui.remoteVid);
                 } else if (event.track.kind === 'audio') {
-                    const aStream = event.streams[0] || new MediaStream([event.track]);
+                    const aStream = new MediaStream([event.track]);
                     ui.remoteAud.srcObject = aStream;
-                    ui.remoteAud.onloadedmetadata = () => {
+                    const playAudio = () => {
                         ui.remoteAud.play().then(() => {
                             ui.unmuteFallback.classList.add('hidden-ui');
                         }).catch(() => {
                             ui.unmuteFallback.classList.remove('hidden-ui');
                         });
                     };
+                    ui.remoteAud.onloadedmetadata = playAudio;
+                    playAudio();
                 }
 
                 event.track.onunmute = () => {
-                    if (event.track.kind === 'video') ui.remoteVid.play().catch(() => {});
-                    if (event.track.kind === 'audio') ui.remoteAud.play().catch(() => {});
+                    if (event.track.kind === 'video') safePlayVideo(ui.remoteVid);
+                    if (event.track.kind === 'audio' && ui.remoteAud.srcObject) {
+                        ui.remoteAud.play().then(() => {
+                            ui.unmuteFallback.classList.add('hidden-ui');
+                        }).catch(() => {
+                            ui.unmuteFallback.classList.remove('hidden-ui');
+                        });
+                    }
                 };
             };
 
@@ -774,43 +1221,78 @@
                 }
             };
 
-            // Seamless Network Switch (Wi-Fi <-> Cellular) - No pause / No drop
-            peerConn.oniceconnectionstatechange = () => {
-                console.log("ICE Connection State:", peerConn.iceConnectionState);
-                if (peerConn.iceConnectionState === 'disconnected') {
-                    setTimeout(() => {
-                        if (peerConn && peerConn.iceConnectionState === 'disconnected') {
+            function scheduleRoleBasedIceRestart(state) {
+                if (!peerConn || currentState !== 'CONNECTED') return;
+                if (state === 'connected' || state === 'completed') {
+                    if (iceRestartTimer) { clearTimeout(iceRestartTimer); iceRestartTimer = null; }
+                    isRestartingIce = false;
+                    return;
+                }
+
+                if (state === 'failed') {
+                    if (isInitiator) {
+                        triggerSeamlessIceRestart();
+                    } else {
+                        if (iceRestartTimer) clearTimeout(iceRestartTimer);
+                        iceRestartTimer = setTimeout(() => triggerSeamlessIceRestart(), 2500);
+                    }
+                } else if (state === 'disconnected') {
+                    if (iceRestartTimer) clearTimeout(iceRestartTimer);
+                    const delay = isInitiator ? 1500 : 4500;
+                    iceRestartTimer = setTimeout(() => {
+                        if (peerConn && (peerConn.iceConnectionState === 'disconnected' || peerConn.iceConnectionState === 'failed')) {
                             triggerSeamlessIceRestart();
                         }
-                    }, 1500);
-                } else if (peerConn.iceConnectionState === 'failed') {
-                    triggerSeamlessIceRestart();
+                    }, delay);
+                }
+            }
+
+            peerConn.oniceconnectionstatechange = () => {
+                if (!peerConn) return;
+                scheduleRoleBasedIceRestart(peerConn.iceConnectionState);
+            };
+
+            peerConn.onconnectionstatechange = () => {
+                if (!peerConn) return;
+                if (peerConn.connectionState === 'failed' || peerConn.connectionState === 'disconnected') {
+                    scheduleRoleBasedIceRestart(peerConn.connectionState);
                 }
             };
         }
 
         async function triggerSeamlessIceRestart() {
-            if (isRestartingIce || !peerConn || currentState !== 'CONNECTED' || !partnerId) return;
+            if (isRestartingIce || isMakingOffer || !peerConn || currentState !== 'CONNECTED' || !partnerId) return;
+            if (peerConn.signalingState !== 'stable') return;
+
             isRestartingIce = true;
-            console.log("Network switch detected: restarting ICE tunnel...");
+            isMakingOffer = true;
             try {
                 const offer = await peerConn.createOffer({ iceRestart: true });
-                await peerConn.setLocalDescription(offer);
-                socket.emit('offer', {
-                    sdp: peerConn.localDescription.sdp,
-                    type: peerConn.localDescription.type,
-                    partnerId,
-                    isIceRestart: true
-                });
+                if (peerConn && peerConn.signalingState === 'stable') {
+                    await peerConn.setLocalDescription(offer);
+                    socket.emit('offer', {
+                        sdp: peerConn.localDescription.sdp,
+                        type: peerConn.localDescription.type,
+                        partnerId,
+                        isIceRestart: true
+                    });
+                }
             } catch (err) {
                 console.warn("ICE restart notice:", err);
+            } finally {
+                isMakingOffer = false;
+                setTimeout(() => { isRestartingIce = false; }, 3000);
             }
-            setTimeout(() => { isRestartingIce = false; }, 3000);
         }
 
         window.addEventListener('online', () => {
             if (currentState === 'CONNECTED' && peerConn) {
-                triggerSeamlessIceRestart();
+                if (isInitiator) {
+                    triggerSeamlessIceRestart();
+                } else {
+                    if (iceRestartTimer) clearTimeout(iceRestartTimer);
+                    iceRestartTimer = setTimeout(() => triggerSeamlessIceRestart(), 1800);
+                }
             }
         });
 
@@ -820,12 +1302,30 @@
                     ui.unmuteFallback.classList.add('hidden-ui');
                 }).catch(() => {});
             }
+            if (ui.remoteVid && ui.remoteVid.srcObject && ui.remoteVid.paused) {
+                safePlayVideo(ui.remoteVid);
+            }
         }
 
         ui.unmuteFallback.addEventListener('click', unlockAudio);
         document.addEventListener('click', unlockAudio, { passive: true });
 
+        async function flushIceQueue() {
+            if (!peerConn || !peerConn.remoteDescription || !peerConn.remoteDescription.type) return;
+            while (iceQueue.length > 0) {
+                const c = iceQueue.shift();
+                if (c && c.candidate) {
+                    try {
+                        await peerConn.addIceCandidate(new RTCIceCandidate(c));
+                    } catch (e) {}
+                }
+            }
+        }
+
         socket.on('offer', async (data) => {
+            if (!data) return;
+            if (data.from && partnerId && data.from !== partnerId) return;
+
             if (currentState !== 'CONNECTED' || !peerConn) {
                 pendingOffer = data;
                 return;
@@ -833,53 +1333,79 @@
             await handleOffer(data);
         });
 
+        // Polite-Peer Offer Handler
         async function handleOffer(data) {
             if (!peerConn) return;
+            const sdpStr = typeof data.sdp === 'string' ? data.sdp : (data.sdp && data.sdp.sdp ? data.sdp.sdp : data.sdp);
+            const sdpType = data.type || (data.sdp && data.sdp.type) || 'offer';
+
+            const offerCollision = isMakingOffer || (peerConn.signalingState !== 'stable');
+            const polite = !isInitiator;
+
+            if (offerCollision && !polite) {
+                return;
+            }
+
+            isSettingRemoteDescription = true;
             try {
-                const sdpStr = typeof data.sdp === 'string' ? data.sdp : (data.sdp && data.sdp.sdp ? data.sdp.sdp : data.sdp);
-                const sdpType = data.type || (data.sdp && data.sdp.type) || 'offer';
-                await peerConn.setRemoteDescription(new RTCSessionDescription({ type: sdpType, sdp: sdpStr }));
-
-                while (iceQueue.length > 0) {
-                    const c = iceQueue.shift();
-                    if (c && c.candidate) {
-                        await peerConn.addIceCandidate(new RTCIceCandidate(c)).catch(() => {});
-                    }
+                if (offerCollision && polite) {
+                    await peerConn.setLocalDescription({ type: 'rollback' }).catch(() => {});
                 }
+                await peerConn.setRemoteDescription(new RTCSessionDescription({ type: sdpType, sdp: sdpStr }));
+            } catch (err) {
+                console.error("Offer setRemoteDescription error:", err);
+                isSettingRemoteDescription = false;
+                return;
+            }
+            isSettingRemoteDescription = false;
 
+            await flushIceQueue();
+
+            try {
                 const answer = await peerConn.createAnswer();
                 await peerConn.setLocalDescription(answer);
-                socket.emit('answer', { sdp: peerConn.localDescription.sdp, type: peerConn.localDescription.type, partnerId });
+                socket.emit('answer', {
+                    sdp: peerConn.localDescription.sdp,
+                    type: peerConn.localDescription.type,
+                    partnerId
+                });
             } catch (err) {
                 console.error("Answer negotiation error:", err);
             }
         }
 
         socket.on('answer', async (data) => {
+            if (!data) return;
+            if (data.from && partnerId && data.from !== partnerId) return;
+            if (!peerConn || peerConn.signalingState !== 'have-local-offer') return;
+
+            const sdpStr = typeof data.sdp === 'string' ? data.sdp : (data.sdp && data.sdp.sdp ? data.sdp.sdp : data.sdp);
+            const sdpType = data.type || (data.sdp && data.sdp.type) || 'answer';
+
+            isSettingRemoteDescription = true;
             try {
-                if (peerConn && peerConn.signalingState !== "closed") {
-                    const sdpStr = typeof data.sdp === 'string' ? data.sdp : (data.sdp && data.sdp.sdp ? data.sdp.sdp : data.sdp);
-                    const sdpType = data.type || (data.sdp && data.sdp.type) || 'answer';
-                    await peerConn.setRemoteDescription(new RTCSessionDescription({ type: sdpType, sdp: sdpStr }));
-                    while (iceQueue.length > 0) {
-                        const c = iceQueue.shift();
-                        if (c && c.candidate) {
-                            await peerConn.addIceCandidate(new RTCIceCandidate(c)).catch(() => {});
-                        }
-                    }
-                }
+                await peerConn.setRemoteDescription(new RTCSessionDescription({ type: sdpType, sdp: sdpStr }));
             } catch (err) {
                 console.error("SetRemoteDescription answer error:", err);
+                isSettingRemoteDescription = false;
+                return;
             }
+            isSettingRemoteDescription = false;
+
+            await flushIceQueue();
         });
 
         socket.on('ice-candidate', async (data) => {
             if (!data || !data.candidate) return;
+            if (data.from && partnerId && data.from !== partnerId) return;
+
             const c = data.candidate;
-            if (peerConn && peerConn.remoteDescription && peerConn.remoteDescription.type) {
-                if (c && c.candidate) {
-                    await peerConn.addIceCandidate(new RTCIceCandidate(c)).catch(() => {});
-                }
+            if (!c.candidate) return;
+
+            if (peerConn && !isSettingRemoteDescription && peerConn.remoteDescription && peerConn.remoteDescription.type) {
+                try {
+                    await peerConn.addIceCandidate(new RTCIceCandidate(c));
+                } catch (e) {}
             } else {
                 iceQueue.push(c);
             }
@@ -889,7 +1415,8 @@
             if (currentState !== 'CONNECTED') return;
             addSystemMsg('Stranger left.');
             killWebRTC();
-            setTimeout(() => {
+            peerDisconnectTimer = setTimeout(() => {
+                peerDisconnectTimer = null;
                 if (currentState === 'CONNECTED' || currentState === 'SEARCHING') {
                     ui.btnNext.click();
                 }
@@ -897,23 +1424,36 @@
         });
 
         function killWebRTC() {
+            clearAllCallTimers();
+            fileTransferSessionId++;
+            incomingFiles = {};
+
             if (peerConn) {
                 peerConn.ontrack = null;
                 peerConn.onicecandidate = null;
                 peerConn.oniceconnectionstatechange = null;
-                peerConn.close();
+                peerConn.onconnectionstatechange = null;
+                try { peerConn.close(); } catch (e) {}
                 peerConn = null;
             }
             if (ui.remoteVid) {
+                ui.remoteVid.onloadedmetadata = null;
+                ui.remoteVid.onloadeddata = null;
+                ui.remoteVid.oncanplay = null;
+                ui.remoteVid.onresize = null;
                 ui.remoteVid.pause();
                 ui.remoteVid.srcObject = null;
             }
             if (ui.remoteAud) {
+                ui.remoteAud.onloadedmetadata = null;
                 ui.remoteAud.pause();
                 ui.remoteAud.srcObject = null;
             }
             ui.unmuteFallback.classList.add('hidden-ui');
             partnerId = null;
+            isInitiator = false;
+            isMakingOffer = false;
+            isSettingRemoteDescription = false;
             pendingOffer = null;
             iceQueue = [];
             isRestartingIce = false;
@@ -934,7 +1474,9 @@
             isAudioMuted = false;
             isVideoMuted = false;
             document.getElementById('muteBtn').innerText = '🎤';
+            document.getElementById('muteBtn').classList.remove('text-rose-500');
             document.getElementById('camBtn').innerText = '📷';
+            document.getElementById('camBtn').classList.remove('text-rose-500');
 
             ui.controls.classList.add('hidden-ui');
             ui.btnStart.disabled = false;
@@ -955,7 +1497,7 @@
             if (ui.shareTicker) ui.shareTicker.classList.remove('hidden-ui');
         }
 
-        // Chat: 30 Words Limit & 15MB File Sharing (Preserved)
+        // Chat: 30 Words Limit & Paced 15MB File Sharing
         ui.btnSend.addEventListener('click', sendMsg);
         ui.inputChat.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); sendMsg(); }
@@ -994,19 +1536,30 @@
             const isAud = file.type.startsWith('audio/');
             addSystemMsg(`Sending ${isVid ? 'Video' : isAud ? 'Audio' : 'Photo'}...`);
 
+            const activeSession = fileTransferSessionId;
+            const activePartner = partnerId;
+
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = async function(event) {
+                if (currentState !== 'CONNECTED' || partnerId !== activePartner || fileTransferSessionId !== activeSession) return;
                 const base64Str = event.target.result;
                 const chunkSize = 40000;
                 const totalChunks = Math.ceil(base64Str.length / chunkSize);
-                const fileId = Date.now().toString();
+                const fileId = Date.now().toString() + '_' + Math.random().toString(36).slice(2, 7);
 
                 for (let i = 0; i < totalChunks; i++) {
+                    if (currentState !== 'CONNECTED' || partnerId !== activePartner || fileTransferSessionId !== activeSession) {
+                        return;
+                    }
                     const chunkData = base64Str.substring(i * chunkSize, (i + 1) * chunkSize);
                     const payload = JSON.stringify({
                         type: 'chunk', fileId, chunk: chunkData, index: i, total: totalChunks, isVideo: isVid, isAudio: isAud
                     });
-                    socket.emit('chat-message', { message: payload, partnerId });
+                    socket.emit('chat-message', { message: payload, partnerId: activePartner });
+
+                    if (i % 3 === 2) {
+                        await new Promise(r => setTimeout(r, 12));
+                    }
                 }
                 addMsg('You', base64Str, true, isVid, isAud);
             };
@@ -1014,42 +1567,83 @@
             ui.fileUpload.value = '';
         });
 
-        let incomingFiles = {};
-        socket.on('chat-message', (msg) => {
+        socket.on('chat-message', (payload) => {
             if (currentState !== 'CONNECTED') return;
+            const senderId = (payload && typeof payload === 'object') ? payload.from : null;
+            if (senderId && partnerId && senderId !== partnerId) return;
+
+            const msg = (payload && typeof payload === 'object' && typeof payload.message === 'string') ? payload.message : payload;
+            if (typeof msg !== 'string') return;
+
             try {
                 const data = JSON.parse(msg);
-                if (data.type === 'chunk') {
-                    if (!incomingFiles[data.fileId]) incomingFiles[data.fileId] = [];
-                    incomingFiles[data.fileId][data.index] = data.chunk;
-                    if (Object.keys(incomingFiles[data.fileId]).length === data.total) {
-                        const fullData = incomingFiles[data.fileId].join('');
-                        addMsg('Stranger', fullData, false, data.isVideo, data.isAudio);
+                if (data && data.type === 'chunk' && typeof data.fileId === 'string' && typeof data.total === 'number' && data.total > 0 && data.total <= 600) {
+                    if (!incomingFiles[data.fileId]) {
+                        incomingFiles[data.fileId] = { chunks: [], received: 0 };
+                    }
+                    const entry = incomingFiles[data.fileId];
+                    if (typeof entry.chunks[data.index] === 'undefined') {
+                        entry.chunks[data.index] = data.chunk;
+                        entry.received++;
+                    }
+                    if (entry.received === data.total) {
+                        const fullData = entry.chunks.join('');
                         delete incomingFiles[data.fileId];
+                        addMsg('Stranger', fullData, false, !!data.isVideo, !!data.isAudio);
                     }
                     return;
                 }
-            } catch (e) {
-                addMsg('Stranger', msg, false);
-            }
+            } catch (e) {}
+            addMsg('Stranger', msg, false);
         });
 
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t));
+        // Strict Validator & Safe DOM Builder
+        function isSafeMediaDataUrl(str, expectedMimePrefix) {
+            if (typeof str !== 'string') return false;
+            const prefixRegex = new RegExp(`^data:${expectedMimePrefix}\\/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/=\\s]+$`);
+            return prefixRegex.test(str);
         }
 
         function addMsg(sender, text, isMe, isVideo, isAudio) {
             const d = document.createElement('div');
-            d.className = `max-w-[85%] p-2 rounded-2xl ${isMe ? 'bg-rose-600/85 text-white rounded-br-none self-end shadow-md' : 'bg-slate-900/80 border border-white/10 text-slate-100 rounded-bl-none self-start backdrop-blur-md shadow-md'} text-xs leading-relaxed`;
+            d.className = `max-w-[85%] p-2 rounded-2xl ${isMe ? 'bg-orange-600/85 text-white rounded-br-none self-end shadow-md' : 'bg-slate-900/80 border border-white/10 text-slate-100 rounded-bl-none self-start backdrop-blur-md shadow-md'} text-xs leading-relaxed`;
 
-            if (isVideo) {
-                d.innerHTML = `<span class="text-[9px] font-bold block mb-1 opacity-70">${escapeHTML(sender)}</span><video controls autoplay muted playsinline class="chat-media-preview"><source src="${text}"></video>`;
-            } else if (isAudio) {
-                d.innerHTML = `<span class="text-[9px] font-bold block mb-1 opacity-70">${escapeHTML(sender)}</span><audio controls class="mt-1 w-full max-w-[200px]"><source src="${text}"></audio>`;
-            } else if (text.startsWith('data:image')) {
-                d.innerHTML = `<span class="text-[9px] font-bold block mb-1 opacity-70">${escapeHTML(sender)}</span><img src="${text}" class="chat-media-preview" alt="photo">`;
+            const senderSpan = document.createElement('span');
+            senderSpan.className = 'text-[9px] font-bold block mb-1 opacity-70';
+            senderSpan.textContent = sender;
+            d.appendChild(senderSpan);
+
+            if (isVideo && isSafeMediaDataUrl(text, 'video')) {
+                const vid = document.createElement('video');
+                vid.controls = true;
+                vid.autoplay = true;
+                vid.muted = true;
+                vid.playsInline = true;
+                vid.className = 'chat-media-preview';
+                const source = document.createElement('source');
+                source.src = text;
+                vid.appendChild(source);
+                d.appendChild(vid);
+            } else if (isAudio && isSafeMediaDataUrl(text, 'audio')) {
+                const aud = document.createElement('audio');
+                aud.controls = true;
+                aud.className = 'mt-1 w-full max-w-[200px]';
+                const source = document.createElement('source');
+                source.src = text;
+                aud.appendChild(source);
+                d.appendChild(aud);
+            } else if (typeof text === 'string' && text.startsWith('data:image') && isSafeMediaDataUrl(text, 'image')) {
+                const img = document.createElement('img');
+                img.src = text;
+                img.className = 'chat-media-preview';
+                img.alt = 'photo';
+                d.appendChild(img);
             } else {
-                d.innerHTML = `<span class="text-[9px] font-bold block mb-0.5 opacity-70">${escapeHTML(sender)}</span><span class="break-words">${escapeHTML(text)}</span>`;
+                senderSpan.className = 'text-[9px] font-bold block mb-0.5 opacity-70';
+                const bodySpan = document.createElement('span');
+                bodySpan.className = 'break-words';
+                bodySpan.textContent = typeof text === 'string' ? text : '';
+                d.appendChild(bodySpan);
             }
 
             ui.chatBox.appendChild(d);
@@ -1058,7 +1652,7 @@
 
         function addSystemMsg(text) {
             const d = document.createElement('div');
-            d.className = "text-center text-[10px] font-bold text-slate-300 my-1 py-0.5 rounded-full mx-auto px-3 bg-slate-900/60 border border-white/10 backdrop-blur-md";
+            d.className = "text-center text-[10px] font-bold text-amber-200 my-1 py-0.5 rounded-full mx-auto px-3 bg-slate-900/65 border border-amber-400/25 backdrop-blur-md";
             d.innerText = text;
             ui.chatBox.appendChild(d);
             setTimeout(() => ui.chatBox.scrollTop = ui.chatBox.scrollHeight, 40);
@@ -1074,45 +1668,71 @@
         ui.closeImgBtn.addEventListener('click', () => ui.imgModal.classList.add('hidden-ui'));
 
         document.getElementById('muteBtn').addEventListener('click', (e) => {
-            if (!localStream) return;
+            if (!localStream || !localStream.getAudioTracks()[0]) return;
             isAudioMuted = !isAudioMuted;
             localStream.getAudioTracks()[0].enabled = !isAudioMuted;
-            e.target.innerText = !isAudioMuted ? '🎤' : '🔇';
-            e.target.classList.toggle('text-rose-500', isAudioMuted);
+            e.currentTarget.innerText = !isAudioMuted ? '🎤' : '🔇';
+            e.currentTarget.classList.toggle('text-rose-500', isAudioMuted);
         });
 
         document.getElementById('camBtn').addEventListener('click', (e) => {
-            if (!localStream) return;
+            if (!localStream || !localStream.getVideoTracks()[0]) return;
             isVideoMuted = !isVideoMuted;
             localStream.getVideoTracks()[0].enabled = !isVideoMuted;
-            e.target.innerText = !isVideoMuted ? '📷' : '🚫';
-            e.target.classList.toggle('text-rose-500', isVideoMuted);
+            e.currentTarget.innerText = !isVideoMuted ? '📷' : '🚫';
+            e.currentTarget.classList.toggle('text-rose-500', isVideoMuted);
         });
 
+        // Safe Camera Flip with Automatic Recovery
         document.getElementById('flipBtn').addEventListener('click', async () => {
             if (!localStream) return;
+            const prevFront = isFront;
             isFront = !isFront;
+
             const oldVideoTrack = localStream.getVideoTracks()[0];
             if (oldVideoTrack) oldVideoTrack.stop();
 
             try {
-                const freshStream = await getMediaStream(ui.qualitySelector.value, isFront ? "user" : "environment");
+                const freshStream = await getMediaStream(ui.qualitySelector.value, isFront ? "user" : "environment", true);
                 const newTrack = freshStream.getVideoTracks()[0];
+                freshStream.getAudioTracks().forEach(t => t.stop());
+
+                if (!newTrack) throw new Error("No video track");
                 newTrack.enabled = !isVideoMuted;
 
-                localStream.removeTrack(oldVideoTrack);
+                if (oldVideoTrack) localStream.removeTrack(oldVideoTrack);
                 localStream.addTrack(newTrack);
                 ui.localVid.srcObject = localStream;
                 ui.localVid.classList.toggle('camera-mirror', isFront);
                 ui.localVid.classList.toggle('camera-normal', !isFront);
+                await ui.localVid.play().catch(() => {});
 
                 if (peerConn) {
                     const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
-                    if (sender) sender.replaceTrack(newTrack);
+                    if (sender) await sender.replaceTrack(newTrack);
+                    await applyAdaptiveSenderBitrate(ui.qualitySelector.value);
                 }
             } catch (err) {
                 addSystemMsg("Camera switch not supported.");
-                isFront = !isFront;
+                isFront = prevFront;
+                try {
+                    const recoveryStream = await getMediaStream(ui.qualitySelector.value, isFront ? "user" : "environment", true);
+                    const recTrack = recoveryStream.getVideoTracks()[0];
+                    recoveryStream.getAudioTracks().forEach(t => t.stop());
+                    if (recTrack) {
+                        recTrack.enabled = !isVideoMuted;
+                        if (oldVideoTrack) localStream.removeTrack(oldVideoTrack);
+                        localStream.addTrack(recTrack);
+                        ui.localVid.srcObject = localStream;
+                        ui.localVid.classList.toggle('camera-mirror', isFront);
+                        ui.localVid.classList.toggle('camera-normal', !isFront);
+                        await ui.localVid.play().catch(() => {});
+                        if (peerConn) {
+                            const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
+                            if (sender) await sender.replaceTrack(recTrack);
+                        }
+                    }
+                } catch (recErr) {}
             }
         });
 
@@ -1148,6 +1768,35 @@
             ui.localVidBox.style.right = Math.max(0, Math.min(newRight, maxRight)) + 'px';
             ui.localVidBox.style.bottom = Math.max(0, Math.min(newBottom, maxBottom)) + 'px';
         }
+
+        // Built-in WebRTC Diagnostics Helper
+        window.runWebRTCDiagnostics = async function() {
+            const report = {
+                state: currentState,
+                partnerId: partnerId,
+                isInitiator: isInitiator,
+                iceConnectionState: peerConn ? peerConn.iceConnectionState : 'none',
+                remoteVideoDimensions: `${ui.remoteVid.videoWidth}x${ui.remoteVid.videoHeight}`,
+                remoteVideoPaused: ui.remoteVid.paused,
+                localVideoDimensions: `${ui.localVid.videoWidth}x${ui.localVid.videoHeight}`
+            };
+            if (peerConn) {
+                const stats = await peerConn.getStats();
+                stats.forEach(s => {
+                    if (s.type === 'candidate-pair' && s.state === 'succeeded') {
+                        report.nominatedCandidatePair = s.id;
+                        report.bytesReceived = s.bytesReceived;
+                        report.bytesSent = s.bytesSent;
+                    }
+                    if (s.type === 'inbound-rtp' && s.kind === 'video') {
+                        report.framesDecoded = s.framesDecoded;
+                        report.packetsLost = s.packetsLost;
+                    }
+                });
+            }
+            console.table(report);
+            return report;
+        };
     </script>
 </body>
 </html>
