@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <title>RandomMeet — Premium Global Video Chat</title>
-    <meta name="description" content="Connect instantly with random people globally in 1080p Full HD video. Free, anonymous, secure live chat.">
+    <meta name="description" content="Connect instantly with random people globally in HD video. Free, anonymous, secure live chat.">
     
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="192x192" href="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=ea580c&textColor=ffffff">
@@ -69,7 +69,7 @@
             z-index: -3; pointer-events: none;
         }
 
-        /* 3D Isometric Hexagon Cube Background Emblem (Like CoreDAO Reference) */
+        /* 3D Isometric Hexagon Cube Background Emblem */
         .bg-core-hexagon {
             position: fixed;
             right: 4%;
@@ -82,6 +82,21 @@
             pointer-events: none;
             user-select: none;
             filter: drop-shadow(0 25px 60px rgba(0, 0, 0, 0.7));
+        }
+
+        /* UI Lazy Loading & Content Visibility Optimization */
+        .lazy-section {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 280px;
+        }
+        .lazy-reveal {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.45s ease-out, transform 0.45s ease-out;
+        }
+        .lazy-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Glassmorphic Warm Bronze / Slate Cards */
@@ -162,10 +177,9 @@
         }
         @keyframes hideSplash { to { display: none; z-index: -1; } }
 
-        /* Natural Mirror View for Selfie Camera */
+        /* Natural Mirror View (1:1 Same-Direction Movement & Straight Symmetrical Face) */
         .camera-mirror {
             transform: scaleX(-1) !important;
-            object-fit: cover !important;
         }
         .camera-normal {
             transform: none !important;
@@ -181,16 +195,20 @@
             object-position: center center !important;
         }
 
-        /* 3:4 Aspect Ratio PIP Container */
+        /* 3:4 Aspect Ratio PIP Container (Tappable to Swap Fullscreen & Draggable) */
         #localVideoContainer {
             position: absolute; bottom: 220px; right: 16px;
-            width: 108px; height: 144px; border-radius: 16px;
+            width: 110px; height: 148px; border-radius: 16px;
             overflow: hidden; z-index: 50;
             border: 2px solid transparent;
             background: linear-gradient(#13100e, #13100e) padding-box,
                         linear-gradient(135deg, #f59e0b, #ea580c) border-box;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85); cursor: grab;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85); cursor: pointer;
             touch-action: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        #localVideoContainer:hover {
+            box-shadow: 0 14px 36px rgba(234, 88, 12, 0.45);
         }
 
         /* Refined Frosted Chat Deck */
@@ -222,7 +240,7 @@
     <div class="bg-dark-tint"></div>
 
     <!-- 3D Isometric Hexagon Emblem in Background -->
-    <svg class="bg-core-hexagon" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="bg-core-hexagon" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
             <linearGradient id="hexGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.65"/>
@@ -234,9 +252,7 @@
                 <stop offset="100%" stop-color="#1e293b" stop-opacity="0.45"/>
             </linearGradient>
         </defs>
-        <!-- Outer 3D Hexagon Ring -->
         <polygon points="250,30 440,140 440,360 250,470 60,360 60,140" stroke="url(#hexGrad1)" stroke-width="26" fill="url(#hexGrad2)"/>
-        <!-- Inner Isometric Cube Faces -->
         <polygon points="250,115 365,182 250,250 135,182" fill="rgba(245, 158, 11, 0.22)" stroke="rgba(251, 146, 60, 0.45)" stroke-width="4"/>
         <polygon points="135,182 250,250 250,385 135,318" fill="rgba(180, 83, 9, 0.30)" stroke="rgba(251, 146, 60, 0.35)" stroke-width="4"/>
         <polygon points="365,182 250,250 250,385 365,318" fill="rgba(30, 58, 76, 0.38)" stroke="rgba(56, 189, 248, 0.30)" stroke-width="4"/>
@@ -246,9 +262,9 @@
         <div class="splash-text">RANDOMMEET</div>
     </div>
 
-    <!-- Media Full Screen Modal -->
+    <!-- Media Full Screen Modal (Lazy Loaded) -->
     <div id="imageViewerModal" class="fixed inset-0 bg-black/90 backdrop-blur-lg z-[10000] hidden-ui flex flex-col items-center justify-center p-4">
-        <img id="fullScreenImg" src="" alt="Preview" class="max-w-[95vw] max-h-[85vh] object-contain rounded-xl shadow-2xl">
+        <img id="fullScreenImg" src="" loading="lazy" decoding="async" alt="Preview" class="max-w-[95vw] max-h-[85vh] object-contain rounded-xl shadow-2xl">
         <div class="mt-4 flex gap-4">
             <button id="closeViewerBtn" class="interactive-btn px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider">Close</button>
             <a id="downloadImgBtn" href="" download="shared_file" class="interactive-btn px-5 py-2 rounded-xl primary-glow-btn text-white font-bold text-xs uppercase tracking-wider">Download</a>
@@ -305,7 +321,7 @@
     <!-- Header Navigation -->
     <header class="w-full shrink-0 z-40 px-4 py-2.5 flex items-center justify-between border-b border-amber-500/15 bg-[#14110f]/80 backdrop-blur-xl">
         <div id="logoBtn" class="flex items-center gap-2 cursor-pointer shrink-0">
-            <img src="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=ea580c&textColor=ffffff" alt="Logo" class="w-6 h-6 rounded-full border border-amber-400/50 shadow-sm">
+            <img src="https://api.dicebear.com/7.x/initials/png?seed=RM&backgroundColor=ea580c&textColor=ffffff" loading="lazy" decoding="async" alt="Logo" class="w-6 h-6 rounded-full border border-amber-400/50 shadow-sm">
             <h1 class="text-xs sm:text-base font-extrabold tracking-tight brand-text-gradient uppercase">RandomMeet</h1>
         </div>
         <div class="flex items-center gap-2 shrink-0">
@@ -329,7 +345,7 @@
         </div>
     </div>
 
-    <!-- Home Screen: Scrollable Container with Two-Column Hero & Detailed Footer (Zero Overlap on Mobile & Desktop) -->
+    <!-- Home Screen: Scrollable Container with Two-Column Hero & Detailed Lazy-Loaded Footer -->
     <main id="homeScreen" class="flex-1 overflow-y-auto overflow-x-hidden relative z-10 w-full">
         <!-- 5s Interval & 3s Visibility Waiting Notification -->
         <div id="livePrompt" class="fixed top-24 left-0 bg-gradient-to-r from-emerald-600 to-teal-600 text-white pl-4 pr-3 py-2.5 rounded-r-2xl text-xs font-bold hidden-ui flex items-center gap-3 z-50 shadow-2xl border-y border-r border-emerald-300/40 animate-pulse transition-all">
@@ -337,20 +353,18 @@
             <button id="dismissPromptBtn" class="text-white/80 hover:text-white bg-black/25 rounded-full w-5 h-5 flex items-center justify-center">✕</button>
         </div>
 
-        <!-- Main Hero Container (Two Columns on Laptop/Desktop, Clean Stack on Mobile) -->
+        <!-- Main Hero Container -->
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
                 
                 <!-- LEFT COLUMN: Website Showcase & Auto-Typing Engine (7 Columns on Laptop) -->
-                <div class="lg:col-span-7 flex flex-col text-left space-y-5 order-2 lg:order-1">
+                <div class="lg:col-span-7 flex flex-col text-left space-y-5 order-2 lg:order-1 lazy-reveal">
                     
-                    <!-- Top Status Badge -->
                     <div class="inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-orange-500/15 border border-orange-400/30 text-orange-300 text-[11px] font-bold uppercase tracking-widest">
                         <span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span>
                         Next-Gen WebRTC Global Network
                     </div>
 
-                    <!-- CoreDAO-Style Big Hero Heading + Auto-Typing Line -->
                     <div class="space-y-1">
                         <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
                             Meet Strangers Globally —
@@ -361,7 +375,7 @@
                         </div>
                     </div>
 
-                    <!-- Detailed Auto-Typing Box About RandomMeet (Fixed Min-Height = Zero Overlap) -->
+                    <!-- Detailed Auto-Typing Box About RandomMeet -->
                     <div class="bento-card rounded-2xl p-4 sm:p-5 border border-amber-500/25 relative">
                         <div class="flex items-center justify-between mb-2.5 pb-2 border-b border-white/10">
                             <div class="flex items-center gap-2">
@@ -370,25 +384,25 @@
                                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
                                 <span class="text-[11px] font-bold uppercase tracking-wider text-amber-300 ml-1">About RandomMeet Platform • Live Specs</span>
                             </div>
-                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">v4.0 P2P</span>
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">v4.5 Smart HD</span>
                         </div>
                         <div class="min-h-[115px] sm:min-h-[105px] text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
                             <span id="detailTypewriter"></span><span class="typewriter-cursor"></span>
                         </div>
                     </div>
 
-                    <!-- 3 Feature Highlights Cards (Like CoreDAO Bottom Cards) -->
+                    <!-- 3 Feature Highlights Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div class="bento-card rounded-2xl p-3.5">
+                        <div class="bento-card rounded-2xl p-3.5 lazy-reveal">
                             <div class="text-amber-400 font-black text-sm mb-1 flex items-center gap-1.5">
-                                <span>⚡</span> 1080p Full HD
+                                <span>⚡</span> Smart 720p/1080p
                             </div>
                             <p class="text-[11px] text-slate-300 leading-relaxed">
-                                Adaptive bitrate streaming with geo-routed TURN relays for instant cross-network video across Wi-Fi, 4G, and 5G.
+                                Starts in fast 720p HD with selectable 1080p FHD and auto-downgrade protection when your network slows down.
                             </p>
                         </div>
 
-                        <div class="bento-card rounded-2xl p-3.5">
+                        <div class="bento-card rounded-2xl p-3.5 lazy-reveal">
                             <div class="text-orange-400 font-black text-sm mb-1 flex items-center gap-1.5">
                                 <span>🎙️</span> Noise Shield
                             </div>
@@ -397,7 +411,7 @@
                             </p>
                         </div>
 
-                        <div class="bento-card rounded-2xl p-3.5">
+                        <div class="bento-card rounded-2xl p-3.5 lazy-reveal">
                             <div class="text-emerald-400 font-black text-sm mb-1 flex items-center gap-1.5">
                                 <span>🔒</span> Zero-Log Privacy
                             </div>
@@ -409,7 +423,7 @@
                 </div>
 
                 <!-- RIGHT COLUMN: Matchmaking Control Deck (5 Columns on Laptop, Top on Mobile) -->
-                <div class="lg:col-span-5 w-full max-w-md mx-auto order-1 lg:order-2">
+                <div class="lg:col-span-5 w-full max-w-md mx-auto order-1 lg:order-2 lazy-reveal">
                     <div class="grid grid-cols-2 gap-2.5">
                         <!-- Bento Pill 1 -->
                         <div class="bento-card rounded-2xl p-3 flex items-center gap-2.5">
@@ -417,8 +431,8 @@
                                 ⚡
                             </div>
                             <div class="text-left overflow-hidden">
-                                <p class="text-[9px] font-bold uppercase tracking-wider text-amber-300">1080p Full HD</p>
-                                <p class="text-[11px] font-semibold text-slate-200 truncate">Adaptive Relay</p>
+                                <p class="text-[9px] font-bold uppercase tracking-wider text-amber-300">720p / 1080p HD</p>
+                                <p class="text-[11px] font-semibold text-slate-200 truncate">Auto-Shift Relay</p>
                             </div>
                         </div>
 
@@ -488,37 +502,33 @@
             </div>
         </div>
 
-        <!-- DETAILED FOOTER: Terms & Conditions, Privacy Policy & Legal Disclaimer -->
-        <footer class="w-full border-t border-amber-500/20 bg-[#0d0b0a]/90 backdrop-blur-xl mt-4 px-4 sm:px-8 py-8 text-left">
+        <!-- DETAILED FOOTER: Lazy-Loaded Terms & Conditions, Privacy Policy & Legal Disclaimer -->
+        <footer class="lazy-section w-full border-t border-amber-500/20 bg-[#0d0b0a]/90 backdrop-blur-xl mt-4 px-4 sm:px-8 py-8 text-left">
             <div class="max-w-6xl mx-auto space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                     
-                    <!-- Clause 1: 18+ Eligibility -->
-                    <div class="bento-card rounded-2xl p-4 space-y-1.5">
+                    <div class="bento-card rounded-2xl p-4 space-y-1.5 lazy-reveal">
                         <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-400">1. Strict 18+ Age Policy</h4>
                         <p class="text-[11px] text-slate-300 leading-relaxed">
                             RandomMeet is strictly restricted to adults aged <strong>18 years or older</strong>. By clicking "Start Video Chat" or accessing this platform, you legally represent and warrant that you are at least 18 years of age. Minors are strictly prohibited from using this service under any circumstances.
                         </p>
                     </div>
 
-                    <!-- Clause 2: Community Conduct & Zero Tolerance -->
-                    <div class="bento-card rounded-2xl p-4 space-y-1.5">
+                    <div class="bento-card rounded-2xl p-4 space-y-1.5 lazy-reveal">
                         <h4 class="text-xs font-extrabold uppercase tracking-wider text-orange-400">2. Community Guidelines</h4>
                         <p class="text-[11px] text-slate-300 leading-relaxed">
                             We enforce a strict <strong>Zero-Tolerance Policy</strong> against nudity, sexually explicit conduct, harassment, bullying, hate speech, violence, spam, or illegal activities. Respect your fellow strangers. Always keep your camera frame appropriate and report/skip any offensive user immediately.
                         </p>
                     </div>
 
-                    <!-- Clause 3: P2P Privacy & Zero-Log Architecture -->
-                    <div class="bento-card rounded-2xl p-4 space-y-1.5">
+                    <div class="bento-card rounded-2xl p-4 space-y-1.5 lazy-reveal">
                         <h4 class="text-xs font-extrabold uppercase tracking-wider text-emerald-400">3. Privacy & Zero-Log P2P</h4>
                         <p class="text-[11px] text-slate-300 leading-relaxed">
                             All live video, audio, and chat streams are transmitted via encrypted WebRTC Peer-to-Peer (P2P) connections and ephemeral TURN relays. <strong>RandomMeet does not record, store, or archive</strong> your video calls, voice conversations, or shared media files on our servers.
                         </p>
                     </div>
 
-                    <!-- Clause 4: Legal Liability & User Responsibility -->
-                    <div class="bento-card rounded-2xl p-4 space-y-1.5">
+                    <div class="bento-card rounded-2xl p-4 space-y-1.5 lazy-reveal">
                         <h4 class="text-xs font-extrabold uppercase tracking-wider text-cyan-400">4. Legal Disclaimer</h4>
                         <p class="text-[11px] text-slate-300 leading-relaxed">
                             RandomMeet is provided on an "AS IS" basis without warranties. Because connections are live and unmoderated in real-time, you assume <strong>100% legal and personal responsibility</strong> for your interactions, conduct, and any text or media shared during a session.
@@ -527,7 +537,6 @@
 
                 </div>
 
-                <!-- Detailed Legal Summary & Copyright Bar -->
                 <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
                     <p class="text-center sm:text-left leading-relaxed">
                         <strong>Terms & Conditions Agreement:</strong> By using <span class="text-amber-300 font-semibold">randommeet.online</span>, you automatically agree to abide by all Terms of Service, Privacy Policies, and local cyber laws. Never share sensitive personal or financial data with strangers.
@@ -542,31 +551,42 @@
 
     <!-- Call Screen (Fixed Full-Screen When Active) -->
     <main id="callScreen" class="fixed inset-0 z-20 hidden-ui overflow-hidden w-full h-full bg-[#090807]">
-        <!-- Remote Video Layer: Uncropped 'video-contain' by default -->
-        <div class="fixed inset-0 z-0 bg-[#090807] flex items-center justify-center pointer-events-none">
-            <video id="remoteVideo" class="w-full h-full video-contain camera-normal" playsinline muted></video>
+        <!-- Main Fullscreen Video Layer: True Mirror ('camera-mirror') + Uncropped ('video-contain') by default -->
+        <!-- Double-tapping main video also swaps between YOU and STRANGER fullscreen -->
+        <div id="mainVideoStage" class="fixed inset-0 z-0 bg-[#090807] flex items-center justify-center cursor-pointer">
+            <video id="remoteVideo" class="w-full h-full video-contain camera-mirror pointer-events-none" playsinline muted></video>
+            <div id="mainScreenBadge" class="absolute top-28 left-3 px-2.5 py-0.5 rounded-full bg-black/65 border border-white/15 text-[9px] font-bold text-slate-200 pointer-events-none">
+                STRANGER
+            </div>
         </div>
 
         <!-- Dedicated Remote Audio Receiver -->
-        <audio id="remoteAudio" playsinline></audio>
+        <audio id="remoteAudio" preload="none" playsinline></audio>
 
         <!-- Call Screen Header -->
-        <div class="absolute top-14 inset-x-3 z-40 flex items-center justify-between pointer-events-auto gap-2">
+        <div class="absolute top-14 inset-x-3 z-40 flex items-center justify-between pointer-events-auto gap-1.5">
             <div id="strangerStatusBar" class="flex items-center gap-1.5 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-400/40 shadow-xl">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-[10px] sm:text-[11px] font-bold text-white tracking-wide">Connected with Stranger</span>
             </div>
 
             <div class="flex items-center gap-1.5">
+                <!-- Mirror Toggle Button (Keeps face straight & 1:1 movement) -->
+                <button id="mirrorToggleBtn" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-amber-400/35 text-[9px] sm:text-[10px] font-bold text-amber-200 shadow-xl" title="Toggle Mirror">
+                    🪞 Mirror
+                </button>
+
                 <!-- Fit / Fill Mode Toggle Button -->
-                <button id="zoomToggleBtn" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-amber-400/35 text-[9px] sm:text-[10px] font-bold text-amber-200 shadow-xl">
+                <button id="zoomToggleBtn" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-amber-400/35 text-[9px] sm:text-[10px] font-bold text-amber-200 shadow-xl" title="Toggle Fit/Fill">
                     🔲 Fit
                 </button>
 
+                <!-- Quality Selector: Default 720p HD with 1080p, 480p, 360p & Auto-Shift Support -->
                 <select id="qualitySelector" class="interactive-btn px-2.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-orange-400/45 text-[9px] sm:text-[10px] font-extrabold text-amber-300 outline-none cursor-pointer shadow-xl">
-                    <option value="1080p" selected>1080p FHD ⚡</option>
-                    <option value="720p">720p HD</option>
+                    <option value="1080p">1080p FHD</option>
+                    <option value="720p" selected>720p HD ⚡</option>
                     <option value="480p">480p Saver</option>
+                    <option value="360p">360p Low Data</option>
                 </select>
             </div>
         </div>
@@ -579,13 +599,15 @@
         <!-- Search Spinner -->
         <div id="searchSpinner" class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-[#0d0a08]/95 backdrop-blur-md">
             <div class="w-12 h-12 border-4 border-orange-500/25 border-t-amber-400 rounded-full animate-spin"></div>
-            <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-amber-300 animate-pulse">Starting Camera (1080p FHD)...</p>
+            <p id="spinnerText" class="mt-4 text-xs font-extrabold uppercase tracking-widest text-amber-300 animate-pulse">Starting Camera (720p HD)...</p>
         </div>
 
-        <!-- Local Camera PIP (True Selfie Mirror View) -->
-        <div id="localVideoContainer" class="hidden-ui">
-            <video id="localVideo" class="w-full h-full object-cover camera-mirror" playsinline muted></video>
-            <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-amber-300">YOU</div>
+        <!-- Local Camera PIP (Tap to Swap Fullscreen like WhatsApp/Instagram + Draggable) -->
+        <div id="localVideoContainer" class="hidden-ui" title="Tap to view Fullscreen • Drag to move">
+            <video id="localVideo" class="w-full h-full object-cover camera-mirror pointer-events-none" playsinline muted></video>
+            <div id="pipBadge" class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] font-bold text-amber-300 flex items-center gap-1 pointer-events-none">
+                <span>YOU</span><span>⤢</span>
+            </div>
         </div>
 
         <!-- Floating Controls & Transparent Chat Deck -->
@@ -627,10 +649,29 @@
     </main>
 
     <script>
+        // Lazy Loading UI Observer for Smooth Performance Across All Devices
+        (function initLazyLoadingUI() {
+            const revealElements = document.querySelectorAll('.lazy-reveal');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { rootMargin: '60px', threshold: 0.05 });
+
+                revealElements.forEach(el => observer.observe(el));
+            } else {
+                revealElements.forEach(el => el.classList.add('is-visible'));
+            }
+        })();
+
         // Dual Auto-Typing Engine for Hero Headline & Detailed Website Description
         (function initAutoTypewriters() {
             const heroPhrases = [
-                "In 1080p Full HD Video.",
+                "In 720p & 1080p HD Video.",
                 "With Zero-Log P2P Privacy.",
                 "Across Wi-Fi & 5G Networks.",
                 "With Studio Noise Shield.",
@@ -638,9 +679,9 @@
             ];
 
             const detailedParagraphs = [
-                "Welcome to RandomMeet — the next-generation global video chat platform built for instant human connection. Click 'Start Video Chat' to match face-to-face with strangers worldwide in crystal-clear 1080p Full HD resolution with zero registration required.",
-                "Engineered with advanced WebRTC Peer-to-Peer architecture and geo-optimized TURN relays, RandomMeet seamlessly connects you across home Wi-Fi, 4G, and 5G mobile networks without call drops, blank screens, or lag—even during live network switches.",
-                "Enjoy built-in studio noise cancellation, natural selfie-mirror framing, real-time live chat, and instant photo, audio, and video file sharing up to 15MB. Every session is 100% ephemeral and encrypted—nothing is ever stored or logged."
+                "Welcome to RandomMeet — the next-generation global video chat platform built for instant human connection. Click 'Start Video Chat' to match face-to-face with strangers worldwide in crystal-clear HD resolution with zero registration required.",
+                "Engineered with advanced WebRTC Peer-to-Peer architecture and geo-optimized TURN relays, RandomMeet seamlessly connects you across home Wi-Fi, 4G, and 5G mobile networks and automatically adjusts video quality if your network slows down.",
+                "Tap your small PIP video box anytime during a call to view yourself in Full Screen just like WhatsApp and Instagram! Every session is 100% ephemeral and encrypted—nothing is ever stored or logged."
             ];
 
             function startLoopingTypewriter(elementId, phrases, typeSpeed, deleteSpeed, pauseMs) {
@@ -709,6 +750,9 @@
             localVidBox: document.getElementById('localVideoContainer'),
             remoteVid: document.getElementById('remoteVideo'),
             remoteAud: document.getElementById('remoteAudio'),
+            mainStage: document.getElementById('mainVideoStage'),
+            mainBadge: document.getElementById('mainScreenBadge'),
+            pipBadge: document.getElementById('pipBadge'),
             chatBox: document.getElementById('chatBox'),
             chatDeck: document.getElementById('chatDeckContainer'),
             chatWindow: document.getElementById('chatWindowWrapper'),
@@ -734,10 +778,12 @@
             dismissPromptBtn: document.getElementById('dismissPromptBtn'),
             qualitySelector: document.getElementById('qualitySelector'),
             strangerStatus: document.getElementById('strangerStatusBar'),
-            zoomToggleBtn: document.getElementById('zoomToggleBtn')
+            zoomToggleBtn: document.getElementById('zoomToggleBtn'),
+            mirrorToggleBtn: document.getElementById('mirrorToggleBtn')
         };
 
         let localStream = null;
+        let remoteVideoStream = null;
         let peerConn = null;
         let partnerId = null;
         let isInitiator = false;
@@ -749,12 +795,15 @@
         let pendingOffer = null;
         let isRestartingIce = false;
         let isCoverMode = false;
+        let isRemoteMirrored = true;
+        let isSwappedView = false; // WhatsApp/Instagram PIP <-> Fullscreen Swap State
 
-        // Tracked Timer IDs to prevent memory leaks & race conditions
+        // Tracked Timer IDs
         let nextSearchTimer = null;
         let peerDisconnectTimer = null;
         let iceRestartTimer = null;
         let watchdogTimer = null;
+        let netQualityTimer = null;
 
         // File Sharing State
         let incomingFiles = {};
@@ -815,7 +864,6 @@
             return iceFetchPromise;
         }
 
-        // Pre-warm ICE config on page load
         ensureIceServersLoaded();
 
         setInterval(() => { if (socket.connected) socket.emit('ping'); }, 20000);
@@ -825,7 +873,76 @@
             if (peerDisconnectTimer) { clearTimeout(peerDisconnectTimer); peerDisconnectTimer = null; }
             if (iceRestartTimer) { clearTimeout(iceRestartTimer); iceRestartTimer = null; }
             if (watchdogTimer) { clearInterval(watchdogTimer); watchdogTimer = null; }
+            if (netQualityTimer) { clearInterval(netQualityTimer); netQualityTimer = null; }
         }
+
+        // WhatsApp / Instagram / Telegram Style Video Stream Assignment & Fullscreen Swap
+        function syncVideoStreamsToViews() {
+            if (!isSwappedView) {
+                // Normal View: Stranger on Big Screen, YOU on Small PIP Box
+                if (ui.remoteVid.srcObject !== remoteVideoStream) {
+                    ui.remoteVid.srcObject = remoteVideoStream || null;
+                }
+                if (ui.localVid.srcObject !== localStream) {
+                    ui.localVid.srcObject = localStream || null;
+                }
+                ui.remoteVid.classList.toggle('camera-mirror', isRemoteMirrored);
+                ui.remoteVid.classList.toggle('camera-normal', !isRemoteMirrored);
+                ui.localVid.classList.toggle('camera-mirror', isFront);
+                ui.localVid.classList.toggle('camera-normal', !isFront);
+                ui.mainBadge.innerText = 'STRANGER';
+                ui.pipBadge.innerHTML = '<span>YOU</span><span>⤢</span>';
+            } else {
+                // Swapped View: YOU on Full Screen, Stranger on Small PIP Box
+                if (ui.remoteVid.srcObject !== localStream) {
+                    ui.remoteVid.srcObject = localStream || null;
+                }
+                if (ui.localVid.srcObject !== remoteVideoStream) {
+                    ui.localVid.srcObject = remoteVideoStream || null;
+                }
+                ui.remoteVid.classList.toggle('camera-mirror', isFront);
+                ui.remoteVid.classList.toggle('camera-normal', !isFront);
+                ui.localVid.classList.toggle('camera-mirror', isRemoteMirrored);
+                ui.localVid.classList.toggle('camera-normal', !isRemoteMirrored);
+                ui.mainBadge.innerText = 'YOU (FULLSCREEN)';
+                ui.pipBadge.innerHTML = '<span>STRANGER</span><span>⤢</span>';
+            }
+            safePlayVideo(ui.remoteVid);
+            safePlayVideo(ui.localVid);
+        }
+
+        function toggleFullScreenSwap() {
+            isSwappedView = !isSwappedView;
+            syncVideoStreamsToViews();
+        }
+
+        // Double-tap / double-click on Main Video Stage also swaps view
+        ui.mainStage.addEventListener('dblclick', () => {
+            if (currentState === 'CONNECTED' || currentState === 'SEARCHING') {
+                toggleFullScreenSwap();
+            }
+        });
+
+        // Mirror Toggle Button (Fixes inverted left/right movement & tilted-looking face)
+        ui.mirrorToggleBtn.addEventListener('click', () => {
+            isRemoteMirrored = !isRemoteMirrored;
+            ui.mirrorToggleBtn.innerText = isRemoteMirrored ? '🪞 Mirror' : '🔄 Normal';
+            syncVideoStreamsToViews();
+        });
+
+        // Fit / Fill View Toggle
+        ui.zoomToggleBtn.addEventListener('click', () => {
+            isCoverMode = !isCoverMode;
+            if (isCoverMode) {
+                ui.remoteVid.classList.remove('video-contain');
+                ui.remoteVid.classList.add('video-cover');
+                ui.zoomToggleBtn.innerText = '🔳 Fill';
+            } else {
+                ui.remoteVid.classList.remove('video-cover');
+                ui.remoteVid.classList.add('video-contain');
+                ui.zoomToggleBtn.innerText = '🔲 Fit';
+            }
+        });
 
         // Waiting Notification (5s repeat, 3s duration, >= 2 live users)
         function triggerWaitingPromptCycle() {
@@ -865,20 +982,6 @@
             ui.livePrompt.classList.add('hidden-ui');
         });
 
-        // Fit / Fill View Toggle
-        ui.zoomToggleBtn.addEventListener('click', () => {
-            isCoverMode = !isCoverMode;
-            if (isCoverMode) {
-                ui.remoteVid.classList.remove('video-contain');
-                ui.remoteVid.classList.add('video-cover');
-                ui.zoomToggleBtn.innerText = '🔳 Fill';
-            } else {
-                ui.remoteVid.classList.remove('video-cover');
-                ui.remoteVid.classList.add('video-contain');
-                ui.zoomToggleBtn.innerText = '🔲 Fit';
-            }
-        });
-
         socket.on('disconnect', () => {
             addSystemMsg("Connection lost. Resetting session...");
             fullNukeAndReset();
@@ -892,17 +995,20 @@
         ui.toggleChatBtn.addEventListener('click', () => ui.chatWindow.classList.toggle('hidden-ui'));
         ui.inputChat.addEventListener('focus', () => ui.chatWindow.classList.remove('hidden-ui'));
 
+        // Resolution Targets: Default 720p HD + 1080p, 480p, 360p Support
         function getResolutionTargets(quality) {
             let idealW = 1280, idealH = 720;
             if (quality === "1080p") { idealW = 1920; idealH = 1080; }
+            else if (quality === "720p") { idealW = 1280; idealH = 720; }
             else if (quality === "480p") { idealW = 854; idealH = 480; }
+            else if (quality === "360p") { idealW = 640; idealH = 360; }
             return { idealW, idealH };
         }
 
-        // Natural Uncropped Sensor Capture + Balanced Noise Cancellation
+        // Natural Uncropped Sensor Capture (Default 720p HD) + Standard Noise Cancellation
         async function getMediaStream(targetQuality, facingConstraint, videoOnly = false) {
             const chosenFacing = facingConstraint || (isFront ? "user" : "environment");
-            const quality = targetQuality || ui.qualitySelector.value || "1080p";
+            const quality = targetQuality || ui.qualitySelector.value || "720p";
             const { idealW, idealH } = getResolutionTargets(quality);
 
             const videoConstraints = {
@@ -944,7 +1050,7 @@
             }
         }
 
-        // Safe Adaptive Bitrate Clamping
+        // Adaptive Bitrate Clamping for 1080p, 720p, 480p, and 360p
         async function applyAdaptiveSenderBitrate(quality) {
             if (!peerConn) return;
             const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
@@ -955,19 +1061,20 @@
                 if (!params.encodings || params.encodings.length === 0) {
                     params.encodings = [{}];
                 }
-                let maxBitrate = 2000000;
-                if (quality === '720p') maxBitrate = 1100000;
+                let maxBitrate = 1150000; // Default 720p HD ceiling
+                if (quality === '1080p') maxBitrate = 2000000;
                 else if (quality === '480p') maxBitrate = 550000;
+                else if (quality === '360p') maxBitrate = 320000;
 
                 params.encodings[0].maxBitrate = maxBitrate;
-                params.encodings[0].maxFramerate = 30;
+                params.encodings[0].maxFramerate = quality === '360p' ? 24 : 30;
                 await sender.setParameters(params);
             } catch (e) {}
         }
 
-        ui.qualitySelector.addEventListener('change', async () => {
+        async function switchVideoQualityTo(chosenQuality, isAutoDowngrade = false) {
             if (!localStream) return;
-            const chosenQuality = ui.qualitySelector.value;
+            ui.qualitySelector.value = chosenQuality;
             const { idealW, idealH } = getResolutionTargets(chosenQuality);
 
             const videoTrack = localStream.getVideoTracks()[0];
@@ -978,7 +1085,11 @@
                         height: { ideal: idealH }
                     });
                     await applyAdaptiveSenderBitrate(chosenQuality);
-                    addSystemMsg(`Quality adjusted to ${chosenQuality}`);
+                    if (isAutoDowngrade) {
+                        addSystemMsg(`⚡ Slow network detected: Auto-shifted to ${chosenQuality} for smooth video.`);
+                    } else {
+                        addSystemMsg(`Quality adjusted to ${chosenQuality}`);
+                    }
                 } catch (err) {
                     try {
                         const newStream = await getMediaStream(chosenQuality, isFront ? "user" : "environment", true);
@@ -989,18 +1100,100 @@
                             videoTrack.stop();
                             localStream.removeTrack(videoTrack);
                             localStream.addTrack(newTrack);
-                            ui.localVid.srcObject = localStream;
+                            syncVideoStreamsToViews();
                             if (peerConn) {
                                 const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
                                 if (sender) await sender.replaceTrack(newTrack);
                                 await applyAdaptiveSenderBitrate(chosenQuality);
                             }
-                            addSystemMsg(`Quality adjusted to ${chosenQuality}`);
+                            if (isAutoDowngrade) {
+                                addSystemMsg(`⚡ Slow network detected: Auto-shifted to ${chosenQuality} for smooth video.`);
+                            } else {
+                                addSystemMsg(`Quality adjusted to ${chosenQuality}`);
+                            }
                         }
                     } catch (e2) {}
                 }
             }
+        }
+
+        ui.qualitySelector.addEventListener('change', () => {
+            switchVideoQualityTo(ui.qualitySelector.value, false);
         });
+
+        // Automatic Quality Downgrade Engine when Slow Network / High Packet Loss is Detected
+        function startNetworkQualityMonitor() {
+            if (netQualityTimer) clearInterval(netQualityTimer);
+            let lastPacketsLost = 0;
+            let lastPacketsSent = 0;
+            let consecutiveCongestionTicks = 0;
+
+            netQualityTimer = setInterval(async () => {
+                if (currentState !== 'CONNECTED' || !peerConn) {
+                    clearInterval(netQualityTimer);
+                    netQualityTimer = null;
+                    return;
+                }
+
+                const currentQ = ui.qualitySelector.value;
+                if (currentQ === '360p') return; // Already at lowest saver tier
+
+                let isCongested = false;
+
+                // Check Navigator Network Information API if available
+                const netConn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                if (netConn) {
+                    if (netConn.effectiveType === '2g' || netConn.effectiveType === 'slow-2g' || netConn.effectiveType === '3g') {
+                        isCongested = true;
+                    } else if (typeof netConn.downlink === 'number' && netConn.downlink > 0 && netConn.downlink < 1.0) {
+                        isCongested = true;
+                    }
+                }
+
+                // Check Real-Time WebRTC RTP & Candidate Pair Telemetry
+                try {
+                    const stats = await peerConn.getStats();
+                    stats.forEach(report => {
+                        if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                            if (typeof report.currentRoundTripTime === 'number' && report.currentRoundTripTime > 0.45) {
+                                isCongested = true; // Ping > 450ms
+                            }
+                        }
+                        if (report.type === 'outbound-rtp' && report.kind === 'video') {
+                            const sentDelta = (report.packetsSent || 0) - lastPacketsSent;
+                            const lostDelta = (report.packetsLost || 0) - lastPacketsLost;
+                            lastPacketsSent = report.packetsSent || 0;
+                            lastPacketsLost = report.packetsLost || 0;
+
+                            if (sentDelta > 30 && lostDelta > 0) {
+                                const lossRatio = lostDelta / (sentDelta + lostDelta);
+                                if (lossRatio > 0.08) {
+                                    isCongested = true; // >8% packet loss
+                                }
+                            }
+                            if (report.qualityLimitationReason === 'bandwidth') {
+                                isCongested = true;
+                            }
+                        }
+                    });
+                } catch (e) {}
+
+                if (isCongested) {
+                    consecutiveCongestionTicks++;
+                    if (consecutiveCongestionTicks >= 2) {
+                        consecutiveCongestionTicks = 0;
+                        const qualityOrder = ['1080p', '720p', '480p', '360p'];
+                        const idx = qualityOrder.indexOf(currentQ);
+                        if (idx !== -1 && idx < qualityOrder.length - 1) {
+                            const nextLowerQuality = qualityOrder[idx + 1];
+                            await switchVideoQualityTo(nextLowerQuality, true);
+                        }
+                    }
+                } else {
+                    consecutiveCongestionTicks = 0;
+                }
+            }, 4000);
+        }
 
         ui.btnStart.addEventListener('click', () => {
             if (currentState === 'IDLE') initiateSearch();
@@ -1026,6 +1219,7 @@
             isInitiator = false;
             isMakingOffer = false;
             isSettingRemoteDescription = false;
+            isSwappedView = false;
             iceQueue = [];
             pendingOffer = null;
             isPromptDismissedForEpisode = false;
@@ -1044,19 +1238,17 @@
             ui.chatBox.innerHTML = '';
             ui.chatWindow.classList.remove('hidden-ui');
 
-            ui.spinnerText.innerText = "Starting Camera (1080p FHD)...";
+            const selectedQ = ui.qualitySelector.value || '720p';
+            ui.spinnerText.innerText = `Starting Camera (${selectedQ} HD)...`;
             ui.spinner.classList.remove('hidden-ui');
 
             try {
                 if (!localStream || !localStream.active || localStream.getVideoTracks().length === 0) {
-                    localStream = await getMediaStream();
+                    localStream = await getMediaStream(selectedQ);
                 }
                 localStream.getAudioTracks().forEach(t => { t.enabled = !isAudioMuted; });
                 localStream.getVideoTracks().forEach(t => { t.enabled = !isVideoMuted; });
-                ui.localVid.srcObject = localStream;
-                ui.localVid.classList.toggle('camera-mirror', isFront);
-                ui.localVid.classList.toggle('camera-normal', !isFront);
-                await ui.localVid.play().catch(() => {});
+                syncVideoStreamsToViews();
                 ui.localVidBox.classList.remove('hidden-ui');
             } catch (err) {
                 alert("Camera and Microphone permissions required!");
@@ -1095,12 +1287,13 @@
                     return;
                 }
 
-                if (ui.remoteVid.srcObject && (ui.remoteVid.paused || ui.remoteVid.readyState < 2 || ui.remoteVid.videoWidth === 0)) {
-                    safePlayVideo(ui.remoteVid);
+                const activeStrangerVidEl = isSwappedView ? ui.localVid : ui.remoteVid;
+                if (activeStrangerVidEl.srcObject && (activeStrangerVidEl.paused || activeStrangerVidEl.readyState < 2 || activeStrangerVidEl.videoWidth === 0)) {
+                    safePlayVideo(activeStrangerVidEl);
 
                     if (ticks === 3 && isInitiator) {
                         const iceState = peerConn.iceConnectionState;
-                        if (iceState === 'disconnected' || iceState === 'failed' || ui.remoteVid.videoWidth === 0) {
+                        if (iceState === 'disconnected' || iceState === 'failed' || activeStrangerVidEl.videoWidth === 0) {
                             triggerSeamlessIceRestart();
                         }
                     }
@@ -1121,6 +1314,7 @@
             currentState = 'CONNECTED';
             partnerId = data.partnerId;
             isInitiator = !!data.initiator;
+            isSwappedView = false;
             ui.btnNext.disabled = false;
 
             ui.spinner.classList.add('hidden-ui');
@@ -1130,7 +1324,7 @@
             ui.btnSend.classList.remove('bg-slate-800', 'text-slate-500');
             ui.btnSend.classList.add('primary-glow-btn', 'text-white');
 
-            addSystemMsg("Stranger connected. Say Hi!");
+            addSystemMsg("Stranger connected. Say Hi! (Tap YOU box for Fullscreen)");
 
             initPeerConnection();
 
@@ -1142,6 +1336,7 @@
             }
 
             startRemoteVideoWatchdog();
+            startNetworkQualityMonitor();
 
             if (isInitiator) {
                 try {
@@ -1179,16 +1374,17 @@
 
             peerConn.ontrack = (event) => {
                 if (event.track.kind === 'video') {
-                    const vStream = new MediaStream([event.track]);
-                    ui.remoteVid.srcObject = vStream;
-                    ui.remoteVid.muted = true;
+                    remoteVideoStream = new MediaStream([event.track]);
+                    syncVideoStreamsToViews();
 
-                    const triggerPlay = () => safePlayVideo(ui.remoteVid);
+                    const triggerPlay = () => {
+                        safePlayVideo(ui.remoteVid);
+                        safePlayVideo(ui.localVid);
+                    };
                     ui.remoteVid.onloadedmetadata = triggerPlay;
                     ui.remoteVid.onloadeddata = triggerPlay;
                     ui.remoteVid.oncanplay = triggerPlay;
                     ui.remoteVid.onresize = triggerPlay;
-                    safePlayVideo(ui.remoteVid);
                 } else if (event.track.kind === 'audio') {
                     const aStream = new MediaStream([event.track]);
                     ui.remoteAud.srcObject = aStream;
@@ -1204,7 +1400,10 @@
                 }
 
                 event.track.onunmute = () => {
-                    if (event.track.kind === 'video') safePlayVideo(ui.remoteVid);
+                    if (event.track.kind === 'video') {
+                        safePlayVideo(ui.remoteVid);
+                        safePlayVideo(ui.localVid);
+                    }
                     if (event.track.kind === 'audio' && ui.remoteAud.srcObject) {
                         ui.remoteAud.play().then(() => {
                             ui.unmuteFallback.classList.add('hidden-ui');
@@ -1427,6 +1626,8 @@
             clearAllCallTimers();
             fileTransferSessionId++;
             incomingFiles = {};
+            remoteVideoStream = null;
+            isSwappedView = false;
 
             if (peerConn) {
                 peerConn.ontrack = null;
@@ -1444,11 +1645,16 @@
                 ui.remoteVid.pause();
                 ui.remoteVid.srcObject = null;
             }
+            if (ui.localVid && localStream) {
+                ui.localVid.srcObject = localStream;
+            }
             if (ui.remoteAud) {
                 ui.remoteAud.onloadedmetadata = null;
                 ui.remoteAud.pause();
                 ui.remoteAud.srcObject = null;
             }
+            ui.mainBadge.innerText = 'STRANGER';
+            ui.pipBadge.innerHTML = '<span>YOU</span><span>⤢</span>';
             ui.unmuteFallback.classList.add('hidden-ui');
             partnerId = null;
             isInitiator = false;
@@ -1597,7 +1803,7 @@
             addMsg('Stranger', msg, false);
         });
 
-        // Strict Validator & Safe DOM Builder
+        // Strict Validator & Safe Lazy-Loaded DOM Builder
         function isSafeMediaDataUrl(str, expectedMimePrefix) {
             if (typeof str !== 'string') return false;
             const prefixRegex = new RegExp(`^data:${expectedMimePrefix}\\/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/=\\s]+$`);
@@ -1616,7 +1822,7 @@
             if (isVideo && isSafeMediaDataUrl(text, 'video')) {
                 const vid = document.createElement('video');
                 vid.controls = true;
-                vid.autoplay = true;
+                vid.preload = 'metadata';
                 vid.muted = true;
                 vid.playsInline = true;
                 vid.className = 'chat-media-preview';
@@ -1627,6 +1833,7 @@
             } else if (isAudio && isSafeMediaDataUrl(text, 'audio')) {
                 const aud = document.createElement('audio');
                 aud.controls = true;
+                aud.preload = 'none';
                 aud.className = 'mt-1 w-full max-w-[200px]';
                 const source = document.createElement('source');
                 source.src = text;
@@ -1635,6 +1842,8 @@
             } else if (typeof text === 'string' && text.startsWith('data:image') && isSafeMediaDataUrl(text, 'image')) {
                 const img = document.createElement('img');
                 img.src = text;
+                img.loading = 'lazy';
+                img.decoding = 'async';
                 img.className = 'chat-media-preview';
                 img.alt = 'photo';
                 d.appendChild(img);
@@ -1702,10 +1911,7 @@
 
                 if (oldVideoTrack) localStream.removeTrack(oldVideoTrack);
                 localStream.addTrack(newTrack);
-                ui.localVid.srcObject = localStream;
-                ui.localVid.classList.toggle('camera-mirror', isFront);
-                ui.localVid.classList.toggle('camera-normal', !isFront);
-                await ui.localVid.play().catch(() => {});
+                syncVideoStreamsToViews();
 
                 if (peerConn) {
                     const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
@@ -1713,90 +1919,4 @@
                     await applyAdaptiveSenderBitrate(ui.qualitySelector.value);
                 }
             } catch (err) {
-                addSystemMsg("Camera switch not supported.");
-                isFront = prevFront;
-                try {
-                    const recoveryStream = await getMediaStream(ui.qualitySelector.value, isFront ? "user" : "environment", true);
-                    const recTrack = recoveryStream.getVideoTracks()[0];
-                    recoveryStream.getAudioTracks().forEach(t => t.stop());
-                    if (recTrack) {
-                        recTrack.enabled = !isVideoMuted;
-                        if (oldVideoTrack) localStream.removeTrack(oldVideoTrack);
-                        localStream.addTrack(recTrack);
-                        ui.localVid.srcObject = localStream;
-                        ui.localVid.classList.toggle('camera-mirror', isFront);
-                        ui.localVid.classList.toggle('camera-normal', !isFront);
-                        await ui.localVid.play().catch(() => {});
-                        if (peerConn) {
-                            const sender = peerConn.getSenders().find(s => s.track && s.track.kind === 'video');
-                            if (sender) await sender.replaceTrack(recTrack);
-                        }
-                    }
-                } catch (recErr) {}
-            }
-        });
-
-        // Draggable Local Video Box
-        let isDragging = false, startX, startY, initialRight, initialBottom;
-        ui.localVidBox.addEventListener('touchstart', dragStart, {passive: false});
-        ui.localVidBox.addEventListener('touchmove', drag, {passive: false});
-        ui.localVidBox.addEventListener('touchend', () => isDragging = false);
-        ui.localVidBox.addEventListener('mousedown', dragStart);
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('mouseup', () => isDragging = false);
-
-        function dragStart(e) {
-            isDragging = true;
-            const style = window.getComputedStyle(ui.localVidBox);
-            initialRight = parseInt(style.right) || 16;
-            initialBottom = parseInt(style.bottom) || 220;
-            startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-            startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-        }
-
-        function drag(e) {
-            if (!isDragging) return;
-            e.preventDefault();
-            const curX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-            const curY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-
-            let newRight = initialRight + (startX - curX);
-            let newBottom = initialBottom + (startY - curY);
-            const maxRight = window.innerWidth - ui.localVidBox.offsetWidth;
-            const maxBottom = window.innerHeight - ui.localVidBox.offsetHeight;
-
-            ui.localVidBox.style.right = Math.max(0, Math.min(newRight, maxRight)) + 'px';
-            ui.localVidBox.style.bottom = Math.max(0, Math.min(newBottom, maxBottom)) + 'px';
-        }
-
-        // Built-in WebRTC Diagnostics Helper
-        window.runWebRTCDiagnostics = async function() {
-            const report = {
-                state: currentState,
-                partnerId: partnerId,
-                isInitiator: isInitiator,
-                iceConnectionState: peerConn ? peerConn.iceConnectionState : 'none',
-                remoteVideoDimensions: `${ui.remoteVid.videoWidth}x${ui.remoteVid.videoHeight}`,
-                remoteVideoPaused: ui.remoteVid.paused,
-                localVideoDimensions: `${ui.localVid.videoWidth}x${ui.localVid.videoHeight}`
-            };
-            if (peerConn) {
-                const stats = await peerConn.getStats();
-                stats.forEach(s => {
-                    if (s.type === 'candidate-pair' && s.state === 'succeeded') {
-                        report.nominatedCandidatePair = s.id;
-                        report.bytesReceived = s.bytesReceived;
-                        report.bytesSent = s.bytesSent;
-                    }
-                    if (s.type === 'inbound-rtp' && s.kind === 'video') {
-                        report.framesDecoded = s.framesDecoded;
-                        report.packetsLost = s.packetsLost;
-                    }
-                });
-            }
-            console.table(report);
-            return report;
-        };
-    </script>
-</body>
-</html>
+                addSystem
